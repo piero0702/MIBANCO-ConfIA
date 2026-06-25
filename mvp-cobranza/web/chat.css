@@ -580,6 +580,82 @@ flex-shrink: 0; color: #fff;
   letter-spacing: .01em;
 }
 
+/* ── SENDER PHONE (entra desde la izquierda) ── */
+.sender-phone {
+  transform: translateX(-105%);
+  z-index: 3;
+  background: #fafafa;
+}
+.sender-phone.sp-visible { transform: translateX(0); }
+.wa-phone.sp-push-right  { transform: translateX(12%); }
+
+.sp-body {
+  flex: 1; overflow: hidden; position: relative;
+}
+
+/* pantalla de pago */
+.sp-pay {
+  padding: 20px 18px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  min-height: 100%;
+}
+.sp-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 900; font-size: 17px; color: #fff; flex-shrink: 0;
+}
+.sp-avatar-sender { background: #0f1b2d; }
+.sp-avatar-dest   { background: var(--yape); }
+
+.sp-pay-from, .sp-pay-to {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.sp-pay-from-name { font-size: 13.5px; font-weight: 700; color: #222; }
+.sp-pay-from-sub  { font-size: 10px; color: #999; }
+.sp-pay-to-name   { font-size: 14px; font-weight: 800; color: var(--yape); }
+.sp-pay-to-sub    { font-size: 10px; color: #888; }
+
+.sp-pay-arrow {
+  font-size: 20px; color: var(--yape); opacity: .5; line-height: 1;
+}
+.sp-pay-amount {
+  font-size: 40px; font-weight: 900; color: #111;
+  letter-spacing: -.05em; line-height: 1; margin: 4px 0;
+}
+.sp-btn-confirm {
+  background: var(--yape); color: #fff;
+  border: none; border-radius: 14px;
+  padding: 15px 0; font-size: 15px; font-weight: 800;
+  cursor: pointer; width: 100%;
+  transition: background .25s, transform .25s;
+  margin-top: 4px;
+  font-family: var(--sans, sans-serif);
+}
+.sp-btn-confirm.sp-pressing {
+  background: #3d0fa0;
+  transform: scale(.96);
+}
+
+/* pantalla de éxito (overlay absoluto) */
+.sp-success {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, var(--yape) 0%, #7c3aed 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease;
+  z-index: 2;
+}
+.sp-success.sp-success-show { opacity: 1; }
+.sp-success-ic    { font-size: 58px; margin-bottom: 6px; }
+.sp-success-title { font-size: 20px; font-weight: 900; color: #fff; }
+.sp-success-amt   {
+  font-size: 38px; font-weight: 900; color: #fff;
+  letter-spacing: -.05em; margin: 6px 0 2px;
+}
+.sp-success-to    { font-size: 14px; color: rgba(255,255,255,.85); font-weight: 600; }
+.sp-success-note  { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 6px; }
+
 /* ── YAPE PUSH NOTIFICATION ── */
 .yape-push-notif {
   position: absolute;

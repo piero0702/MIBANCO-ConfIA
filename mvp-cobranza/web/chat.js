@@ -104,8 +104,8 @@ texto: "Fácil — respondé acá con el % que querés:\n1️⃣ = 1% · *2️�
 texto: "2" },
 { de: "banco", delay: 800,
 texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibás → 2% va a tu cuota.\nTe avisamos en 3 momentos: interés 50% · interés 100% 🎉 · cuota completa → se para solo.\n¡A vender! 💙" },
-{ de: "sistema", tipo: "yape-push",
-remitente: "Juan Quispe", monto_bruto: 150, pct: 2, interes_pct: 12,
+{ de: "sistema", tipo: "yape-sender-demo",
+remitente: "Juan Quispe", destinatario: "Alessia Borrelli", monto_bruto: 150, pct: 2, interes_pct: 12,
 delay: 2200 },
 { de: "banco", delay: 700,
 texto: "💜 *YoSiLa* ✅\nRecibiste *S/150.00* de Juan Quispe.\nSe descontaron automáticamente *S/3.00* de tu cuota.\nInterés de junio: *12% cubierto* · Quedan S/86 por cubrir." },
@@ -217,8 +217,8 @@ texto: "¡Perfecto Powel! 💙 Ahora activamos YoSiLa.\nCada cliente que te pagu
 texto: "2" },
 { de: "banco", delay: 800,
 texto: "✅ *YoSiLa activado al 2%*, Powel.\nCuando alguien te pague por Yape, vas a ver algo así en tu notificación:" },
-{ de: "sistema", tipo: "yape-push",
-remitente: "Carmen Flores", monto_bruto: 150, pct: 2, interes_pct: 7,
+{ de: "sistema", tipo: "yape-sender-demo",
+remitente: "Carmen Flores", destinatario: "Powel Aliaga", monto_bruto: 150, pct: 2, interes_pct: 7,
 delay: 1500 },
 { de: "banco", delay: 700,
 texto: "💜 *YoSiLa* ✅\nRecibiste *S/150.00* de Carmen Flores.\nSe descontaron automáticamente *S/3.00* de tu cuota Mibanco.\nInterés de junio: *7% cubierto* · Quedan S/51 por cubrir." },
@@ -424,6 +424,57 @@ chatBody().appendChild(el);
 scrollBottom();
 }
 
+async function showYapeSenderDemo(msg) {
+const initials = n => n.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+const sI = initials(msg.remitente);
+const dI = initials(msg.destinatario || "??");
+
+document.getElementById("senderBody").innerHTML = `
+<div class="sp-pay" id="spPay">
+  <div class="sp-pay-from">
+    <div class="sp-avatar sp-avatar-sender">${sI}</div>
+    <div class="sp-pay-from-name">${msg.remitente}</div>
+    <div class="sp-pay-from-sub">enviando desde su Yape</div>
+  </div>
+  <div class="sp-pay-arrow">↓</div>
+  <div class="sp-pay-to">
+    <div class="sp-avatar sp-avatar-dest">${dI}</div>
+    <div class="sp-pay-to-name">${msg.destinatario}</div>
+    <div class="sp-pay-to-sub">💜 usuario Yape verificado</div>
+  </div>
+  <div class="sp-pay-amount">S/ ${Number(msg.monto_bruto).toFixed(2)}</div>
+  <button class="sp-btn-confirm" id="spConfirmBtn">Confirmar yapeo →</button>
+</div>
+<div class="sp-success" id="spSuccess">
+  <div class="sp-success-ic">✅</div>
+  <div class="sp-success-title">¡Yapeo enviado!</div>
+  <div class="sp-success-amt">S/ ${Number(msg.monto_bruto).toFixed(2)}</div>
+  <div class="sp-success-to">a ${msg.destinatario}</div>
+  <div class="sp-success-note">Llegó al instante · sin costo</div>
+</div>`;
+
+document.getElementById("senderPhone").classList.add("sp-visible");
+document.getElementById("waPhone").classList.add("sp-push-right");
+document.getElementById("phoneContainer").classList.add("yp-shadow");
+
+await later(1800);
+
+const btn = document.getElementById("spConfirmBtn");
+if (btn) btn.classList.add("sp-pressing");
+await later(500);
+
+const succ = document.getElementById("spSuccess");
+if (succ) succ.classList.add("sp-success-show");
+await later(1800);
+
+document.getElementById("senderPhone").classList.remove("sp-visible");
+document.getElementById("waPhone").classList.remove("sp-push-right");
+document.getElementById("phoneContainer").classList.remove("yp-shadow");
+await later(600);
+
+await showYapePush(msg);
+}
+
 async function showYapePush(msg) {
 const aporte = +(msg.monto_bruto * msg.pct / 100).toFixed(2);
 const neto   = +(msg.monto_bruto - aporte).toFixed(2);
@@ -551,6 +602,8 @@ if (msg.tipo === "progreso") {
 appendProgressCard(msg);
 } else if (msg.tipo === "yape-registro") {
 await showYapeScreen("registro", null);
+} else if (msg.tipo === "yape-sender-demo") {
+await showYapeSenderDemo(msg);
 } else if (msg.tipo === "yape-push") {
 await showYapePush(msg);
 } else if (msg.tipo === "yape-transaccion") {
@@ -635,7 +688,8 @@ hdr.innerHTML = `
 function resetAndPlay() {
 clearTimers();
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
-document.getElementById("waPhone")?.classList.remove("yp-push");
+document.getElementById("senderPhone")?.classList.remove("sp-visible");
+document.getElementById("waPhone")?.classList.remove("yp-push", "sp-push-right");
 document.getElementById("appLabel")?.classList.remove("yp-mode");
 document.getElementById("phoneContainer")?.classList.remove("yp-shadow");
 reproducir();
