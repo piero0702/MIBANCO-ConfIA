@@ -94,8 +94,8 @@ function renderDecDetail(d) {
   ].join("");
   const note = d.nota ? `<div class="dd-note">entrevista · ${d.nota}</div>` : "";
 
-  // bloque central: simulador (casos demo) o calendario (resto)
-  const central = (d.es_demo && d.simulacion) ? simHtml(d) : calendarHtml(d.calendario);
+  // bloque central: simulador día-a-día (todos los clientes)
+  const central = d.simulacion ? simHtml(d) : calendarHtml(d.calendario);
 
   // detalle de la decisión (dentro del colapsable "Por qué")
   const r = (k, v, why) => `<div class="dd-r"><div class="dk">${k}</div><div class="dv">${v}${why?`<span class="why">${why}</span>`:""}</div></div>`;
@@ -117,9 +117,9 @@ function renderDecDetail(d) {
     ${central}
     <details class="collap"><summary>Por qué esta decisión</summary><div class="collap-body">${porqueHtml(d.porque, d.segmento, d.ficha)}${decideRows}</div></details>
     <details class="collap"><summary>Datos del cliente (del Excel)</summary><div class="collap-body">${fichaHtml(d.ficha)}</div></details>
-    ${(d.es_demo && d.simulacion) ? `<details class="collap"><summary>Calendario del mes (resumen)</summary><div class="collap-body">${calendarHtml(d.calendario)}</div></details>` : ''}
+    ${d.simulacion ? `<details class="collap"><summary>Calendario del mes (resumen)</summary><div class="collap-body">${calendarHtml(d.calendario)}</div></details>` : ''}
   `;
-  if (d.es_demo && d.simulacion) mountSim(d);
+  if (d.simulacion) mountSim(d);
 }
 
 /* ---------------- QUICK SCOPE (ejecutivo) ---------------- */
@@ -145,18 +145,24 @@ function yapeHtml(y) {
     const h = Math.max(6, Math.round(d.monto / max * 100));
     const hot = d.monto >= y.umbral;
     return `<div class="yp-col">
-      <span class="yp-val ${hot?'hot':''}">${fmt(d.monto)}</span>
-      <div class="yp-track"><div class="yp-bar ${hot?'hot':''}" style="height:${h}%">${hot?'<span class="yp-star">⭐</span>':''}</div></div>
+      <span class="yp-val ${hot?'hot':''}">${fmt(d.monto)}${hot?' ⭐':''}</span>
+      <div class="yp-track"><div class="yp-bar ${hot?'hot':''}" style="height:${h}%"></div></div>
       <span class="yp-lbl">${d.label}</span>
     </div>`;
   }).join("");
   const nudge = y.buen_dia
     ? `<div class="yp-nudge"><b>💡 Oportunidad de prepago.</b> ${y.sugerencia}</div>`
     : `<div class="yp-nudge calm">${y.sugerencia}</div>`;
+  const prepay = (y.buen_dia && y.mensaje_prepago) ? `
+    <div class="yp-msg">
+      <div class="yp-msg-h">Lo que confIA le enviaría el <b>${y.dia_envio}</b> <span class="wa-verif" title="Cuenta verificada">✓</span> WhatsApp verificable</div>
+      <div class="yp-msg-phone"><div class="sim-msg bank"><div class="sim-bubble">${fmtWA(y.mensaje_prepago)}</div></div></div>
+    </div>` : "";
   return `<div class="dd-yape">
     <div class="dd-cal-h">Conexión Yape · ventas últimos 7 días <span class="cal-badge gris">simulado · promedio S/${y.promedio}</span></div>
     <div class="yp-chart">${bars}</div>
     ${nudge}
+    ${prepay}
   </div>`;
 }
 
@@ -173,8 +179,9 @@ function simHtml(d) {
       <div class="sim-ticks">${ticks}</div>
     </div>
     <div class="sim-meta" id="simMeta"></div>
-    <div class="sim-phone"><div class="sim-head">💬 Mibanco Cobranzas <span class="verif">✅ Verificado</span></div><div class="sim-chat" id="simChat"></div></div>
+    <div class="sim-phone"><div class="sim-head"><span class="sim-wa-avatar">m</span> Mibanco Cobranzas <span class="wa-verif" title="Cuenta de empresa verificada">✓</span></div><div class="sim-chat" id="simChat"></div></div>
     <button class="sim-play" id="simPlay">▶ reproducir conversación</button>
+    <div class="sim-yosila">💚 <b>YoSiLa siempre disponible</b> — el cliente puede activarlo en cualquier etapa para cobrarse solo con un % de sus ventas Yape, sin llamadas.</div>
   </div>`;
 }
 let _simTimers = [];
@@ -239,10 +246,11 @@ function calendarHtml(cal) {
   const ch = c => c.canal === 'llamada' ? '📞 Llamada' : c.canal === 'campo' ? '🚶 Visita' : '💬 WhatsApp';
   const items = (cal.contactos || []).map(c => `
     <div class="cal-item">
-      <span class="cal-date">${c.fecha}</span>
+      <span class="cal-date">${c.fecha}${c.rel_label ? `<small class="cal-rel ${c.dias_rel < 0 ? 'pre' : 'mora'}" title="${c.rel_nota || ''}">${c.rel_label}</small>` : ''}</span>
       <div class="cal-body">
         <div class="cal-top">
           <span class="cal-etapa">${c.etapa}</span>
+          ${c.objetivo ? `<span class="cal-obj">🎯 ${c.objetivo}</span>` : ''}
           <span class="cal-ch ${c.canal!=='whatsapp'?'esc':''}">${ch(c)}${c.verificable && c.canal==='whatsapp' ? ' <span class="verif">✓ verificable</span>' : ''}</span>
         </div>
         <div class="cal-msg">${c.mensaje}</div>

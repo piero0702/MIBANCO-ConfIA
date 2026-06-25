@@ -193,38 +193,37 @@ def decidir_tono(riesgo: str, cli: dict, cfg: dict) -> str:
 
 
 def redactar_mensaje(cli, canal, tramo, tono, cuota, cfg) -> str:
-    nombre = cli.get("nombre", "").split()[0] if cli.get("nombre") else "estimado(a)"
-    sigla = "Mibanco (Grupo Credicorp)"
+    # Mensajes en castellano peruano informal (tono de barrio/Gamarra, cercano y respetuoso).
+    nombre = cli.get("nombre", "").split()[0] if cli.get("nombre") else "vecino(a)"
     if canal in ("llamada", "campo"):
         return (
-            f"[Asesor identificado de {sigla}] Hola {nombre}, te saluda tu asesor de Mibanco. "
-            f"Te llamo para acompañarte con tu cuota de S/{cuota:.0f}. "
-            f"Cuentame como vas y vemos juntos la mejor opcion."
+            f"Hola {nombre} 👋 Soy tu asesor de Mibanco (de verdad, no robot ni cobrador de afuera). "
+            f"Te escribo para ver cómo vas con tu cuota de S/{cuota:.0f}. "
+            f"Cuéntame nomás y lo arreglamos juntos."
         )
     # Canal digital (whatsapp/sms): verificable + tono segun perfil
     if tramo["etapa"] == "preventiva":
         cuerpo = (
-            f"Hola {nombre} 👋 Te escribimos de {sigla}. "
-            f"Solo para recordarte que tu cuota de S/{cuota:.0f} vence en unos dias. "
-            f"Cuando puedas, paga facil desde la App Mibanco o Yape. ¡Gracias por tu puntualidad!"
+            f"Hola {nombre} 👋 Te escribe Mibanco. "
+            f"Ojito nomás: tu cuota de S/{cuota:.0f} vence en unos días. "
+            f"Cuando puedas, la pagas fácil por la app o Yape. ¡Gracias por estar al día! 💚"
         )
     elif tono == "agradecido":
         cuerpo = (
-            f"Hola {nombre} 👋 {sigla} aqui. Sabemos que sueles estar al dia, gracias por eso. "
-            f"Tu cuota de S/{cuota:.0f} quedo pendiente; si ya pagaste, ignora este mensaje. "
-            f"Paga en segundos desde la App o Yape."
+            f"Hola {nombre} 👋 Te escribe Mibanco. Sabemos que tú siempre cumples, así que de hecho ya pagaste 😄 "
+            f"Si se te pasó, tu cuota de S/{cuota:.0f} quedó pendiente — la pagas en un toque por la app o Yape."
         )
     elif tono == "empatico-claro":
         cuerpo = (
-            f"Hola {nombre}, te escribe {sigla}. Entendemos que el flujo del negocio varia. "
-            f"Tu cuota es de S/{cuota:.0f}; si hoy no puedes completa, podemos ver un pago parcial "
-            f"o reprogramar. Escribenos y lo resolvemos juntos."
+            f"Hola {nombre} 👋 Te escribe Mibanco. Sabemos que el negocio tiene sus altos y bajos 🤝 "
+            f"Tu cuota es de S/{cuota:.0f}; si hoy no puedes toda, la vemos en partes o te la reprogramamos. "
+            f"Escríbenos nomás y lo solucionamos."
         )
     else:  # cercano
         cuerpo = (
-            f"Hola {nombre} 👋 Te escribimos de {sigla}. "
-            f"Tu cuota de S/{cuota:.0f} esta pendiente. Paga facil desde la App Mibanco o Yape. "
-            f"Cualquier cosa, aqui estamos para ayudarte. ¡Gracias!"
+            f"Hola {nombre} 👋 Te escribe Mibanco. "
+            f"Tu cuota de S/{cuota:.0f} está pendiente. La pagas fácil por la app o Yape, sin apuro. "
+            f"Cualquier cosa, aquí estamos 💚"
         )
     return cuerpo
 

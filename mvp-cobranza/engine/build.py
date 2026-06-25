@@ -61,11 +61,26 @@ def _n_contactos(etapa: str, riesgo: str, buen: bool) -> int:
 
 _TOPE_ETAPA = {"preventivo": 1, "temprana": 3, "media": 4, "tardia": 7}
 
+# Escalera de toques: dias relativos al vencimiento (negativo = preventivo, antes de
+# vencer) + objetivo del mensaje en <=3 palabras. El motor toma los primeros N segun
+# el perfil del cliente: un buen pagador solo recibe el preventivo; uno en mora profunda
+# recorre toda la escalera.
+_LADDER = [
+    (-3, "Recordatorio amable"),
+    (2,  "Aviso a tiempo"),
+    (9,  "Seguir de cerca"),
+    (18, "Ofrecer opciones"),
+    (32, "Buscar acuerdo"),
+    (47, "Reestructurar juntos"),
+    (62, "Acompañar de cerca"),
+]
+
 
 def construir_calendario(cli: dict, cfg: dict) -> dict:
-    """Plan de contactos del mes para ESTE cliente segun su etapa de mora.
-    WhatsApp es el canal por defecto; llamada y visita son escalamiento de ULTIMO
-    RECURSO solo para no-digitales en mora media/tardia (nunca se elimina un canal)."""
+    """Plan de contactos como una ESCALERA en el tiempo: cada toque indica a cuántos
+    días del vencimiento ocurre (−3 = preventivo, +15 = días de atraso) y su objetivo.
+    WhatsApp por defecto; llamada/visita son escalamiento de último recurso para
+    no-digitales en mora media/tardía (nunca se elimina un canal)."""
     dias_mora = int(cli.get("dias_mora", 0))
     cuota = float(cli.get("cuota_mensual", 0))
     es_digital = bool(cli.get("es_digital", 0))
@@ -82,26 +97,35 @@ def construir_calendario(cli: dict, cfg: dict) -> dict:
                 "contactos": []}
 
     n = _n_contactos(etapa, riesgo, buen)
-    dias_mes = [3, 8, 13, 18, 22, 26, 29][:n]
-    tramo = rules.tramo_de_mora(dias_mora, cfg)
-    tono = rules.decidir_tono(riesgo, cli, cfg)
+    dias_mes = [3, 8, 13, 18, 22, 26, 29]
     contactos = []
-    for idx, dia_mes in enumerate(dias_mes):
-        f = _fecha_jun(dia_mes)
+    for idx, (dias_rel, objetivo) in enumerate(_LADDER[:n]):
+        f = _fecha_jun(dias_mes[idx])
+        dias_v = max(dias_rel, 0)
+        et_touch = _etapa_de(dias_rel)
+        tramo = rules.tramo_de_mora(dias_v, cfg)
+        cli_v = dict(cli); cli_v["dias_mora"] = dias_v
+        tono = rules.decidir_tono(riesgo, cli_v, cfg)
         # Escalamiento (ultimo bastion): no-digital en mora media/tardia
         canal = "whatsapp"
-        if not es_digital and etapa == "tardia" and idx == n - 1:
+        if not es_digital and et_touch == "tardia" and idx == n - 1:
             canal = "campo"
-        elif not es_digital and etapa in ("media", "tardia") and idx >= n - 2:
+        elif not es_digital and et_touch in ("media", "tardia"):
             canal = "llamada"
         if canal == "whatsapp":
-            msg = rules.redactar_mensaje(cli, "whatsapp", tramo, tono, cuota, cfg)
+            msg = rules.redactar_mensaje(cli_v, "whatsapp", tramo, tono, cuota, cfg)
+            obj = objetivo
         elif canal == "llamada":
-            msg = "📞 Llamada de tu asesor de Mibanco (verificable, no robot) para coordinar opciones."
+            msg = "📞 Llamada de tu asesor de Mibanco (verificable, no robot) para coordinar."
+            obj = "Llamada del asesor"
         else:
-            msg = "🚶 Visita de tu asesor de Mibanco — último recurso, solo si no hubo respuesta por WhatsApp."
-        contactos.append({"fecha": f["fecha"], "dia": f["dia"], "etapa": cat,
-                          "canal": canal, "mensaje": msg, "verificable": True})
+            msg = "🚶 Visita de tu asesor de Mibanco — último recurso si no responde por WhatsApp."
+            obj = "Visita del asesor"
+        rel_label = f"−{abs(dias_rel)} d" if dias_rel < 0 else f"+{dias_rel} d"
+        rel_nota = "antes de vencer" if dias_rel < 0 else "días de atraso"
+        contactos.append({"fecha": f["fecha"], "dia": f["dia"], "etapa": _categoria_mora(dias_v),
+                          "dias_rel": dias_rel, "rel_label": rel_label, "rel_nota": rel_nota,
+                          "objetivo": obj, "canal": canal, "mensaje": msg, "verificable": True})
     contactos.sort(key=lambda c: c["dia"])
 
     if etapa == "preventivo":
@@ -218,15 +242,31 @@ def construir_pulso_yape(cli: dict) -> dict:
     pico = dias[spike]
     buen = pico["monto"] >= umbral
     crec = round((pico["monto"] - promedio) / promedio * 100) if promedio else 0
+    monto_fmt = f"{pico['monto']:,}".replace(",", " ")
     if buen:
-        sug = (f"El {pico['label'].lower()} recibió S/{pico['monto']:,} por Yape (+{crec}% vs su "
+        sug = (f"El {pico['label'].lower()} recibió S/{monto_fmt} por Yape (+{crec}% vs su "
                f"promedio diario). Buen momento para sugerirle adelantar parte de su cuota o "
-               f"prepagar interés con YoSiLa.").replace(",", " ")
+               f"prepagar interés con YoSiLa.")
     else:
         sug = "Flujo estable esta semana. Sin sugerencia de prepago por ahora."
+
+    # Mensaje real que confIA enviaria al dia SIGUIENTE del buen dia (ventana 11am-1pm).
+    _full = {"Lun": "lunes", "Mar": "martes", "Mié": "miércoles", "Jue": "jueves",
+             "Vie": "viernes", "Sáb": "sábado", "Dom": "domingo"}
+    dia_sig = labels[spike + 1] if spike + 1 < len(labels) else "Lun"
+    dia_envio = f"{_full.get(dia_sig, dia_sig)} 11am-1pm"
+    nombre = (str(cli.get("nombre", "")).split() or ["estimado"])[0]
+    mensaje_prepago = (
+        f"*Mibanco* ✅ Hola {nombre} 👋 Vimos que el {pico['label'].lower()} te fue bien 💪 "
+        f"(S/{monto_fmt} en ventas por Yape).\n"
+        f"Si quieres, puedes adelantar parte de tu próxima cuota o ir prepagando interés con YoSiLa — solo si te conviene.\n"
+        f"Respóndeme SÍ y te explico. YoSiLa siempre está disponible: tú decides 💚"
+    ) if buen else None
+
     return {"dias": dias, "promedio": promedio, "umbral": umbral,
             "pico_label": pico["label"], "pico_monto": pico["monto"],
-            "crecimiento_pct": crec, "buen_dia": buen, "sugerencia": sug}
+            "crecimiento_pct": crec, "buen_dia": buen, "sugerencia": sug,
+            "dia_envio": dia_envio, "mensaje_prepago": mensaje_prepago}
 
 
 # --------------------------------------------------------------------------- #
@@ -237,76 +277,77 @@ _DEMO_IDS = {"ENT-01": "rosa", "ENT-05": "alessia", "ENT-07": "william"}
 # Conversaciones por etapa. Vocabulario de los insights: nada de "cobranza/mora/deuda";
 # agradecido al buen pagador, empatico al moroso, dignidad + identidad verificable al no-digital.
 _SIM_CONV = {
-    "rosa": {  # ENT-01: riesgo bajo, buena pagadora, digital
+    "rosa": {  # ENT-01: riesgo bajo, buena pagadora, digital, AL DÍA
         "preventivo": [
-            ("banco", "Hola Rosa 👋 Te escribe *Mibanco* ✅\nSolo un recordatorio: tu cuota de S/320 vence en 3 días (27 jun).\n¡Gracias por tu puntualidad de siempre! 🙌 La pagás desde la App o Yape."),
+            ("banco", "Hola Rosa 👋 Te escribe *Mibanco* ✅\nOjito nomás: tu cuota de S/320 vence en 3 días (27 jun).\n¡Gracias por estar siempre al día! 🙌 La pagas fácil por la app o Yape."),
             ("cliente", "gracias por avisar 😊 ya la tengo lista"),
-            ("banco", "¡Genial Rosa! Cualquier cosa acá estamos 💚"),
+            ("banco", "¡Bacán Rosa! Cualquier cosa aquí estamos 💚"),
         ],
         "temprana": [
-            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nVimos que tu cuota de S/320 venció hace unos días. Sabemos que solés estar al día 🙌\nSi ya pagaste, ignorá este mensaje; si no, la pagás en segundos por Yape."),
-            ("cliente", "uy cierto, se me pasó. ahí pago ahora"),
+            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nVimos que tu cuota de S/320 venció hace unos días. Como tú siempre cumples 🙌, de hecho ya pagaste.\nSi se te pasó, la pagas en un toque por Yape."),
+            ("cliente", "uy cierto, se me pasó. ahí pago ahorita"),
             ("banco", "¡Gracias Rosa! 💚 Sin apuro."),
         ],
         "media": [
-            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nTu cuota de S/320 lleva un tiempo pendiente y no es tu costumbre 🤝\n¿Pasó algo con el negocio? Podemos ver un pago parcial o reprogramar, lo que te acomode."),
+            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nTu cuota de S/320 lleva un tiempo pendiente y eso no es normal en ti 🤝\n¿Pasó algo con el negocio? La vemos en partes o te la reprogramamos, como te acomode."),
             ("cliente", "sí, este mes estuvo flojo el puesto"),
-            ("banco", "Te entendemos 💚 Podemos partir la cuota o correrla sin penalidad. Vos elegís."),
+            ("banco", "Te entiendo 💚 La partimos o te la corremos sin penalidad. Tú dime nomás."),
         ],
         "tardia": [
-            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nQueremos ayudarte a ponerte al día sin que te pese 🤝\nOpciones: pago parcial, reprogramación, o una cuota más chica ampliando el plazo. ¿Cuál te sirve?"),
+            ("banco", "Hola Rosa 👋 *Mibanco* ✅\nQueremos ayudarte a ponerte al día sin que te ahogue 🤝\nOpciones: pago en partes, reprogramar, o una cuota más chiquita ampliando el plazo. ¿Cuál te conviene?"),
             ("cliente", "la cuota más chica me ayudaría"),
-            ("banco", "Listo Rosa, lo dejamos coordinado 💚 Sin penalidad por repago anticipado (Ley 29571)."),
+            ("banco", "Listo Rosa, lo dejamos coordinado 💚 Sin penalidad por pagar antes (Ley 29571).\nY si quieres, activas YoSiLa: un % de cada venta por Yape se va juntando para tu cuota, sin que lo sientas."),
         ],
     },
     "alessia": {  # ENT-05: digital, flujo variable, candidata YoSiLa
         "preventivo": [
-            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nTu cuota de S/450 vence en 3 días. La pagás fácil por Yape o la App 📱\n¡Gracias!"),
+            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nTu cuota de S/450 vence en 3 días. La pagas fácil por Yape o la app 📱\n¡Gracias!"),
             ("cliente", "gracias! ya lo anoté 😊"),
         ],
         "temprana": [
-            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nTu cuota de S/450 venció hace 7 días. Sabemos que el negocio tiene días flojos 🤝\n¿Cómo te ayudamos?\n• Pagar ahora\n• Pago parcial\n• Reprogramar"),
-            ("cliente", "¿puedo pagar la mitad ahora?"),
-            ("banco", "Claro 💚 Anotamos S/225 hoy.\n¿Activamos YoSiLa para cubrir el resto solo? Cada venta por Yape aporta un % chiquito, sin sentirla."),
-            ("cliente", "dale, probemos 💪"),
+            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nTu cuota de S/450 venció hace 7 días. Sabemos que el negocio tiene días flojos 🤝\n¿Cómo te ayudamos?\n• Pagar ahora\n• Pagar en partes\n• Reprogramar"),
+            ("cliente", "¿puedo pagar la mitad ahorita?"),
+            ("banco", "Claro 💚 Anotamos S/225 para hoy.\n¿Activamos YoSiLa para que el resto se vaya juntando solo? Un % chiquito de cada venta por Yape va a tu cuota, ni lo sientes."),
+            ("cliente", "ya, probemos 💪"),
         ],
         "media": [
-            ("sistema", "progreso", "📊 YoSiLa en marcha · interés 61% · 12 días · 28 ventas Yape"),
-            ("banco", "📊 YoSiLa — Alessia\nInterés de junio: 61% cubierto (S/61 de S/100). Llevás 12 días y 28 ventas por Yape. Seguimos 💪"),
-            ("cliente", "ni me di cuenta 😅 está buenísimo"),
+            ("sistema", "progreso", "📊 YoSiLa avanzando · interés 61% · 12 días · 28 ventas Yape"),
+            ("banco", "📊 YoSiLa — Alessia\nInterés de junio: 61% cubierto (S/61 de S/100). Llevas 12 días y 28 ventas por Yape. ¡Vamos bien! 💪"),
+            ("cliente", "ni me di cuenta 😅 está bacán"),
         ],
         "tardia": [
-            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nEntendemos que la situación puede ser difícil 🤝\nPodemos reestructurar para una cuota más manejable, sin penalidad (Ley 29571). ¿Lo vemos?"),
-            ("cliente", "sí porfa"),
-            ("banco", "Listo 💚 Tu asesor coordina contigo la mejor opción. Tranquila, lo resolvemos juntos."),
+            ("banco", "Hola Alessia 👋 *Mibanco* ✅\nSabemos que la cosa puede estar dura 🤝\nPodemos reestructurarte para una cuota más manejable, sin penalidad (Ley 29571). ¿Lo vemos?"),
+            ("cliente", "ya porfa"),
+            ("banco", "Listo 💚 Tu asesor coordina contigo la mejor opción. Tranquila, lo solucionamos juntos."),
         ],
         "yosila": [
             ("sistema", "progreso", "🎉 Interés 100% cubierto · 17 días · 42 ventas Yape"),
-            ("banco", "*Mibanco* ✅ 🎉 ¡Alessia, cubriste el 100% del interés!\nCada Yape sumó su 2% solo. Lo que queda es capital tuyo. Cero llamadas, cero presión 💚"),
+            ("banco", "*Mibanco* ✅ 🎉 ¡Alessia, ya cubriste el 100% del interés!\nCada venta por Yape fue sumando su 2% sola. Lo que queda es capital tuyo. Cero llamadas, cero presión 💚"),
             ("cliente", "me encanta 😍 ni sentí que estaba pagando"),
         ],
     },
     "william": {  # ENT-07: no-digital, teme extorsion, mora profunda → escalamiento
         "preventivo": [
-            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota de S/980 vence el 27 jun. Podés pagar en cualquier agente 📍\nVerificá siempre que sea el WhatsApp oficial *Mibanco* ✅ — nunca pedimos claves."),
-            ("cliente", "ok gracias, voy al agente esta semana"),
+            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota de S/980 vence el 27 jun. La puedes pagar en cualquier agente 📍\nOjo: revisa siempre que sea el WhatsApp oficial *Mibanco* ✅ — nunca te pedimos claves."),
+            ("cliente", "ya gracias, voy al agente esta semana"),
         ],
         "temprana": [
-            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota de S/980 lleva unos días vencida. ¿Coordinamos? Podés responder acá o te llama tu asesor de confianza."),
+            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota de S/980 venció hace unos días. ¿Coordinamos? Puedes responder por aquí o te llama tu asesor de confianza."),
             ("cliente", "esta semana paso por el agente"),
         ],
         "media": [
-            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota lleva 40 días. Queremos ayudarte a ponerte al día 🤝\nSi preferís, tu asesora te llama — es Mibanco, no un robot ni una empresa externa."),
+            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota lleva 40 días. Queremos ayudarte a ponerte al día 🤝\nSi prefieres, tu asesora te llama — es Mibanco de verdad, no un robot ni empresa de afuera."),
             ("sistema", "llamada", "📞 Llamada · *Mibanco* ✅ · María García (asesora verificable, no robot)"),
-            ("banco", "Tu asesora María te llamó. Acordaron un pago parcial de S/490 esta semana.\nConfirmá con SÍ para registrarlo. 👇"),
+            ("banco", "Tu asesora María te llamó. Quedaron en un pago en partes: S/490 esta semana.\nConfírmame con un SÍ para registrarlo 👇"),
             ("cliente", "sí confirmo"),
         ],
         "tardia": [
-            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota lleva 70 días. Tenemos opciones para reestructurar sin que te pese 🤝"),
+            ("banco", "*Mibanco* ✅ Hola William 👋\nTu cuota lleva 70 días. Tenemos opciones para reestructurarte sin que te ahogue 🤝"),
             ("sistema", "llamada", "📞 Llamada · *Mibanco* ✅ · asesor verificable"),
             ("sistema", "campo", "🚶 Visita de campo · asesor *Mibanco* ✅ · Mercado Caquetá · ÚLTIMO RECURSO"),
-            ("banco", "Tu asesor Ana pasará por tu puesto al mediodía con opciones.\nSin presión — es para encontrar la mejor salida juntos.\nVerificá siempre la identidad oficial *Mibanco* ✅."),
-            ("cliente", "ok, qué bueno que vinieron"),
+            ("banco", "Tu asesor Ana va a pasar por tu puesto al mediodía con opciones.\nSin presión — es para encontrar juntos la mejor salida.\nRevisa siempre que sea la identidad oficial *Mibanco* ✅."),
+            ("cliente", "ya, qué bueno que vinieron"),
+            ("banco", "Y si más adelante empiezas a cobrar por Yape, puedes activar YoSiLa para ir cubriendo tu cuota solito, sin llamadas 💚 La opción siempre está ahí."),
         ],
     },
 }
@@ -320,43 +361,79 @@ _SIM_ETAPAS = [
 ]
 
 
-def construir_simulacion(cli: dict, cfg: dict) -> dict | None:
-    """Para los 3 casos demo: conversacion de WhatsApp por etapa de mora, para el
-    slider de 'salto en el tiempo'. Devuelve None si el cliente no es demo."""
+def _tuples_to_msgs(conv: list) -> list[dict]:
+    out = []
+    for m in conv:
+        if m[0] == "sistema":
+            out.append({"de": "sistema", "tipo": m[1], "texto": m[2]})
+        else:
+            out.append({"de": m[0], "texto": m[1]})
+    return out
+
+
+def _canal_de_msgs(msgs: list[dict]) -> str:
+    if any(x["de"] == "sistema" and x.get("tipo") == "campo" for x in msgs):
+        return "campo"
+    if any(x["de"] == "sistema" and x.get("tipo") == "llamada" for x in msgs):
+        return "llamada"
+    return "whatsapp"
+
+
+def _conv_generica(cli: dict, cfg: dict, ekey: str, dias_ref: int) -> list[dict]:
+    """Conversacion auto-generada para cualquier cliente: el mensaje REAL del motor
+    (rules.redactar_mensaje) por etapa + respuesta generica + escalamiento si no es digital."""
+    cuota = float(cli.get("cuota_mensual", 0))
+    es_digital = bool(cli.get("es_digital", 0))
+    riesgo = rules.clasificar_riesgo(float(cli.get("prob_default", 0.2)), cfg)
+    dias_v = max(dias_ref, 0)
+    cli_v = dict(cli); cli_v["dias_mora"] = dias_v
+    tramo = rules.tramo_de_mora(dias_v, cfg)
+    tono = rules.decidir_tono(riesgo, cli_v, cfg)
+    conv = [{"de": "banco", "texto": rules.redactar_mensaje(cli_v, "whatsapp", tramo, tono, cuota, cfg)}]
+    if ekey == "preventivo":
+        conv.append({"de": "cliente", "texto": "ok, gracias por avisar 👍"})
+    elif ekey == "temprana":
+        conv.append({"de": "cliente", "texto": "sí, ahí lo veo"})
+        conv.append({"de": "banco", "texto": "Cuando quieras lo solucionamos 💚 Si te sirve, activas YoSiLa: un % de cada venta por Yape se va juntando para tu cuota, ni lo sientes."})
+    elif ekey == "media":
+        if not es_digital:
+            conv.append({"de": "sistema", "tipo": "llamada", "texto": "📞 Llamada · *Mibanco* ✅ · asesor verificable (no robot)"})
+        conv.append({"de": "cliente", "texto": "esta semana coordino"})
+    else:  # tardia
+        if not es_digital:
+            conv.append({"de": "sistema", "tipo": "llamada", "texto": "📞 Llamada · *Mibanco* ✅ · asesor verificable"})
+            conv.append({"de": "sistema", "tipo": "campo", "texto": "🚶 Visita · asesor *Mibanco* ✅ · ÚLTIMO RECURSO"})
+        conv.append({"de": "banco", "texto": "Tenemos opciones para reestructurarte sin penalidad (Ley 29571). Y YoSiLa sigue disponible si quieres cobrarte con tus propias ventas de Yape 💚"})
+        conv.append({"de": "cliente", "texto": "ya, lo vemos"})
+    return conv
+
+
+def _conv_yosila_generica(cli: dict) -> list[dict]:
+    return [
+        {"de": "banco", "texto": "*Mibanco* ✅ YoSiLa está disponible para ti 💚\nActivas un % de cada venta por Yape: va primero al interés, luego al capital, y se apaga solo al completar la cuota. Sin una sola llamada.\n¿Lo activamos?"},
+        {"de": "cliente", "texto": "¿y cómo lo activo?"},
+        {"de": "banco", "texto": "Respóndeme el % por aquí (1, 2, 3 o 5) y listo — queda registrado como tu permiso (Res. SBS 02522-2025)."},
+    ]
+
+
+def construir_simulacion(cli: dict, cfg: dict) -> dict:
+    """Simulacion dia-a-dia para CUALQUIER cliente: conversacion de WhatsApp por etapa
+    de mora + etapa YoSiLa. Los 3 casos demo usan conversaciones escritas a mano; el
+    resto se auto-genera con la redaccion real del motor."""
     key = _DEMO_IDS.get(str(cli.get("cliente_id")))
-    if not key:
-        return None
-    convs = _SIM_CONV[key]
+    demo = _SIM_CONV.get(key, {}) if key else {}
     riesgo = rules.clasificar_riesgo(float(cli.get("prob_default", 0.2)), cfg)
     buen = rules.es_buen_pagador(cli)
     etapas = []
     for ekey, label, dias_ref in _SIM_ETAPAS:
-        conv = convs.get(ekey, [])
-        msgs = []
-        for m in conv:
-            if m[0] == "sistema":
-                msgs.append({"de": "sistema", "tipo": m[1], "texto": m[2]})
-            else:
-                msgs.append({"de": m[0], "texto": m[1]})
-        canal = "whatsapp"
-        if any(x["de"] == "sistema" and x.get("tipo") == "campo" for x in msgs):
-            canal = "campo"
-        elif any(x["de"] == "sistema" and x.get("tipo") == "llamada" for x in msgs):
-            canal = "llamada"
-        etapas.append({
-            "key": ekey, "label": label, "dias_ref": dias_ref,
-            "n_contactos": _n_contactos(_etapa_de(dias_ref), riesgo, buen),
-            "canal": canal, "conversacion": msgs,
-        })
-    # etapa extra YoSiLa (solo si existe en la conversacion, p.ej. Alessia)
-    if "yosila" in convs:
-        msgs = [{"de": m[0], "texto": m[1]} if m[0] != "sistema"
-                else {"de": "sistema", "tipo": m[1], "texto": m[2]} for m in convs["yosila"]]
-        etapas.append({"key": "yosila", "label": "YoSiLa cubriendo la cuota", "dias_ref": 18,
-                       "n_contactos": 0, "canal": "whatsapp", "conversacion": msgs})
-    # etapa por defecto = la real del cliente
-    etapa_real = _etapa_de(int(cli.get("dias_mora", 0)))
-    return {"default": etapa_real, "etapas": etapas}
+        msgs = _tuples_to_msgs(demo[ekey]) if ekey in demo else _conv_generica(cli, cfg, ekey, dias_ref)
+        etapas.append({"key": ekey, "label": label, "dias_ref": dias_ref,
+                       "n_contactos": _n_contactos(_etapa_de(dias_ref), riesgo, buen),
+                       "canal": _canal_de_msgs(msgs), "conversacion": msgs})
+    msgs_y = _tuples_to_msgs(demo["yosila"]) if "yosila" in demo else _conv_yosila_generica(cli)
+    etapas.append({"key": "yosila", "label": "YoSiLa cubriendo la cuota", "dias_ref": 18,
+                   "n_contactos": 0, "canal": "whatsapp", "conversacion": msgs_y})
+    return {"default": _etapa_de(int(cli.get("dias_mora", 0))), "etapas": etapas}
 
 
 # --------------------------------------------------------------------------- #

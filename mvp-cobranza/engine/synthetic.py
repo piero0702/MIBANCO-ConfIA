@@ -13,7 +13,7 @@ import random
 # Personajes de las entrevistas (entrevistas/*). Perfiles fieles a las transcripciones.
 PERSONAJES = [
     # nombre, es_digital, prob_default, ratio_pago, atrasos, dias_mora, saldo, cuota, nota
-    ("Rosa Chaparro",   1, 0.08, 0.96, 0, 3,   1200, 320, "Buena pagadora, harta del sobre-contacto. 'No me traten como deudora'."),
+    ("Rosa Chaparro",   1, 0.08, 0.96, 0, 0,   1200, 320, "Buena pagadora, al día. Harta del sobre-contacto. 'No me traten como deudora'."),
     ("Arnaldo Diaz",    1, 0.10, 0.94, 1, 0,   2600, 540, "Se autogestiona, valora aviso 3-4d antes (como Yape). Prefiere correo/digital."),
     ("Powel Aliaga",    0, 0.22, 0.80, 2, 6,    900, 260, "Abre a las 5am en Caqueta: nunca contactar en la mañana."),
     ("Jose (entrev.)",  0, 0.18, 0.85, 1, 12,  1500, 380, "Odia las llamadas robotizadas, prefiere correo. Tono cercano."),

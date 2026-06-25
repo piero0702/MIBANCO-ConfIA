@@ -693,6 +693,15 @@ strong { font-weight: 700; }
   font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--navy);
   background: var(--panelbg); border: 1px solid var(--line); border-radius: var(--r-xs);
   padding: 5px 4px; text-align: center; height: fit-content;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.cal-rel { font-size: 9px; font-weight: 800; }
+.cal-rel.pre { color: var(--mb-green-d); }
+.cal-rel.mora { color: var(--warn); }
+.cal-obj {
+  font-size: 9.5px; font-weight: 700; color: var(--mb-green-d);
+  background: var(--mb-green-050); border: 1px solid var(--mb-green-100);
+  padding: 2px 7px; border-radius: 20px;
 }
 .cal-body { min-width: 0; }
 .cal-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
@@ -777,7 +786,7 @@ strong { font-weight: 700; }
 .dd-yape { margin-top: 16px; }
 .yp-chart { display: flex; align-items: flex-end; gap: 6px; padding: 14px 4px 0; }
 .yp-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
-.yp-val { font-family: var(--mono); font-size: 9px; color: var(--muted); font-weight: 700; }
+.yp-val { font-family: var(--mono); font-size: 9px; color: var(--muted); font-weight: 700; white-space: nowrap; }
 .yp-val.hot { color: var(--mb-green-d); }
 .yp-track { width: 100%; height: 70px; display: flex; align-items: flex-end; }
 .yp-bar {
@@ -831,6 +840,25 @@ strong { font-weight: 700; }
   cursor: pointer; transition: background .15s ease;
 }
 .sim-play:hover { background: var(--mb-green-d); }
+/* Badge verde de WhatsApp verificado + avatar */
+.wa-verif {
+  display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%;
+  background: #25D366; color: #fff; font-size: 9px; font-weight: 900; vertical-align: middle; flex: none;
+}
+.sim-wa-avatar {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; color: var(--wa-d); font-family: Georgia, serif; font-weight: 800; font-size: 13px; flex: none;
+}
+.sim-yosila {
+  margin-top: 10px; font-size: 11.5px; line-height: 1.5; color: var(--mb-green-d);
+  background: var(--mb-green-050); border: 1px solid var(--mb-green-100); border-radius: var(--r-sm); padding: 9px 12px;
+}
+/* Mensaje de prepago (nudge del buen día) dentro de Conexión Yape */
+.yp-msg { margin-top: 13px; }
+.yp-msg-h { font-size: 10.5px; color: var(--muted); font-weight: 700; margin-bottom: 7px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.yp-msg-h b { color: var(--ink-2); }
+.yp-msg-phone { background: #e5ddd5; border: 1px solid var(--line); border-radius: 11px; padding: 11px; display: flex; justify-content: flex-end; }
+.yp-msg-phone .sim-msg { max-width: 92%; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes simbounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
 
