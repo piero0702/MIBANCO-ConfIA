@@ -123,7 +123,7 @@ texto: "💜 *YoSiLa* ✅\nRecibiste *S/200.00* de Sofía Ramos.\nSe descontaron
 { de: "sistema", tipo: "progreso",
 titulo: "📊 YoSiLa · día 17",
 interes_pct: 100, capital_pct: 35,
-sub: "17 días · 42 transacciones · interés: VENCIDO ✅",
+sub: "17 días · 42 transacciones · interés: ¡GANADO! ✅",
 delay: 1000 },
 { de: "banco", delay: 600,
 texto: "*Mibanco* ✅ 🎉\n¡Cubriste el 100% del interés de junio, Alessia!\nLo que queda (S/292) es plata TUYA devolviendo capital — no costo del banco. 💙" },
@@ -131,7 +131,7 @@ texto: "*Mibanco* ✅ 🎉\n¡Cubriste el 100% del interés de junio, Alessia!\n
 remitente: "Pedro Torres", monto_bruto: 180, pct: 2, interes_pct: 100,
 delay: 1600 },
 { de: "banco", delay: 700,
-texto: "💜 *YoSiLa* ✅\nRecibiste *S/180.00* de Pedro Torres.\nSe descontaron automáticamente *S/3.60*.\n🎉 Interés del mes: *VENCIDO* ✅ Todo lo que sigue va directo a capital tuyo." },
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/180.00* de Pedro Torres.\nSe descontaron automáticamente *S/3.60*.\n🎉 Interés del mes: *¡GANADO!* ✅ Todo lo que sigue va directo a capital tuyo." },
 { de: "sistema", tipo: "progreso",
 titulo: "✅ ¡Cuota PAGADA! Auto-stop",
 interes_pct: 100, capital_pct: 100,
@@ -248,7 +248,7 @@ texto: "💜 *YoSiLa* ✅\nRecibiste *S/300.00* de Luis Mamani.\nSe descontaron 
 { de: "sistema", tipo: "progreso",
 titulo: "🎉 ¡Interés 100% cubierto!",
 interes_pct: 100, capital_pct: 30,
-sub: "22 días · 52 transacciones · interés: VENCIDO ✅",
+sub: "22 días · 52 transacciones · interés: ¡GANADO! ✅",
 delay: 1000 },
 { de: "banco", delay: 700,
 texto: "*Mibanco* ✅ 🎉 ¡Powel, cubriste el 100% del interés!\nLo que queda (S/182) es plata TUYA, no costo del banco. 💙" },
@@ -453,9 +453,9 @@ document.getElementById("senderBody").innerHTML = `
   <div class="sp-success-note">Llegó al instante · sin costo</div>
 </div>`;
 
+document.getElementById("phoneContainer").classList.add("sp-active");
 document.getElementById("senderPhone").classList.add("sp-visible");
 document.getElementById("waPhone").classList.add("sp-push-right");
-document.getElementById("phoneContainer").classList.add("yp-shadow");
 
 await later(1800);
 
@@ -469,7 +469,7 @@ await later(1800);
 
 document.getElementById("senderPhone").classList.remove("sp-visible");
 document.getElementById("waPhone").classList.remove("sp-push-right");
-document.getElementById("phoneContainer").classList.remove("yp-shadow");
+document.getElementById("phoneContainer").classList.remove("sp-active");
 await later(600);
 
 await showYapePush(msg);
@@ -688,10 +688,11 @@ hdr.innerHTML = `
 function resetAndPlay() {
 clearTimers();
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
+document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("senderPhone")?.classList.remove("sp-visible");
 document.getElementById("waPhone")?.classList.remove("yp-push", "sp-push-right");
 document.getElementById("appLabel")?.classList.remove("yp-mode");
-document.getElementById("phoneContainer")?.classList.remove("yp-shadow");
+document.getElementById("phoneContainer")?.classList.remove("yp-shadow", "sp-active");
 reproducir();
 }
 
