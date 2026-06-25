@@ -94,7 +94,7 @@ texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota si
   nombre: "Alessia Borrelli",
   credito: "S/ 3,200 · 24 meses",
   cuota: 450, interes: 98, capital: 352,
-  ventas_dia: 920, pct: 2, dias_interes: 6, dias_cuota: 25,
+  ventas_dia: 920, tx_promedio: 150, pct: 2, dias_interes: 6, dias_cuota: 25,
 }},
 { de: "cliente", delay: 2000,
 texto: "esto está buenísimo 😮 ¿cómo lo activo?" },
@@ -107,15 +107,19 @@ texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibás → 2% va 
 { de: "sistema", tipo: "yape-push",
 remitente: "Juan Quispe", monto_bruto: 150, pct: 2, interes_pct: 12,
 delay: 2200 },
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/150.00* de Juan Quispe.\nSe descontaron automáticamente *S/3.00* de tu cuota.\nInterés de junio: *12% cubierto* · Quedan S/86 por cubrir." },
 { de: "cliente", delay: 1600,
-texto: "oye! me llegó la notif de Yape y dice que recibí 147 en vez de 150... ¿qué pasó? 😮" },
+texto: "oye! vi la notif de Yape y me llegó también acá 😮 esto es en serio automático" },
 { de: "banco", delay: 900,
-texto: "¡YoSiLa en acción, Alessia! 💙\nJuan te envió S/150 → S/3 fueron automáticamente a tu cuota Mibanco.\nVos recibiste S/147 neto — eso es el 2% trabajando.\nCada Yape que llegue hace lo mismo. Sin que hagas nada. 🙌" },
+texto: "¡Así es Alessia! Cada Yape que recibás → el 2% trabaja solo.\nVos solo cobrás. YoSiLa hace el resto. 💙" },
 { de: "cliente", delay: 1400,
 texto: "wow no me di cuenta que iba tan rápido 😍" },
 { de: "sistema", tipo: "yape-push",
 remitente: "Sofía Ramos", monto_bruto: 200, pct: 2, interes_pct: 27,
 delay: 2000 },
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/200.00* de Sofía Ramos.\nSe descontaron automáticamente *S/4.00* de tu cuota.\nInterés de junio: *27% cubierto* · Quedan S/71 por cubrir." },
 { de: "sistema", tipo: "progreso",
 titulo: "📊 YoSiLa · día 17",
 interes_pct: 100, capital_pct: 35,
@@ -126,6 +130,8 @@ texto: "*Mibanco* ✅ 🎉\n¡Cubriste el 100% del interés de junio, Alessia!\n
 { de: "sistema", tipo: "yape-push",
 remitente: "Pedro Torres", monto_bruto: 180, pct: 2, interes_pct: 100,
 delay: 1600 },
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/180.00* de Pedro Torres.\nSe descontaron automáticamente *S/3.60*.\n🎉 Interés del mes: *VENCIDO* ✅ Todo lo que sigue va directo a capital tuyo." },
 { de: "sistema", tipo: "progreso",
 titulo: "✅ ¡Cuota PAGADA! Auto-stop",
 interes_pct: 100, capital_pct: 100,
@@ -196,7 +202,7 @@ texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin 
   nombre: "Powel Aliaga",
   credito: "S/ 1,800 · 18 meses",
   cuota: 260, interes: 55, capital: 205,
-  ventas_dia: 480, pct: 2, dias_interes: 6, dias_cuota: 28,
+  ventas_dia: 480, tx_promedio: 80, pct: 2, dias_interes: 6, dias_cuota: 28,
 }},
 { de: "cliente", delay: 2200,
 texto: "¿y eso cómo sería?" },
@@ -214,15 +220,19 @@ texto: "✅ *YoSiLa activado al 2%*, Powel.\nCuando alguien te pague por Yape, v
 { de: "sistema", tipo: "yape-push",
 remitente: "Carmen Flores", monto_bruto: 150, pct: 2, interes_pct: 7,
 delay: 1500 },
-{ de: "cliente", delay: 2200,
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/150.00* de Carmen Flores.\nSe descontaron automáticamente *S/3.00* de tu cuota Mibanco.\nInterés de junio: *7% cubierto* · Quedan S/51 por cubrir." },
+{ de: "cliente", delay: 2000,
 texto: "eso que me llegó es real? dice que Carmen me mandó 150 pero recibí 147..." },
 { de: "banco", delay: 900,
-texto: "¡Exacto, Powel! ✅\nEsos S/3 que «no aparecen» fueron automáticamente a tu cuota Mibanco.\nYape los transfirió solo — vos no hacés nada. Solo seguís cobrando como siempre. 💙\nCada Yape que llegue hace lo mismo." },
+texto: "¡Exacto, Powel! ✅\nEsos S/3 que «no aparecen» fueron automáticamente a tu cuota Mibanco.\nYape los transfirió solo — vos no hacés nada. Solo seguís cobrando como siempre. 💙" },
 { de: "cliente", delay: 1600,
 texto: "eso está buenísimo... no sabía que era tan fácil" },
 { de: "sistema", tipo: "yape-push",
 remitente: "Rosa Huanca", monto_bruto: 200, pct: 2, interes_pct: 20,
 delay: 2000 },
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/200.00* de Rosa Huanca.\nSe descontaron automáticamente *S/4.00* de tu cuota Mibanco.\nInterés de junio: *20% cubierto* · Quedan S/44 por cubrir." },
 { de: "sistema", tipo: "progreso",
 titulo: "📊 YoSiLa · día 14",
 interes_pct: 58, capital_pct: 0,
@@ -233,6 +243,8 @@ texto: "*Mibanco* ✅ 📊 Powel, llevan 14 días.\nEl interés del mes va al 58
 { de: "sistema", tipo: "yape-push",
 remitente: "Luis Mamani", monto_bruto: 300, pct: 2, interes_pct: 72,
 delay: 1800 },
+{ de: "banco", delay: 700,
+texto: "💜 *YoSiLa* ✅\nRecibiste *S/300.00* de Luis Mamani.\nSe descontaron automáticamente *S/6.00* de tu cuota Mibanco.\nInterés de junio: *72% cubierto* · Quedan S/15 por cubrir." },
 { de: "sistema", tipo: "progreso",
 titulo: "🎉 ¡Interés 100% cubierto!",
 interes_pct: 100, capital_pct: 30,
@@ -336,54 +348,74 @@ body.innerHTML = `
 
 function appendImgYoSiLa(msg) {
 const d = msg.datos;
-const aporteDia = Math.round(d.ventas_dia * d.pct / 100);
+const aporteDia  = Math.round(d.ventas_dia * d.pct / 100);
+const aporteEj   = (d.tx_promedio * d.pct / 100).toFixed(2);
+const netoEj     = (d.tx_promedio - aporteEj).toFixed(2);
 const el = document.createElement("div");
 el.className = "msg msg-bank";
 const h = hora();
 el.innerHTML = `
 <div class="msg-img-bubble">
   <div class="yk-img-card">
+
     <div class="yk-img-head">
       <span class="yk-img-logo">💜 YoSiLa</span>
       <span class="yk-img-badge">Mibanco ✅</span>
     </div>
-    <div class="yk-img-nombre">${d.nombre}</div>
-    <div class="yk-img-section-label">Tu cuota de este mes</div>
-    <div class="yk-img-cuota">S/ ${d.cuota.toFixed(2)}</div>
-    <div class="yk-img-breakdown">
-      <div class="yk-img-b-row">
-        <span>Interés del mes</span>
-        <span class="yk-img-int">S/ ${d.interes}.00</span>
+    <div class="yk-img-nombre">${d.nombre} · al ${d.pct}%</div>
+
+    <!-- HERO: por transacción -->
+    <div class="yk-img-hero">
+      <div class="yk-img-hero-eyebrow">Por cada Yape que recibís:</div>
+      <div class="yk-img-hero-ex">
+        <div class="yk-img-hero-gross">
+          <div class="yk-img-hero-amt">S/ ${Number(d.tx_promedio).toFixed(2)}</div>
+          <div class="yk-img-hero-lbl">cobrado</div>
+        </div>
+        <div class="yk-img-hero-arr">→</div>
+        <div class="yk-img-hero-cols">
+          <div class="yk-img-hero-row-net">
+            <span class="yk-img-hero-net-val">S/ ${netoEj}</span>
+            <span class="yk-img-hero-net-lbl">para vos</span>
+          </div>
+          <div class="yk-img-hero-row-ap">
+            <span class="yk-img-hero-ap-val">S/ ${aporteEj}</span>
+            <span class="yk-img-hero-ap-lbl">→ cuota ✅</span>
+          </div>
+        </div>
       </div>
-      <div class="yk-img-b-row">
-        <span>Capital a devolver</span>
-        <span>S/ ${d.capital}.00</span>
+      <div class="yk-img-hero-note">automático · al instante · sin hacer nada</div>
+    </div>
+
+    <div class="yk-img-divider"></div>
+
+    <!-- Cuota del mes (compacto) -->
+    <div class="yk-img-cuota-row">
+      <div class="yk-img-cuota-left">
+        <div class="yk-img-cuota-label">Cuota del mes</div>
+        <div class="yk-img-cuota-val">S/ ${d.cuota}</div>
       </div>
-      <div class="yk-img-b-row yk-img-b-last">
-        <span>Crédito</span>
-        <span>${d.credito}</span>
+      <div class="yk-img-cuota-right">
+        <div class="yk-img-br"><span class="yk-img-br-l">Interés</span><span class="yk-img-br-v int">S/ ${d.interes}</span></div>
+        <div class="yk-img-br"><span class="yk-img-br-l">Capital</span><span class="yk-img-br-v">S/ ${d.capital}</span></div>
+        <div class="yk-img-br yk-img-br-sm"><span class="yk-img-br-l">Crédito</span><span class="yk-img-br-v">${d.credito}</span></div>
       </div>
     </div>
+
     <div class="yk-img-divider"></div>
-    <div class="yk-img-section-label">📊 Simulación YoSiLa al ${d.pct}%</div>
+
+    <!-- Simulación -->
     <div class="yk-img-sim">
       <div class="yk-img-sim-row">
-        <span>Ventas Yape/día (estimado)</span>
-        <span><b>S/ ${d.ventas_dia.toLocaleString("es-PE")}</b></span>
-      </div>
-      <div class="yk-img-sim-row">
-        <span>Aporte diario al ${d.pct}%</span>
-        <span class="yk-img-green"><b>S/ ${aporteDia} / día</b></span>
-      </div>
-      <div class="yk-img-sim-row">
-        <span>Interés cubierto en aprox.</span>
-        <span><b>~${d.dias_interes} días</b></span>
+        <span>Aporte estimado / día</span>
+        <span class="yk-img-green"><b>S/ ${aporteDia}</b></span>
       </div>
       <div class="yk-img-sim-row yk-img-sim-hl">
         <span>Cuota completa en aprox.</span>
         <span><b>~${d.dias_cuota} días</b></span>
       </div>
     </div>
+
     <div class="yk-img-foot">0 llamadas · 0 visitas · se para solo al completar</div>
   </div>
 </div>
