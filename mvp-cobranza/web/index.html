@@ -3,262 +3,127 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AsesorIA + YateKobro · Mibanco — Cobranza que no persigue</title>
-<meta name="description" content="De perseguir al cliente a que el cliente se cobre solo. Cobranza con IA, verificable y opt-in, sobre WhatsApp y Yape." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<title>PoC · Motor de Cobranza Inteligente — AsesorIA + YateKobro · Mibanco</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- ───────────────────────── NAV ───────────────────────── -->
-<header class="nav">
-  <div class="nav-in">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9h14v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19v-5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-      <div class="brand-txt">
-        <strong>Mibanco</strong>
-        <span>AsesorIA + YateKobro</span>
-      </div>
+<header class="lab-bar">
+  <div class="lb-left">
+    <span class="lb-logo">m</span>
+    <div class="lb-title">
+      <strong>Motor de Cobranza Inteligente</strong>
+      <span>PoC funcional · AsesorIA (decisión) + YateKobro (imputación) · IAthon Mibanco</span>
     </div>
-    <nav class="nav-links">
-      <a href="#problema">El problema</a>
-      <a href="#demo">Cómo se siente</a>
-      <a href="#impacto">Impacto</a>
-      <a href="#vision">Visión</a>
-    </nav>
-    <span class="nav-tag">IAthon ULIMA × Mibanco · Equipo 8</span>
+  </div>
+  <div class="lb-right">
+    <span class="src" id="srcBadge">fuente: —</span>
+    <span class="lb-hint">salida real de <code>engine/*.py</code> · regenera con <code>python engine/build.py</code></span>
   </div>
 </header>
 
-<!-- ───────────────────────── HERO ───────────────────────── -->
-<section class="hero" id="top">
-  <div class="hero-grid">
-    <div class="hero-copy reveal">
-      <span class="eyebrow">Reto 1 · Cobranza Inteligente</span>
-      <h1>Pasamos de <span class="strike-soft">perseguir al cliente</span><br/>a que el cliente <em>se cobre solo</em>.</h1>
-      <p class="lede">
-        El cliente no rechaza que le cobren. Rechaza <b>cómo</b> le cobran.
-        AsesorIA decide a quién no molestar y por dónde hablarle; YateKobro deja que
-        él mismo se ponga al día con sus ventas de Yape. Todo por un WhatsApp
-        <b>verificable</b>, sin una sola llamada de extorsión.
-      </p>
-      <div class="hero-cta">
-        <button class="btn btn-primary" id="ctaPlay">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          Ver la conversación
-        </button>
-        <a class="btn btn-ghost" href="#impacto">Ver el impacto</a>
+<nav class="tabs">
+  <button class="tab active" data-tab="asesoria">① AsesorIA · motor de decisión</button>
+  <button class="tab" data-tab="yatekobro">② YateKobro · motor de imputación</button>
+  <button class="tab" data-tab="flujo">③ Flujo end-to-end</button>
+</nav>
+
+<!-- ════════════════════ MÓDULO 1 · ASESORIA ════════════════════ -->
+<main class="panel active" id="tab-asesoria">
+
+  <section class="card">
+    <div class="card-h">
+      <h2>Backtest de la política</h2>
+      <span class="card-sub">Tope de 2 contactos + canal por perfil digital, computado sobre la tabla de contactos. <b id="btFuente"></b></span>
+    </div>
+    <div class="bt" id="btTable"><div class="loading">corriendo backtest…</div></div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <h2>Decisión por cliente</h2>
+      <span class="card-sub">El motor decide, para cada cliente: <b>a quién no molestar</b>, canal, momento, frecuencia, tono y mensaje verificable.</span>
+    </div>
+    <div class="dec">
+      <div class="dec-list">
+        <div class="dec-filters" id="decFilters">
+          <button class="chip on" data-f="todos">Todos</button>
+          <button class="chip" data-f="entrevistas">Entrevistados</button>
+          <button class="chip" data-f="nocontactar">No contactar</button>
+          <button class="chip" data-f="alto">Riesgo alto</button>
+        </div>
+        <div class="dec-rows" id="decRows"></div>
       </div>
-      <div class="hero-kpis">
-        <div class="kchip"><span class="kv" data-count="-79" data-suffix="%">−79%</span><span class="kl">costo de cobranza<br/><i>S/658k → S/136k</i></span></div>
-        <div class="kchip"><span class="kv" data-count="2" data-prefix="≤">≤2</span><span class="kl">contactos por cliente<br/><i>hoy ~5.7 a ciegas</i></span></div>
-        <div class="kchip"><span class="kv" data-count="17" data-suffix="×">17×</span><span class="kl">ROI de WhatsApp<br/><i>vs. la llamada</i></span></div>
-      </div>
+      <div class="dec-detail" id="decDetail"><div class="empty">Selecciona un cliente →</div></div>
+    </div>
+  </section>
+</main>
+
+<!-- ════════════════════ MÓDULO 2 · YATEKOBRO ════════════════════ -->
+<main class="panel" id="tab-yatekobro">
+  <section class="card">
+    <div class="card-h">
+      <h2>Motor de imputación YateKobro</h2>
+      <span class="card-sub">Un % de cada venta Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se notifica en 3 momentos y se apaga solo al completar la cuota.</span>
     </div>
 
-    <!-- PHONE -->
-    <div class="hero-phone reveal" id="demo">
-      <div class="phone">
-        <div class="phone-notch"></div>
-        <div class="wa">
-          <div class="wa-bar">
-            <button class="wa-back" aria-label="Atrás">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <span class="wa-ava" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10.2V19h13v-8.8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <div class="wa-id">
-              <div class="wa-name">Mibanco
-                <svg class="wa-verif-ic" viewBox="0 0 24 24" width="15" height="15" aria-label="Cuenta verificada"><path fill="#25D366" d="M12 2l2.4 1.8 3 .1 1 2.8 2.4 1.7-.9 2.9.9 2.9-2.4 1.7-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15l.9-2.9-.9-2.9 2.4-1.7 1-2.8 3-.1L12 2z"/><path fill="#fff" d="M10.6 14.6 8.2 12.2l1.1-1.1 1.3 1.3 3.1-3.1 1.1 1.1-4.2 4.2z"/></svg>
-              </div>
-              <div class="wa-status">Cuenta oficial de empresa · en línea</div>
-            </div>
-          </div>
+    <div class="yk">
+      <div class="yk-controls">
+        <div class="yk-presets" id="ykPresets"></div>
 
-          <div class="wa-body" id="waBody">
-            <div class="wa-day">HOY</div>
-            <div class="wa-safety">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Verificamos que este número es de Mibanco. Nunca te pediremos claves ni códigos.
-            </div>
-            <!-- mensajes inyectados por JS -->
-          </div>
+        <div class="yk-field">
+          <label>Crédito (saldo S/)</label>
+          <input type="number" id="ykSaldo" value="3000" min="500" step="100" />
+        </div>
+        <div class="yk-field-row">
+          <div class="yk-field"><label>Tasa EA</label><input type="number" id="ykTasa" value="50" min="10" max="120" step="1" /><span class="unit">%</span></div>
+          <div class="yk-field"><label>Plazo</label><input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" /><span class="unit">m</span></div>
+        </div>
+        <div class="yk-field">
+          <label>% por venta Yape <b id="ykPctV">2%</b></label>
+          <div class="seg" id="ykPct"><button data-v="1">1%</button><button data-v="2" class="on">2%</button><button data-v="3">3%</button><button data-v="5">5%</button></div>
+        </div>
+        <div class="yk-field">
+          <label>Ventas por día en Yape <b id="ykVentasV">S/ 1,000</b></label>
+          <input type="range" id="ykVentas" min="200" max="2500" step="100" value="1000" />
+        </div>
+        <div class="yk-mode" id="ykMode"></div>
+      </div>
 
-          <div class="wa-input">
-            <div class="wa-pill" id="waReplies"><span class="wa-ph">Escribe un mensaje…</span></div>
-            <button class="wa-send" id="waSend" aria-label="Enviar">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg>
-            </button>
+      <div class="yk-out">
+        <div class="yk-amort" id="ykAmort"></div>
+        <div class="yk-bars" id="ykBars"></div>
+        <div class="yk-resumen" id="ykResumen"></div>
+
+        <div class="yk-split">
+          <div class="yk-ledger-wrap">
+            <div class="mini-h">Ledger día a día <span id="ykLedMode" class="ledtag"></span></div>
+            <div class="ledger" id="ykLedger"></div>
+          </div>
+          <div class="yk-events-wrap">
+            <div class="mini-h">Notificaciones emitidas (solo 3)</div>
+            <div class="events" id="ykEvents"></div>
           </div>
         </div>
       </div>
-      <div class="phone-cap">Conversación real del flujo. Pulsa las respuestas del cliente.</div>
     </div>
-  </div>
-</section>
+  </section>
+</main>
 
-<!-- ───────────────────────── PROBLEMA / ANTES-AHORA ───────────────────────── -->
-<section class="band" id="problema">
-  <div class="wrap">
-    <h2 class="sec-title">Hoy la cobranza se siente como una persecución</h2>
-    <p class="sec-sub">7 entrevistas a microempresarios y 572,553 contactos reales dicen lo mismo: el problema no es la intensidad, es la inteligencia de la cobranza.</p>
-
-    <div class="vs">
-      <article class="vs-card vs-before">
-        <header><span class="vs-tag tag-bad">Antes</span><h3>Lo persiguen</h3></header>
-        <ul class="vs-list">
-          <li><span class="dot bad"></span>Hasta <b>8–10 llamadas al día</b> de números desconocidos.</li>
-          <li><span class="dot bad"></span>No sabe si es el banco o una <b>extorsión</b>, así que no contesta.</li>
-          <li><span class="dot bad"></span><b>~5.7 contactos</b> por crédito, a ciegas y descoordinados.</li>
-          <li><span class="dot bad"></span>El <b>63% ignora</b>; el buen pagador se siente tratado como deudor.</li>
-        </ul>
-        <blockquote>“Te llaman 8–10 veces al día, por eso bloqueo todo.” <cite>Janet, microempresaria</cite></blockquote>
-      </article>
-
-      <div class="vs-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-
-      <article class="vs-card vs-after">
-        <header><span class="vs-tag tag-good">Ahora</span><h3>Se cobra solo</h3></header>
-        <ul class="vs-list">
-          <li><span class="dot good"></span>Un único WhatsApp <b>Mibanco ✓ verificable</b>: cero miedo a extorsión.</li>
-          <li><span class="dot good"></span><b>Máximo 2 contactos.</b> Si ya pagó o prometió, no se le insiste.</li>
-          <li><span class="dot good"></span>Aviso <b>preventivo y a buena hora</b>, con tono cercano y agradecido.</li>
-          <li><span class="dot good"></span>Con <b>YateKobro</b> su cuota se cubre sola con un % de sus ventas Yape.</li>
-        </ul>
-        <blockquote>“Esta plata yo la gano y se la devuelvo al banco.” <cite>Don José, microempresario</cite></blockquote>
-      </article>
+<!-- ════════════════════ MÓDULO 3 · FLUJO ════════════════════ -->
+<main class="panel" id="tab-flujo">
+  <section class="card">
+    <div class="card-h">
+      <h2>Flujo end-to-end de la solución</h2>
+      <span class="card-sub">Cómo se conectan las capas: del dato a la conversación, sin una sola llamada de cobranza.</span>
     </div>
-  </div>
-</section>
+    <div class="flow" id="flow"></div>
+  </section>
+</main>
 
-<!-- ───────────────────────── YATEKOBRO SIMULADOR ───────────────────────── -->
-<section class="band band-soft" id="yatekobro">
-  <div class="wrap">
-    <h2 class="sec-title">YateKobro: el cliente vence el interés con sus propias ventas</h2>
-    <p class="sec-sub">Activa un % por cada venta de Yape. Cubre <b>primero el interés</b>, luego el capital. Cuando la cuota se completa, se apaga solo. Nunca persigue.</p>
-
-    <div class="sim">
-      <div class="sim-controls reveal">
-        <div class="sim-case">
-          <span class="sim-case-l">Caso</span>
-          <span class="sim-case-v">Rosa · crédito S/3,000 · cuota del mes <b>S/310</b></span>
-          <span class="sim-case-split">Interés <b>S/103</b> + Capital <b>S/207</b></span>
-        </div>
-
-        <label class="sim-field">
-          <span class="sim-lbl">% por cada venta Yape</span>
-          <div class="seg" id="segPct" role="group" aria-label="Porcentaje">
-            <button data-v="1">1%</button>
-            <button data-v="2" class="on">2%</button>
-            <button data-v="5">5%</button>
-          </div>
-        </label>
-
-        <label class="sim-field">
-          <span class="sim-lbl">Ventas por día en Yape <b id="ventasV">S/ 1,000</b></span>
-          <input type="range" id="ventas" min="200" max="2000" step="100" value="1000" />
-          <span class="sim-scale"><i>vendedor chico</i><i>tienda de Gamarra</i></span>
-        </label>
-
-        <div class="sim-out">
-          <div class="sim-stat">
-            <span class="sim-stat-v" id="aporteDia">S/ 20</span>
-            <span class="sim-stat-l">va a tu cuota por día</span>
-          </div>
-          <div class="sim-stat hl">
-            <span class="sim-stat-v" id="diasInteres">5 días</span>
-            <span class="sim-stat-l">para vencer el <b>interés</b></span>
-          </div>
-          <div class="sim-stat">
-            <span class="sim-stat-v" id="diasCuota">15 días</span>
-            <span class="sim-stat-l">para cancelar la <b>cuota</b></span>
-          </div>
-        </div>
-        <p class="sim-note" id="simNote"></p>
-      </div>
-
-      <div class="sim-bars reveal">
-        <div class="bar-block">
-          <div class="bar-top"><span>Interés del mes</span><span id="intPct">100%</span></div>
-          <div class="bar"><div class="bar-fill int" id="intFill"></div></div>
-          <div class="bar-cap"><span id="intMonto">S/103 de S/103</span><span class="bar-win" id="intWin">¡vencido! ✓</span></div>
-        </div>
-        <div class="bar-block">
-          <div class="bar-top"><span>Capital · <i>lo que es tuyo</i></span><span id="capPct">40%</span></div>
-          <div class="bar"><div class="bar-fill cap" id="capFill"></div></div>
-          <div class="bar-cap"><span id="capMonto">S/83 de S/207</span></div>
-        </div>
-        <p class="sim-tagline">Lo que te queda <b>ya no es interés del banco — es plata tuya que estás devolviendo.</b></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────────────────────── IMPACTO ───────────────────────── -->
-<section class="band" id="impacto">
-  <div class="wrap">
-    <h2 class="sec-title">El impacto, probado con la propia data de Mibanco</h2>
-    <p class="sec-sub">Backtest de la política AsesorIA (tope de 2 contactos + canal según perfil digital) sobre 572,553 contactos reales.</p>
-
-    <div class="metrics">
-      <div class="metric reveal"><span class="m-v" data-count="79" data-prefix="−" data-suffix="%">−79%</span><span class="m-l">costo de cobranza</span><span class="m-s">S/658k → S/136k</span></div>
-      <div class="metric reveal"><span class="m-v" data-count="55.5" data-suffix="%">55.5%</span><span class="m-l">pago por contacto</span><span class="m-s">+6.6pp vs. 48.9% actual</span></div>
-      <div class="metric reveal"><span class="m-v" data-count="2" data-suffix="×">2×</span><span class="m-l">paga la mora temprana</span><span class="m-s">55.4% vs. 32.1% tardía</span></div>
-      <div class="metric reveal"><span class="m-v" data-count="0.002">0.002</span><span class="m-l">correlación del score de riesgo</span><span class="m-s">es ruido: la señal está en el comportamiento</span></div>
-    </div>
-    <p class="impacto-foot">Menor interés por crédito se compensa con menos mora, menos gasto de cobranza y capital que rota más rápido y se vuelve a prestar.</p>
-  </div>
-</section>
-
-<!-- ───────────────────────── VISIÓN / DIFERENCIADOR ───────────────────────── -->
-<section class="band band-dark" id="vision">
-  <div class="wrap">
-    <h2 class="sec-title light">Lo que ningún competidor peruano tiene</h2>
-    <p class="sec-sub light">El bot, el scoring y los recordatorios son commodity. El 3% que gana es la capa de confianza y la cobranza que el cliente activa solo.</p>
-
-    <div class="diff">
-      <div class="diff-card reveal">
-        <span class="diff-ic">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <h3>Identidad verificable</h3>
-        <p>WhatsApp Business oficial con marca <b>Mibanco ✓</b>. Nunca un número tercerizado. Le quita el miedo a la extorsión, un problema real del Perú de hoy.</p>
-      </div>
-      <div class="diff-card reveal">
-        <span class="diff-ic">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <h3>Cobranza opt-in (YateKobro)</h3>
-        <p>El propio cliente la activa por WhatsApp y un % de sus ventas Yape cubre su cuota. Se apaga solo al completar. <b>Nunca persigue.</b></p>
-      </div>
-      <div class="diff-card reveal">
-        <span class="diff-ic">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M4 19V5M4 19h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8 16l3-4 3 2 4-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <h3>Atada al flujo de caja real</h3>
-        <p>Credicorp es dueño de Mibanco <b>y</b> de Yape (15.5M usuarios). Ventaja estructural: nadie más puede cobrar sobre las ventas reales del cliente.</p>
-      </div>
-    </div>
-
-    <p class="vision-roadmap">
-      <b>Nivel 1 (hoy):</b> la política AsesorIA está probada con la data. ·
-      <b>Nivel 2 (piloto):</b> el débito autorizado sobre Yape lo habilita la Res. SBS 02522-2025, con imputación a capital primero (Art. 29.2, SBS 3274-2017).
-    </p>
-
-    <p class="closing">“Pasamos de perseguir al cliente a que el cliente se cobre solo — y el banco gasta <b>79% menos</b> en cobranza para llegar ahí.”</p>
-  </div>
-</section>
-
-<footer class="foot">
+<footer class="lab-foot">
   <span>AsesorIA + YateKobro · IAthon ULIMA × Mibanco 2026 · Equipo 8</span>
-  <span>Datos verificados con pandas sobre el dataset del reto · normas SBS al 24 jun 2026</span>
+  <span id="footMeta"></span>
 </footer>
 
 <script src="app.js"></script>

@@ -1,93 +1,95 @@
 """
-Pipeline del PoC: datos -> motor -> JSON para la web.
+Pipeline del PoC: corre los motores reales y vuelca su salida a JSON para la lab UI.
 
-Corre:  python3 engine/build.py [--muestra 300]
-Genera: web/data/clientes.json  (decision por cliente)
-        web/data/kpis.json       (impacto agregado de la cartera)
-        web/data/config.json      (copia de los umbrales, para 'what-if' en la web)
+Genera en web/data/:
+  clientes.json        -> decision de AsesorIA por cliente (rules.py)
+  backtest.json        -> impacto de la politica AsesorIA computado (backtest.py)
+  yatekobro.json       -> casos simulados del motor YateKobro (yatekobro.py)
+  config.json          -> umbrales del motor (para el what-if en vivo de la UI)
+
+Correr:  python engine/build.py [--muestra 300]
 """
 from __future__ import annotations
 import argparse, json, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 import rules
+import backtest
+import yatekobro
 from data_loader import cargar
 
 HERE = os.path.dirname(__file__)
 WEB_DATA = os.path.join(HERE, "..", "web", "data")
 
 
-def construir(muestra: int = 300) -> dict:
+# --------------------------------------------------------------------------- #
+# 1) AsesorIA: decision por cliente
+# --------------------------------------------------------------------------- #
+def construir_clientes(muestra: int) -> tuple[list[dict], str]:
     cfg = rules.load_config()
     clientes, fuente = cargar(muestra)
-    decisiones = [rules.decidir(c, cfg) for c in clientes]
-    # adjuntar la nota del personaje (si la hay) para el storytelling
-    for c, d in zip(clientes, decisiones):
+    decisiones = []
+    for c in clientes:
+        d = rules.decidir(c, cfg)
         d["nota"] = c.get("nota", "")
+        # senal de no-contactar por fatiga (tope alcanzado) para la lab
+        d["accion"] = "NO CONTACTAR" if d["decision"]["frecuencia"]["tope_contactos"] == 0 else "CONTACTAR"
+        decisiones.append(d)
     decisiones.sort(key=lambda d: d["prioridad"], reverse=True)
-    kpis = agregar_kpis(decisiones, fuente, cfg)
-    return {"clientes": decisiones, "kpis": kpis, "config": cfg}
+    return decisiones, fuente
 
 
-def agregar_kpis(decisiones: list[dict], fuente: str, cfg: dict) -> dict:
-    n = len(decisiones)
-    ahorro_total = sum(d["impacto"]["ahorro_soles"] for d in decisiones)
-    recup_total = sum(d["impacto"]["recuperacion_esperada"] for d in decisiones)
-    costo_ia = sum(d["impacto"]["costo_ia"] for d in decisiones)
-    costo_actual = sum(d["impacto"]["costo_actual_estimado"] for d in decisiones)
-
-    # mix de canales que recomienda la IA
-    mix = {}
-    for d in decisiones:
-        c = d["decision"]["canal"]["canal"]
-        mix[c] = mix.get(c, 0) + 1
-    mix_pct = {k: round(v / n * 100, 1) for k, v in mix.items()}
-
-    contactos_ia = sum(max(d["decision"]["frecuencia"]["tope_contactos"], 0) for d in decisiones)
-    contactos_actual = cfg["baseline"]["contactos_por_credito"] * n
-
-    # Extrapolacion a la cartera total (50k clientes) — para el pitch
-    factor = cfg["baseline"]["total_clientes"] / n if n else 0
-    return {
-        "fuente_datos": fuente,
-        "n_clientes": n,
-        "ahorro_muestra_soles": round(ahorro_total, 2),
-        "ahorro_pct": round((costo_actual - costo_ia) / costo_actual * 100, 1) if costo_actual else 0,
-        "recuperacion_esperada_soles": round(recup_total, 2),
-        "contactos_ia": contactos_ia,
-        "contactos_actual": round(contactos_actual, 0),
-        "reduccion_contactos_pct": round((1 - contactos_ia / contactos_actual) * 100, 1) if contactos_actual else 0,
-        "mix_canales_ia_pct": mix_pct,
-        "digital_first_pct": round((mix.get("whatsapp", 0) + mix.get("sms", 0)) / n * 100, 1) if n else 0,
-        "extrapolacion_cartera": {
-            "clientes_totales": cfg["baseline"]["total_clientes"],
-            "ahorro_anual_estimado_soles": round(ahorro_total * factor, 0),
-            "nota": "Extrapolacion lineal de la muestra a 50k clientes. Referencial.",
-        },
-        "baseline": cfg["baseline"],
-    }
+# --------------------------------------------------------------------------- #
+# 2) YateKobro: casos simulados (el motor corriendo)
+# --------------------------------------------------------------------------- #
+def construir_yatekobro() -> dict:
+    casos = [
+        ("Rosa · puesto de mercado",  3000, 0.50, 12, 2, 1000),
+        ("Rosa · al 5%",              3000, 0.50, 12, 5, 1000),
+        ("Vendedor chico · ventas bajas", 3000, 0.50, 12, 2, 200),
+        ("Tienda Gamarra · negocio activo", 5000, 0.55, 12, 2, 2000),
+    ]
+    out = []
+    for nombre, saldo, tasa, plazo, pct, ventas in casos:
+        out.append(yatekobro.simular(nombre, saldo, tasa, plazo, pct, ventas, seed=7))
+    return {"casos": out}
 
 
+# --------------------------------------------------------------------------- #
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--muestra", type=int, default=300)
     args = ap.parse_args()
 
-    out = construir(args.muestra)
+    cfg = rules.load_config()
     os.makedirs(WEB_DATA, exist_ok=True)
-    with open(os.path.join(WEB_DATA, "clientes.json"), "w", encoding="utf-8") as f:
-        json.dump(out["clientes"], f, ensure_ascii=False)
-    with open(os.path.join(WEB_DATA, "kpis.json"), "w", encoding="utf-8") as f:
-        json.dump(out["kpis"], f, ensure_ascii=False, indent=2)
-    with open(os.path.join(WEB_DATA, "config.json"), "w", encoding="utf-8") as f:
-        json.dump(out["config"], f, ensure_ascii=False)
 
-    k = out["kpis"]
-    print(f"OK  fuente={k['fuente_datos']}  clientes={k['n_clientes']}")
-    print(f"    ahorro muestra: S/{k['ahorro_muestra_soles']:.0f}  ({k['ahorro_pct']}% costo)")
-    print(f"    contactos: {k['contactos_ia']} (IA) vs {k['contactos_actual']:.0f} (actual)  -{k['reduccion_contactos_pct']}%")
-    print(f"    digital-first: {k['digital_first_pct']}%   mix={k['mix_canales_ia_pct']}")
+    # 1) AsesorIA por cliente
+    clientes, fuente = construir_clientes(args.muestra)
+    _dump("clientes.json", clientes)
+
+    # 2) Backtest de la politica (computado)
+    bt = backtest.correr_auto()
+    _dump("backtest.json", bt)
+
+    # 3) YateKobro (motor corriendo sobre casos)
+    yk = construir_yatekobro()
+    _dump("yatekobro.json", yk)
+
+    # 4) config para el what-if en vivo
+    _dump("config.json", cfg)
+
+    print(f"OK  AsesorIA: {len(clientes)} clientes (fuente {fuente})")
+    print(f"    Backtest: -{bt['reduccion_costo_pct']}% costo  "
+          f"(actual {bt['baseline']['costo_x_credito']}/cred -> "
+          f"AsesorIA {bt['politica']['costo_x_credito']}/cred, fuente {bt['fuente']})")
+    print(f"    YateKobro: {len(yk['casos'])} casos simulados")
     print(f"    -> web/data/*.json")
+
+
+def _dump(name: str, obj) -> None:
+    with open(os.path.join(WEB_DATA, name), "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
