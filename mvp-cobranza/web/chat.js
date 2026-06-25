@@ -88,43 +88,49 @@ texto: "sí, a las 15:00 estaría bien" },
 texto: "✅ Agendado para las 15:00, Alessia.\nTu asesor Juan García (verificable en mibanco.com.pe) te llamará desde el número oficial.\nNo es un robot, no es una empresa externa — es Mibanco directamente 🤝" },
 ],
 yatekobro: [
-{ de: "sistema", tipo: "progreso",
-titulo: "YoSiLa en marcha · día 12",
-interes_pct: 72, capital_pct: 0,
-sub: "12 días · 28 transacciones Yape",
-delay: 400 },
-{ de: "banco", delay: 700,
-texto: "*Mibanco* ✅ 📊\n¡Alessia, van muy bien! Llevan 12 días.\nEl interés de junio va al 72% — cada Yape que recibís suma automático." },
-{ de: "sistema", tipo: "yape-transaccion",
-remitente: "Juan Quispe", monto: 95, pct: 2, interes_pct: 79,
-delay: 1200 },
+{ de: "banco", delay: 500,
+texto: "*Mibanco* ✅ Hola Alessia 👋\nVemos que recibís Yapes en tu negocio cada día.\nTe presentamos *YoSiLa*: el % que vos elegís de cada Yape va automáticamente a tu cuota — sin hacer nada más.\n¿Te cuento cómo en 1 minuto? 📊" },
 { de: "cliente", delay: 1800,
-texto: "😍 wow no me había dado cuenta de todo eso" },
-{ de: "banco", delay: 900,
-texto: "¡Así es Alessia! Cada cliente que te paga por Yape → el 2% va directo a la cuota.\nVos solo cobrás. YoSiLa hace el resto. 💙" },
-{ de: "sistema", tipo: "progreso",
-titulo: "🎉 ¡Interés 100% cubierto!",
-interes_pct: 100, capital_pct: 40,
-sub: "17 días · 42 transacciones · interés: VENCIDO ✅",
-delay: 1200 },
-{ de: "banco", delay: 700,
-texto: "*Mibanco* ✅ 🎉\n¡Ya cubriste el 100% del interés de junio, Alessia!\nLo que te queda (S/350) es plata TUYA devolviendo capital, no costo del banco." },
-{ de: "sistema", tipo: "yape-transaccion",
-remitente: "Sofía Ramos", monto: 120, pct: 2, interes_pct: 100,
-delay: 1000 },
+texto: "sí, dale! 👂" },
+{ de: "banco", delay: 1000,
+texto: "Funciona así:\n• Recibís un Yape por una venta ✅\n• El % que elegís va directo a tu cuota Mibanco\n• Primero cubre el interés del mes 📈\n• Luego el capital (lo que es tuyo)\n• Se para SOLO al completar\n0 llamadas. 0 formularios. Solo tus ventas trabajando. 💙\n\nElegí el % acá:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%" },
+{ de: "cliente", delay: 1400,
+texto: "2" },
+{ de: "banco", delay: 800,
+texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibás → 2% va a tu cuota.\nTe avisamos en 3 momentos: interés 50% · interés 100% 🎉 · cuota completa → se para solo.\n¡A vender! 💙" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Juan Quispe", monto_bruto: 150, pct: 2, interes_pct: 12,
+delay: 2200 },
 { de: "cliente", delay: 1600,
-texto: "ojalá lo hubiera activado antes 🙌 qué fácil" },
+texto: "oye! me llegó la notif de Yape y dice que recibí 147 en vez de 150... ¿qué pasó? 😮" },
+{ de: "banco", delay: 900,
+texto: "¡YoSiLa en acción, Alessia! 💙\nJuan te envió S/150 → S/3 fueron automáticamente a tu cuota Mibanco.\nVos recibiste S/147 neto — eso es el 2% trabajando.\nCada Yape que llegue hace lo mismo. Sin que hagas nada. 🙌" },
+{ de: "cliente", delay: 1400,
+texto: "wow no me di cuenta que iba tan rápido 😍" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Sofía Ramos", monto_bruto: 200, pct: 2, interes_pct: 27,
+delay: 2000 },
+{ de: "sistema", tipo: "progreso",
+titulo: "📊 YoSiLa · día 17",
+interes_pct: 100, capital_pct: 35,
+sub: "17 días · 42 transacciones · interés: VENCIDO ✅",
+delay: 1000 },
+{ de: "banco", delay: 600,
+texto: "*Mibanco* ✅ 🎉\n¡Cubriste el 100% del interés de junio, Alessia!\nLo que queda (S/292) es plata TUYA devolviendo capital — no costo del banco. 💙" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Pedro Torres", monto_bruto: 180, pct: 2, interes_pct: 100,
+delay: 1600 },
 { de: "sistema", tipo: "progreso",
 titulo: "✅ ¡Cuota PAGADA! Auto-stop",
 interes_pct: 100, capital_pct: 100,
 sub: "28 días · 67 transacciones · 0 llamadas de cobranza",
-delay: 1400 },
-{ de: "banco", delay: 800,
-texto: "*Mibanco* ✅ ✅\n¡Cuota de junio PAGADA, Alessia! 🎉\nYoSiLa se paró automático.\nCero llamadas. Cero presión. Todo con tus ventas de Yape 💙\n¿Adelantamos julio?\nSÍ → seguimos al 2%\nNO → quedamos pausados" },
-{ de: "cliente", delay: 1400,
-texto: "SÍ por favor! 🙌" },
-{ de: "banco", delay: 800,
-texto: "✅ ¡Listo! YoSiLa activo para julio.\n¡Éxitos con el negocio, Alessia! 💙" },
+delay: 1000 },
+{ de: "banco", delay: 700,
+texto: "*Mibanco* ✅ ✅\n¡Cuota de junio PAGADA, Alessia! 🎉\nYoSiLa se paró automático.\nCero llamadas. Cero presión. Todo con tus ventas de Yape. 💙\n¿Adelantamos julio? SÍ / NO" },
+{ de: "cliente", delay: 1300,
+texto: "SÍ! ojalá lo hubiera activado mucho antes 🙌" },
+{ de: "banco", delay: 700,
+texto: "✅ YoSiLa activo para julio, Alessia.\n¡Éxitos con el negocio! 💙" },
 ],
 },
 
@@ -179,27 +185,60 @@ texto: "Para eso estamos Powel. Juntos lo resolvemos. 💙" },
 ],
 yatekobro: [
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama YoSiLa.\nCada pago Yape que recibís en tu negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo funciona?" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
 { de: "cliente", delay: 2000,
 texto: "¿y eso cómo sería?" },
 { de: "banco", delay: 900,
-texto: "Primero necesitás tener Yape, Powel. Es gratis y demora 5 minutos:" },
+texto: "Primero necesitás tener Yape, Powel 📱\nEs gratis y demora 5 minutos — tu asesora María te acompaña una sola vez:" },
 { de: "sistema", tipo: "yape-registro", delay: 1200 },
 { de: "cliente", delay: 2200,
-texto: "no, todavía no lo tengo" },
+texto: "listo, ya lo hice con María — ya tengo Yape 💪" },
 { de: "banco", delay: 1000,
-texto: "Sin problema 🤝 Tu asesora María te acompaña una sola vez.\nCuando ya tenés Yape, cada cliente que te paga por Yape se ve así:" },
-{ de: "sistema", tipo: "yape-transaccion",
-remitente: "Carmen Flores", monto: 75, pct: 2, interes_pct: 45,
-delay: 1400 },
-{ de: "cliente", delay: 2000,
-texto: "no sabía que era tan fácil ¿y cómo lo activo para mi cuota?" },
-{ de: "banco", delay: 900,
-texto: "Con YoSiLa, ese % que ves arriba va automático a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego el capital (lo que es tuyo)\n• Se para solo al completar\n\nActivalo respondiendo acá mismo:\n1️⃣ = 1% · 2️⃣ = 2% · 3️⃣ = 5%" },
+texto: "¡Perfecto Powel! 💙 Ahora activamos YoSiLa.\nCada cliente que te pague por Yape → un % va automático a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego el capital (lo que es tuyo)\n• Se para solo al completar\n\nElegí el %:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%" },
 { de: "cliente", delay: 1400,
 texto: "2" },
 { de: "banco", delay: 800,
-texto: "✅ YoSiLa activado al 2%, Powel.\nEn cuanto recibas Yapes, el % trabaja solo para tu cuota. 💙\nTe avisamos al cubrir el interés y al completar la cuota.\nSin llamadas. Sin presión." },
+texto: "✅ *YoSiLa activado al 2%*, Powel.\nCuando alguien te pague por Yape, vas a ver algo así en tu notificación:" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Carmen Flores", monto_bruto: 150, pct: 2, interes_pct: 7,
+delay: 1500 },
+{ de: "cliente", delay: 2200,
+texto: "eso que me llegó es real? dice que Carmen me mandó 150 pero recibí 147..." },
+{ de: "banco", delay: 900,
+texto: "¡Exacto, Powel! ✅\nEsos S/3 que «no aparecen» fueron automáticamente a tu cuota Mibanco.\nYape los transfirió solo — vos no hacés nada. Solo seguís cobrando como siempre. 💙\nCada Yape que llegue hace lo mismo." },
+{ de: "cliente", delay: 1600,
+texto: "eso está buenísimo... no sabía que era tan fácil" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Rosa Huanca", monto_bruto: 200, pct: 2, interes_pct: 20,
+delay: 2000 },
+{ de: "sistema", tipo: "progreso",
+titulo: "📊 YoSiLa · día 14",
+interes_pct: 58, capital_pct: 0,
+sub: "14 días · 31 transacciones Yape",
+delay: 900 },
+{ de: "banco", delay: 600,
+texto: "*Mibanco* ✅ 📊 Powel, llevan 14 días.\nEl interés del mes va al 58% — cada Yape que recibís suma automático. 💪" },
+{ de: "sistema", tipo: "yape-push",
+remitente: "Luis Mamani", monto_bruto: 300, pct: 2, interes_pct: 72,
+delay: 1800 },
+{ de: "sistema", tipo: "progreso",
+titulo: "🎉 ¡Interés 100% cubierto!",
+interes_pct: 100, capital_pct: 30,
+sub: "22 días · 52 transacciones · interés: VENCIDO ✅",
+delay: 1000 },
+{ de: "banco", delay: 700,
+texto: "*Mibanco* ✅ 🎉 ¡Powel, cubriste el 100% del interés!\nLo que queda (S/182) es plata TUYA, no costo del banco. 💙" },
+{ de: "sistema", tipo: "progreso",
+titulo: "✅ ¡Cuota PAGADA! Auto-stop",
+interes_pct: 100, capital_pct: 100,
+sub: "31 días · 72 transacciones · 0 llamadas · 0 visitas",
+delay: 1400 },
+{ de: "banco", delay: 800,
+texto: "*Mibanco* ✅ ✅ ¡Cuota PAGADA, Powel! 🎉\nYoSiLa se paró automático.\nSin una sola llamada. Sin visitas. Solo tus Yapes trabajando. 💙\n¿Seguimos el próximo mes?" },
+{ de: "cliente", delay: 2000,
+texto: "sí! muy bueno esto, gracias Mibanco 🙏" },
+{ de: "banco", delay: 700,
+texto: "✅ YoSiLa activo para julio, Powel.\n¡Éxitos en el mercado! 💙" },
 ],
 },
 };
@@ -281,6 +320,29 @@ body.innerHTML = `
   </div>
 </div>`;
 }
+}
+
+async function showYapePush(msg) {
+const aporte = +(msg.monto_bruto * msg.pct / 100).toFixed(2);
+const neto   = +(msg.monto_bruto - aporte).toFixed(2);
+const push = document.createElement("div");
+push.className = "yape-push-notif";
+push.innerHTML = `
+<div class="ypn-inner">
+  <div class="ypn-header">
+    <span class="ypn-app">💜 yape</span>
+    <span class="ypn-time">ahora</span>
+  </div>
+  <div class="ypn-title">${msg.remitente} te envió <b>S/ ${Number(msg.monto_bruto).toFixed(2)}</b></div>
+  <div class="ypn-sub">Recibiste S/ ${neto.toFixed(2)} &nbsp;·&nbsp; <span class="ypn-ys">S/ ${aporte.toFixed(2)} → cuota Mibanco ✅</span></div>
+</div>`;
+document.getElementById("phoneContainer").appendChild(push);
+await later(200);
+push.classList.add("ypn-in");
+await later(4200);
+push.classList.remove("ypn-in");
+await later(500);
+push.remove();
 }
 
 async function animateYapeSteps() {
@@ -387,6 +449,8 @@ if (msg.tipo === "progreso") {
 appendProgressCard(msg);
 } else if (msg.tipo === "yape-registro") {
 await showYapeScreen("registro", null);
+} else if (msg.tipo === "yape-push") {
+await showYapePush(msg);
 } else if (msg.tipo === "yape-transaccion") {
 await showYapeScreen("transaccion", msg);
 } else {
