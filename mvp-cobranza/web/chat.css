@@ -272,104 +272,154 @@ display: grid; place-items: center; font-size: 18px; cursor: pointer;
 flex-shrink: 0; color: #fff;
 }
 
-/* ── YAPE SCREEN CARDS (in-chat mockup) ── */
+/* ── YAPE TOKENS ── */
 :root {
   --yape: #5E17EB;
   --yape-d: #4A10C4;
   --yape-l: #EDE4FF;
 }
-.yape-switch {
-  align-self: center;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 10.5px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: .07em; color: var(--yape);
-  margin: 12px 0 6px;
-  animation: fadeUp .2s ease;
-}
-.yape-switch::before, .yape-switch::after {
-  content: ''; flex: 1; height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--yape-l));
-}
-.yape-switch::after { background: linear-gradient(90deg, var(--yape-l), transparent); }
 
-.yape-card {
-  align-self: center; width: 93%;
-  background: #fff; border-radius: 16px; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(94,23,235,.18), 0 1px 4px rgba(0,0,0,.08);
-  margin: 4px 0 10px; animation: fadeUp .3s ease;
-  border: 1.5px solid var(--yape-l);
+/* ── PHONE TOGGLE TABS ── */
+.phone-tabs {
+  display: flex; gap: 8px; margin-bottom: 12px; width: 390px; max-width: 100%;
 }
-.yape-card-hd {
+.phone-tab {
+  flex: 1; padding: 10px 14px; border-radius: 11px; font-weight: 700;
+  font-size: 13px; border: 2px solid var(--line); background: #fff;
+  cursor: pointer; transition: all .18s ease; font-family: var(--sans, sans-serif);
+  color: #555;
+}
+.phone-tab:hover { border-color: #ccc; background: #f8f8f8; }
+.phone-tab#tabWa.active { border-color: var(--wa); background: #f0fdf4; color: #075E54; }
+.phone-tab#tabYape.active { border-color: var(--yape); background: var(--yape-l); color: var(--yape-d); }
+.tab-badge { color: #e53935; font-size: 16px; margin-left: 3px; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.hidden { display: none !important; }
+
+/* ── YAPE PHONE ── */
+.yape-phone { background: #fafafa; }
+.yp-status-bar {
+  background: var(--yape); color: rgba(255,255,255,.65);
+  font-size: 10px; padding: 5px 14px; text-align: right; letter-spacing: .02em;
+  flex-shrink: 0;
+}
+.yp-head {
   background: var(--yape); color: #fff;
-  padding: 9px 14px; display: flex; align-items: center; gap: 8px;
-  font-weight: 800; font-size: 15px; letter-spacing: .01em;
+  padding: 11px 14px; display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
 }
-.yape-hd-badge {
-  margin-left: auto; font-size: 9px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .06em;
-  background: rgba(255,255,255,.2); padding: 2px 8px; border-radius: 20px;
+.yp-back { font-size: 18px; cursor: pointer; opacity: .8; }
+.yp-head-title { flex: 1; font-weight: 900; font-size: 20px; letter-spacing: -.03em; }
+.yp-head-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.2); display: grid; place-items: center; font-size: 16px;
+}
+.yp-body { flex: 1; overflow-y: auto; }
+.yp-nav {
+  background: #fff; border-top: 1px solid #eee;
+  display: flex; padding: 10px 0 6px; flex-shrink: 0;
+}
+.yp-nav-ic { flex: 1; text-align: center; font-size: 22px; opacity: .35; cursor: pointer; }
+.yp-nav-ic.active { opacity: 1; }
+
+/* ── YAPE IDLE STATE (home) ── */
+.yp-idle {
+  padding: 28px 20px 20px; display: flex; flex-direction: column; align-items: center;
+  background: linear-gradient(160deg, var(--yape) 0%, #7c3aed 100%);
+  min-height: 100%;
+}
+.yp-idle-logo { font-size: 44px; margin-bottom: 6px; }
+.yp-idle-name { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -.03em; margin-bottom: 24px; }
+.yp-idle-bal-card {
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  border-radius: 16px; padding: 18px 24px; text-align: center; width: 100%; margin-bottom: 20px;
+  backdrop-filter: blur(6px);
+}
+.yp-idle-bal-label { font-size: 11px; color: rgba(255,255,255,.7); text-transform: uppercase;
+                     letter-spacing: .06em; margin-bottom: 5px; }
+.yp-idle-bal { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: -.04em; }
+.yp-idle-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.yp-idle-btn {
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px; padding: 14px 10px; font-weight: 700; font-size: 12.5px;
+  color: #fff; cursor: pointer; text-align: center;
+}
+.yp-idle-btn.primary {
+  background: #fff; color: var(--yape); grid-column: 1/-1;
+  font-size: 15px; padding: 16px; border: none; font-weight: 800;
 }
 
-/* Registration steps */
-.yape-reg-title {
-  font-weight: 800; font-size: 13.5px; color: var(--yape-d);
-  padding: 12px 14px 4px;
-}
-.yape-reg-steps { padding: 6px 14px 8px; display: flex; flex-direction: column; gap: 7px; }
+/* ── YAPE REGISTRO STATE ── */
+.yp-reg { padding: 18px 16px; background: #fff; min-height: 100%; }
+.yp-reg-title { font-weight: 800; font-size: 15px; color: var(--yape-d); margin-bottom: 14px; }
 .yp-step {
   display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 9px;
-  background: #f8f4ff; border: 1px solid var(--yape-l);
+  padding: 10px 12px; border-radius: 10px;
+  background: #f8f4ff; border: 1px solid var(--yape-l); margin-bottom: 8px;
 }
 .yp-step.active { background: var(--yape-l); border-color: var(--yape); }
 .yp-ic {
-  width: 22px; height: 22px; border-radius: 50%;
+  width: 24px; height: 24px; border-radius: 50%;
   background: var(--yape); color: #fff;
   display: grid; place-items: center;
   font-size: 11px; font-weight: 800; flex-shrink: 0;
 }
-.yp-ic.pending { background: #ccc; }
-.yp-step b { display: block; font-size: 12.5px; color: #1a0040; line-height: 1.3; }
+.yp-step b { display: block; font-size: 13px; color: #1a0040; line-height: 1.3; }
 .yp-step small { font-size: 10.5px; color: #888; }
-.yape-reg-ok {
+.yp-reg-ok {
   background: #f0fdf4; color: #15803d;
-  font-size: 11.5px; font-weight: 700;
-  padding: 8px 14px; border-top: 1px solid #bbf7d0;
+  font-size: 12px; font-weight: 700;
+  padding: 10px 14px; border-radius: 10px;
+  border: 1px solid #bbf7d0; margin-top: 4px;
 }
 
-/* Transaction */
-.yape-tx-main {
-  padding: 14px 14px 12px; text-align: center;
-  border-bottom: 1px solid var(--yape-l);
+/* ── YAPE TRANSACCION STATE ── */
+.yp-tx { display: flex; flex-direction: column; min-height: 100%; }
+.yp-tx-hero {
+  background: linear-gradient(160deg, var(--yape) 0%, #7c3aed 100%);
+  color: #fff; padding: 28px 20px 24px; text-align: center; flex-shrink: 0;
 }
-.yape-tx-ico { font-size: 26px; margin-bottom: 3px; }
-.yape-tx-amount { font-size: 28px; font-weight: 900; color: #16a34a; letter-spacing: -.04em; }
-.yape-tx-from { font-size: 12px; color: #555; margin-top: 3px; }
-.yape-tx-time { font-size: 10.5px; color: #aaa; margin-top: 2px; }
-.yape-yosila-strip { background: #f5f0ff; padding: 10px 14px; }
-.yape-ys-h {
-  font-size: 10px; font-weight: 800; color: var(--yape-d);
-  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 7px;
+.yp-tx-hero-ico { font-size: 36px; margin-bottom: 10px; }
+.yp-tx-hero-label {
+  font-size: 11px; opacity: .75; text-transform: uppercase;
+  letter-spacing: .06em; margin-bottom: 6px;
 }
-.yape-ys-row {
+.yp-tx-hero-amount { font-size: 42px; font-weight: 900; letter-spacing: -.05em; line-height: 1; }
+.yp-tx-hero-from { font-size: 14px; opacity: .85; margin-top: 8px; }
+.yp-tx-hero-time { font-size: 11px; opacity: .55; margin-top: 4px; }
+.yp-tx-body { flex: 1; background: #fff; padding: 16px; }
+.yp-tx-row {
   display: flex; justify-content: space-between; align-items: center;
-  font-size: 12.5px; color: #333; margin-bottom: 8px;
+  padding: 11px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px;
 }
-.yape-ys-ok {
+.yp-tx-row:last-child { border-bottom: none; }
+.yp-tx-row span:first-child { color: #666; }
+.yp-tx-row span:last-child { font-weight: 700; color: #111; }
+.yp-ys-strip {
+  background: var(--yape-l); border-radius: 12px;
+  padding: 14px; margin: 12px 0;
+}
+.yp-ys-strip-h {
+  font-size: 10.5px; font-weight: 800; color: var(--yape-d);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px;
+}
+.yp-ys-strip-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12.5px; color: #333; margin-bottom: 10px;
+}
+.yp-ys-ok {
   background: #dcfce7; color: #15803d;
-  font-weight: 700; font-size: 10px;
-  padding: 2px 7px; border-radius: 5px;
+  font-weight: 700; font-size: 10px; padding: 2px 8px; border-radius: 5px;
 }
-.yape-ys-prog { margin-top: 2px; }
-.yape-ys-prog-lbl {
+.yp-ys-prog-lbl {
   display: flex; justify-content: space-between;
-  font-size: 10.5px; font-weight: 600; color: #555; margin-bottom: 4px;
+  font-size: 11px; font-weight: 600; color: #555; margin-bottom: 5px;
 }
-.yape-ys-track { height: 8px; background: #ddd5f7; border-radius: 5px; overflow: hidden; }
-.yape-ys-fill {
+.yp-ys-track { height: 9px; background: rgba(94,23,235,.15); border-radius: 5px; overflow: hidden; }
+.yp-ys-fill {
   height: 100%; border-radius: 5px;
   background: linear-gradient(90deg, var(--yape), #a855f7);
-  transition: width .8s cubic-bezier(.16,1,.3,1);
+  transition: width .9s cubic-bezier(.16,1,.3,1);
 }
 
 /* ── RESPONSIVE ── */

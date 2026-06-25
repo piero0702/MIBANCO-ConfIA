@@ -235,64 +235,101 @@ chatBody().appendChild(el);
 scrollBottom();
 }
 
-function appendYapeSwitch(label) {
-const el = document.createElement("div");
-el.className = "yape-switch";
-el.textContent = label || "📱 Vista en Yape";
-chatBody().appendChild(el);
-scrollBottom();
+/* ── Yape second phone ── */
+function setYapeIdle() {
+document.getElementById("yapeHead").querySelector(".yp-head-title").textContent = "yape";
+document.getElementById("yapeBody").innerHTML = `
+<div class="yp-idle">
+  <div class="yp-idle-logo">💜</div>
+  <div class="yp-idle-name">yape</div>
+  <div class="yp-idle-bal-card">
+    <div class="yp-idle-bal-label">Saldo disponible</div>
+    <div class="yp-idle-bal">S/ 1,234.50</div>
+  </div>
+  <div class="yp-idle-btns">
+    <div class="yp-idle-btn">💸 Pagar</div>
+    <div class="yp-idle-btn">📥 Recargar</div>
+    <div class="yp-idle-btn primary">💜 Yapear</div>
+  </div>
+</div>`;
 }
 
-function appendYapeRegistro() {
-const el = document.createElement("div");
-el.className = "yape-card";
-el.innerHTML = `
-<div class="yape-card-hd">
-  <span>💜</span><span>yape</span>
-  <span class="yape-hd-badge">Registro · solo la primera vez</span>
-</div>
-<div class="yape-reg-title">Registrate gratis</div>
-<div class="yape-reg-steps">
-  <div class="yp-step"><span class="yp-ic">✓</span><div><b>Descargá Yape</b><small>Google Play o App Store</small></div></div>
+function setYapeContent(tipo, msg) {
+const head = document.getElementById("yapeHead").querySelector(".yp-head-title");
+const body = document.getElementById("yapeBody");
+if (tipo === "registro") {
+head.textContent = "Registro";
+body.innerHTML = `
+<div class="yp-reg">
+  <div class="yp-reg-title">Registrate gratis · solo la primera vez</div>
+  <div class="yp-step"><span class="yp-ic">✓</span><div><b>Descargá Yape</b><small>Google Play o App Store · gratis</small></div></div>
   <div class="yp-step"><span class="yp-ic">✓</span><div><b>Ingresá tu número de celular</b><small>Verificación por SMS automática</small></div></div>
   <div class="yp-step"><span class="yp-ic">✓</span><div><b>Validá con tu DNI</b><small>Sin necesitar cuenta BCP</small></div></div>
-  <div class="yp-step active"><span class="yp-ic">→</span><div><b>Creá tu contraseña personal</b><small>¡Ya estás dentro de Yape!</small></div></div>
-</div>
-<div class="yape-reg-ok">✅ Listo para recibir pagos · transferencias gratuitas</div>`;
-chatBody().appendChild(el);
-scrollBottom();
-}
-
-function appendYapeTransaccion(msg) {
-const el = document.createElement("div");
-el.className = "yape-card";
+  <div class="yp-step active"><span class="yp-ic">→</span><div><b>Creá tu contraseña personal</b><small>¡Ya estás dentro de Yape! 🎉</small></div></div>
+  <div class="yp-reg-ok">✅ Listo para recibir y enviar pagos · transferencias gratuitas</div>
+</div>`;
+} else if (tipo === "transaccion" && msg) {
+head.textContent = "Pago recibido";
 const pct = msg.pct || 2;
 const aporte = (msg.monto * pct / 100).toFixed(2);
 const intPct = Math.min(100, msg.interes_pct || 0);
-el.innerHTML = `
-<div class="yape-card-hd">
-  <span>💜</span><span>yape</span>
-  <span class="yape-hd-badge">Pago recibido</span>
-</div>
-<div class="yape-tx-main">
-  <div class="yape-tx-ico">💰</div>
-  <div class="yape-tx-amount">+ S/ ${Number(msg.monto).toFixed(2)}</div>
-  <div class="yape-tx-from">de ${msg.remitente}</div>
-  <div class="yape-tx-time">${hora()} · Llegó al instante ✓</div>
-</div>
-<div class="yape-yosila-strip">
-  <div class="yape-ys-h">⚡ YoSiLa · ${pct}% por venta → cuota Mibanco</div>
-  <div class="yape-ys-row">
-    <span>S/ ${aporte} imputado automáticamente</span>
-    <span class="yape-ys-ok">✓ imputado</span>
+body.innerHTML = `
+<div class="yp-tx">
+  <div class="yp-tx-hero">
+    <div class="yp-tx-hero-ico">💰</div>
+    <div class="yp-tx-hero-label">Pago recibido</div>
+    <div class="yp-tx-hero-amount">+ S/ ${Number(msg.monto).toFixed(2)}</div>
+    <div class="yp-tx-hero-from">de ${msg.remitente}</div>
+    <div class="yp-tx-hero-time">${hora()} · Llegó al instante ✓</div>
   </div>
-  <div class="yape-ys-prog">
-    <div class="yape-ys-prog-lbl"><span>Interés del mes</span><span>${intPct}%${intPct >= 100 ? ' ✅' : ''}</span></div>
-    <div class="yape-ys-track"><div class="yape-ys-fill" style="width:${intPct}%"></div></div>
+  <div class="yp-tx-body">
+    <div class="yp-tx-row"><span>Monto recibido</span><span style="color:#16a34a">+ S/ ${Number(msg.monto).toFixed(2)}</span></div>
+    <div class="yp-tx-row"><span>De</span><span>${msg.remitente}</span></div>
+    <div class="yp-tx-row"><span>Estado</span><span>✅ Acreditado</span></div>
+    <div class="yp-ys-strip">
+      <div class="yp-ys-strip-h">⚡ YoSiLa · ${pct}% por venta → cuota Mibanco</div>
+      <div class="yp-ys-strip-row">
+        <span>S/ ${aporte} imputado a cuota</span>
+        <span class="yp-ys-ok">✓ imputado</span>
+      </div>
+      <div class="yp-ys-prog-lbl"><span>Interés del mes</span><span>${intPct}%${intPct >= 100 ? ' ✅' : ''}</span></div>
+      <div class="yp-ys-track"><div class="yp-ys-fill" style="width:${intPct}%"></div></div>
+    </div>
   </div>
 </div>`;
-chatBody().appendChild(el);
-scrollBottom();
+}
+}
+
+function notifyYapeTab() {
+const badge = document.getElementById("yapeBadge");
+if (badge) badge.hidden = false;
+}
+
+function resetYapeTab() {
+const badge = document.getElementById("yapeBadge");
+if (badge) badge.hidden = true;
+setYapeIdle();
+showPhone("wa");
+}
+
+function showPhone(which) {
+const wa = document.querySelector(".wa-phone");
+const yp = document.querySelector(".yape-phone");
+const tabWa = document.getElementById("tabWa");
+const tabYp = document.getElementById("tabYape");
+if (which === "yape") {
+wa.classList.add("hidden"); yp.classList.remove("hidden");
+tabWa.classList.remove("active"); tabYp.classList.add("active");
+document.getElementById("yapeBadge").hidden = true;
+} else {
+yp.classList.add("hidden"); wa.classList.remove("hidden");
+tabYp.classList.remove("active"); tabWa.classList.add("active");
+}
+}
+
+function setupPhoneTabs() {
+document.getElementById("tabWa").addEventListener("click", () => showPhone("wa"));
+document.getElementById("tabYape").addEventListener("click", () => showPhone("yape"));
 }
 
 function appendSysCard(msg) {
@@ -371,11 +408,11 @@ if (msg.de === "sistema") {
 if (msg.tipo === "progreso") {
 appendProgressCard(msg);
 } else if (msg.tipo === "yape-registro") {
-appendYapeSwitch("📱 Vista en Yape · Registro");
-appendYapeRegistro();
+setYapeContent("registro");
+notifyYapeTab();
 } else if (msg.tipo === "yape-transaccion") {
-appendYapeSwitch("📱 Vista en Yape · Pago recibido");
-appendYapeTransaccion(msg);
+setYapeContent("transaccion", msg);
+notifyYapeTab();
 } else {
 appendSysCard(msg);
 }
@@ -448,10 +485,13 @@ hdr.innerHTML = `
 
 function resetAndPlay() {
 clearTimers();
+resetYapeTab();
 reproducir();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+setupPhoneTabs();
+setYapeIdle();
 renderPerfiles();
 renderEtapas();
 updateWAHeader();

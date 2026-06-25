@@ -38,22 +38,41 @@
 
 <!-- CHAT PANEL -->
 <div class="chat-panel">
-<div class="phone-wrap">
 
-<!-- WhatsApp header -->
-<div class="wa-head" id="waHeader"></div>
+  <!-- Toggle tabs -->
+  <div class="phone-tabs">
+    <button class="phone-tab active" id="tabWa">💬 WhatsApp</button>
+    <button class="phone-tab" id="tabYape">💜 Yape <span class="tab-badge" id="yapeBadge" hidden>●</span></button>
+  </div>
 
-<!-- Chat body -->
-<div class="wa-body" id="chatBody"></div>
+  <!-- WhatsApp phone -->
+  <div class="phone-wrap wa-phone">
+    <div class="wa-head" id="waHeader"></div>
+    <div class="wa-body" id="chatBody"></div>
+    <div class="wa-footer">
+      <span class="wa-attach">📎</span>
+      <div class="wa-input-box">Escribe un mensaje...</div>
+      <div class="wa-mic">🎤</div>
+    </div>
+  </div>
 
-<!-- Footer input (decorativo) -->
-<div class="wa-footer">
-<span class="wa-attach">📎</span>
-<div class="wa-input-box">Escribe un mensaje...</div>
-<div class="wa-mic">🎤</div>
-</div>
+  <!-- Yape phone -->
+  <div class="phone-wrap yape-phone hidden">
+    <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
+    <div class="yp-head" id="yapeHead">
+      <span class="yp-back">←</span>
+      <span class="yp-head-title">yape</span>
+      <div class="yp-head-avatar">💜</div>
+    </div>
+    <div class="yp-body" id="yapeBody"></div>
+    <div class="yp-nav">
+      <span class="yp-nav-ic active">🏠</span>
+      <span class="yp-nav-ic">💜</span>
+      <span class="yp-nav-ic">📋</span>
+      <span class="yp-nav-ic">👤</span>
+    </div>
+  </div>
 
-</div>
 </div>
 
 </div>
