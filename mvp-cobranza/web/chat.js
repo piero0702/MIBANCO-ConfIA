@@ -89,7 +89,7 @@ texto: "✅ Agendado para las 15:00, Alessia.\nTu asesor Juan García (verificab
 ],
 yatekobro: [
 { de: "banco", delay: 500,
-texto: "*Mibanco* ✅ Hola Alessia 👋\nVemos que recibís Yapes en tu negocio cada día.\nTe presentamos *YoSiLa*: el % que vos elegís de cada Yape va automáticamente a tu cuota — sin hacer nada más.\n¿Te cuento cómo en 1 minuto? 📊" },
+texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
 { de: "cliente", delay: 1800,
 texto: "sí, dale! 👂" },
 { de: "banco", delay: 1000,
