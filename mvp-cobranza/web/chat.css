@@ -583,9 +583,12 @@ flex-shrink: 0; color: #fff;
 /* ── PHONES STAGE: contexto para los dos celulares ── */
 .phones-stage {
   position: relative;
-  /* mismo tamaño que phone-container para no romper el layout */
   width: 390px; max-width: 100%;
   height: calc(100vh - 130px); max-height: 720px; min-height: 480px;
+  overflow: hidden; /* oculta sender-phone en reposo */
+}
+.phones-stage.sp-active {
+  overflow: visible; /* permite ver el celular del pagador durante la animación */
 }
 
 /* phone-container ahora vive dentro del stage y se mueve como bloque */

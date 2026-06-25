@@ -453,6 +453,7 @@ document.getElementById("senderBody").innerHTML = `
   <div class="sp-success-note">Llegó al instante · sin costo</div>
 </div>`;
 
+document.getElementById("phonesStage").classList.add("sp-active");
 document.getElementById("senderPhone").classList.add("sp-visible");
 document.getElementById("phoneContainer").classList.add("sp-push-right");
 
@@ -469,6 +470,7 @@ await later(1800);
 document.getElementById("senderPhone").classList.remove("sp-visible");
 document.getElementById("phoneContainer").classList.remove("sp-push-right");
 await later(600);
+document.getElementById("phonesStage").classList.remove("sp-active");
 
 await showYapePush(msg);
 }
@@ -690,6 +692,7 @@ document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("senderPhone")?.classList.remove("sp-visible");
 document.getElementById("waPhone")?.classList.remove("yp-push");
 document.getElementById("phoneContainer")?.classList.remove("sp-push-right", "yp-shadow");
+document.getElementById("phonesStage")?.classList.remove("sp-active");
 document.getElementById("appLabel")?.classList.remove("yp-mode");
 reproducir();
 }
