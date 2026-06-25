@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Demo Conversación · Mibanco-confIA + YoSiLa · Mibanco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="chat.css" />
 </head>
 <body>
@@ -12,13 +15,16 @@
 <!-- HEADER -->
 <header class="lab-bar">
 <div class="lb-left">
-<span class="lb-logo">m</span>
-<div class="lb-title">
-<strong>Demo Conversación · Mibanco-confIA + YoSiLa</strong>
-<span>Cómo se ve la IA de cobranza en WhatsApp — 2 perfiles × 5 etapas de mora</span>
+  <div class="lb-logo">m</div>
+  <div class="lb-title">
+    <strong>Demo Conversación &middot; <span class="lb-brand">Mibanco-confIA</span> + <span class="lb-yosila">YoSiLa</span></strong>
+    <span>Cómo se ve la IA de cobranza en WhatsApp — 2 perfiles × 5 etapas de mora</span>
+  </div>
 </div>
-</div>
-<a href="index.html" class="lb-back">← Volver al dashboard</a>
+<a href="index.html" class="lb-back">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  Volver al dashboard
+</a>
 </header>
 
 <!-- MAIN -->
@@ -26,14 +32,14 @@
 
 <!-- PANEL IZQUIERDO -->
 <aside class="left-panel">
-<div class="left-section">
-<p class="section-title">Perfil del cliente</p>
-<div id="profileList"></div>
-</div>
-<div class="left-section">
-<p class="section-title">Etapa de mora</p>
-<div class="stage-list" id="etapaList"></div>
-</div>
+  <div class="left-section">
+    <p class="section-title">Perfil del cliente</p>
+    <div id="profileList"></div>
+  </div>
+  <div class="left-section">
+    <p class="section-title">Etapa de mora</p>
+    <div class="stage-list" id="etapaList"></div>
+  </div>
 </aside>
 
 <!-- CHAT PANEL -->
@@ -43,8 +49,14 @@
 
     <!-- Etiqueta flotante de app activa -->
     <div class="app-label" id="appLabel">
-      <span class="app-label-wa" id="appLabelWa">💬 WhatsApp</span>
-      <span class="app-label-yp" id="appLabelYp">💜 yape</span>
+      <span class="app-label-wa" id="appLabelWa">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </span>
+      <span class="app-label-yp" id="appLabelYp">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        yape
+      </span>
     </div>
 
     <!-- Escenario de dos celulares — sender phone vive FUERA del container principal -->
@@ -52,9 +64,9 @@
 
       <!-- Sender phone: celular separado, entra desde la izquierda -->
       <div class="phone-wrap sender-phone" id="senderPhone">
-        <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
+        <div class="yp-status-bar">9:41 &nbsp;&nbsp; 5G &nbsp; ▲ 100%</div>
         <div class="yp-head">
-          <span class="yp-back">←</span>
+          <span class="yp-back">&#x2039;</span>
           <span class="yp-head-title">Confirmar yapeo</span>
           <div class="yp-head-avatar">💜</div>
         </div>
@@ -72,20 +84,31 @@
 
         <!-- WhatsApp phone -->
         <div class="phone-wrap wa-phone" id="waPhone">
+          <div class="wa-status-bar-sys">
+            <span class="wa-sys-time">9:41</span>
+            <div class="wa-sys-right">
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="rgba(255,255,255,0.75)"><rect x="0" y="3" width="3" height="8" rx="1"/><rect x="4" y="2" width="3" height="9" rx="1"/><rect x="8" y="0.5" width="3" height="10.5" rx="1"/><rect x="12" y="0" width="3" height="11" rx="1" opacity=".3"/></svg>
+              <svg width="14" height="11" viewBox="0 0 14 11" fill="rgba(255,255,255,0.75)"><rect x="0.5" y="0.5" width="11" height="9" rx="1.5" stroke="rgba(255,255,255,0.75)" stroke-width="1" fill="none"/><rect x="2" y="2" width="7" height="6" rx="0.5" fill="rgba(255,255,255,0.75)"/><rect x="12" y="3.5" width="1.5" height="4" rx="0.75"/></svg>
+            </div>
+          </div>
           <div class="wa-head" id="waHeader"></div>
           <div class="wa-body" id="chatBody"></div>
           <div class="wa-footer">
-            <span class="wa-attach">📎</span>
+            <div class="wa-attach">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </div>
             <div class="wa-input-box">Escribe un mensaje...</div>
-            <div class="wa-mic">🎤</div>
+            <div class="wa-mic">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v7a2 2 0 0 0 4 0V5a2 2 0 0 0-2-2zm7 8a1 1 0 0 1 1 1 8 8 0 0 1-7 7.938V21h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-1.062A8 8 0 0 1 4 12a1 1 0 1 1 2 0 6 6 0 0 0 12 0 1 1 0 0 1 1-1z"/></svg>
+            </div>
           </div>
         </div>
 
         <!-- Yape phone (overlay, entra desde la derecha) -->
         <div class="phone-wrap yape-phone" id="yapePhone">
-          <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
+          <div class="yp-status-bar">9:41 &nbsp;&nbsp; 5G &nbsp; ▲ 100%</div>
           <div class="yp-head">
-            <span class="yp-back">←</span>
+            <span class="yp-back">&#x2039;</span>
             <span class="yp-head-title" id="yapeHeadTitle">yape</span>
             <div class="yp-head-avatar">💜</div>
           </div>
@@ -103,7 +126,10 @@
     </div><!-- /phones-stage -->
 
     <!-- Botón replay -->
-    <button class="replay-btn" id="replayBtn" title="Repetir animación">▶ Repetir</button>
+    <button class="replay-btn" id="replayBtn" title="Repetir animación">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Repetir
+    </button>
 
   </div>
 
