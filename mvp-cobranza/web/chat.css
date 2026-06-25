@@ -43,8 +43,8 @@ Demo Conversación — Mibanco-confIA + YoSiLa · Mibanco IAthon
 body {
   margin: 0;
   font-family: var(--sans);
-  background: var(--bg);
-  color: var(--ink);
+  background: #f4f5f8;
+  color: #1d2638;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -176,25 +176,25 @@ body {
 
 /* ── LEFT PANEL ── */
 .left-panel {
-  background: var(--surface-1);
-  border-right: 1px solid var(--border);
+  background: #ffffff;
+  border-right: 1px solid #e4e8ef;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
 .left-panel::-webkit-scrollbar { width: 3px; }
-.left-panel::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+.left-panel::-webkit-scrollbar-thumb { background: #d0d6e0; border-radius: 4px; }
 
 .left-section { padding: 16px; }
-.left-section + .left-section { border-top: 1px solid var(--border); }
+.left-section + .left-section { border-top: 1px solid #ebeef3; }
 
 .section-title {
   font-size: 9.5px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .1em;
-  color: var(--ink-muted);
+  color: #9ba5ba;
   margin: 0 0 10px;
 }
 
@@ -204,7 +204,7 @@ body {
   align-items: center;
   gap: 11px;
   padding: 11px 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #ebeef3;
   border-radius: 12px;
   cursor: pointer;
   margin-bottom: 7px;
@@ -213,13 +213,13 @@ body {
 }
 
 .profile-card:hover {
-  background: rgba(255,255,255,.04);
-  border-color: var(--border-hover);
+  background: #f5f7fb;
+  border-color: #d4d9e4;
 }
 
 .profile-card.active {
-  border-color: var(--border-active);
-  background: rgba(0,169,79,.07);
+  border-color: rgba(0,169,79,.36);
+  background: rgba(0,169,79,.055);
   box-shadow: 0 0 0 1px rgba(0,169,79,.1) inset;
 }
 
@@ -241,7 +241,7 @@ body {
 .profile-name {
   font-weight: 700;
   font-size: 12.5px;
-  color: var(--ink);
+  color: #1d2638;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -250,13 +250,13 @@ body {
 
 .profile-type {
   font-size: 10.5px;
-  color: var(--ink-mid);
+  color: #5c6c86;
   margin-top: 1px;
 }
 
 .profile-nota {
   font-size: 10px;
-  color: var(--ink-muted);
+  color: #8e9bb4;
   margin-top: 3px;
   line-height: 1.4;
   font-style: italic;
@@ -273,8 +273,8 @@ body {
   display: inline-block;
 }
 
-.canal-wa   { background: rgba(37,211,102,.14); color: #35d475; border: 1px solid rgba(37,211,102,.2); }
-.canal-llamada { background: rgba(100,136,250,.14); color: #7da3fb; border: 1px solid rgba(100,136,250,.2); }
+.canal-wa   { background: rgba(22,163,74,.10); color: #16833e; border: 1px solid rgba(22,163,74,.22); }
+.canal-llamada { background: rgba(59,91,219,.10); color: #2e52b8; border: 1px solid rgba(59,91,219,.2); }
 
 /* Stage selector */
 .stage-list { display: flex; flex-direction: column; gap: 5px; }
@@ -284,32 +284,32 @@ body {
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #ebeef3;
   border-radius: 10px;
   cursor: pointer;
   background: transparent;
   text-align: left;
   width: 100%;
   transition: background .16s, border-color .16s;
-  color: var(--ink);
+  color: #1d2638;
   font-family: var(--sans);
 }
 
 .stage-btn:hover {
-  background: rgba(255,255,255,.04);
-  border-color: var(--border-hover);
+  background: #f5f7fb;
+  border-color: #d4d9e4;
 }
 
 .stage-btn.active {
-  border-color: var(--border-active);
-  background: rgba(0,169,79,.07);
+  border-color: rgba(0,169,79,.36);
+  background: rgba(0,169,79,.055);
 }
 
 .stage-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  border: 1.5px solid var(--ink-muted);
+  border: 1.5px solid #c8d0de;
   flex-shrink: 0;
   transition: background .16s, border-color .16s, box-shadow .16s;
 }
@@ -317,19 +317,19 @@ body {
 .stage-btn.active .stage-dot {
   background: var(--mb-green);
   border-color: var(--mb-green);
-  box-shadow: 0 0 10px rgba(0,169,79,.7);
+  box-shadow: 0 0 8px rgba(0,169,79,.5);
 }
 
 .stage-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink);
+  color: #1d2638;
   letter-spacing: -.01em;
 }
 
 .stage-sub {
   font-size: 10px;
-  color: var(--ink-muted);
+  color: #8e9bb4;
   margin-top: 1px;
 }
 
@@ -338,7 +338,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f6;
+  background: radial-gradient(ellipse at 50% 40%, #e8ebf2 0%, #f0f2f7 70%);
   padding: 24px;
   overflow: hidden;
   position: relative;
@@ -353,43 +353,77 @@ body {
   z-index: 1;
 }
 
-/* Botones laterales del celular — puramente decorativos */
-.phone-side-btn {
+/* ── PHONE DEVICE FRAME ── */
+.phone-device-outer {
+  position: relative;
+  padding: 12px 10px 10px;
+  background: linear-gradient(168deg, #2e2e30 0%, #1a1a1c 48%, #252527 100%);
+  border-radius: 54px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 0 0 1px rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 0 0 1px rgba(0,0,0,.1),
+    0 32px 80px rgba(0,0,0,.36),
+    0 12px 30px rgba(0,0,0,.2),
+    0 4px 10px rgba(0,0,0,.12);
+  transition: box-shadow .45s ease;
+}
+
+.phone-device-outer:has(.phone-container.yp-shadow) {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 0 0 1px rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 0 0 1px rgba(0,0,0,.1),
+    0 32px 80px rgba(94,23,235,.32),
+    0 12px 30px rgba(94,23,235,.18),
+    0 4px 10px rgba(0,0,0,.12);
+}
+
+/* Dynamic Island */
+.phone-di {
   position: absolute;
-  background: #1c1c1e;
-  border-radius: 3px;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88px;
+  height: 26px;
+  background: #0c0c0e;
+  border-radius: 13px;
+  z-index: 50;
   pointer-events: none;
-  z-index: 0;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.04);
 }
 
-/* Volumen arriba */
-.phone-btn-vol-up {
-  left: calc(50% - 195px - 22px);
-  top: calc(26px + 90px);   /* offset por app-label gap */
+/* Volume buttons (left side) */
+.phone-device-outer::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 94px;
   width: 4px;
-  height: 52px;
+  height: 44px;
+  background: #222224;
   border-radius: 2px 0 0 2px;
-  box-shadow: inset 1px 0 0 rgba(255,255,255,.07), 1px 0 0 rgba(0,0,0,.3);
+  box-shadow:
+    inset -1px 0 0 rgba(255,255,255,.08),
+    0 60px 0 0 #222224;
+  pointer-events: none;
 }
 
-/* Volumen abajo */
-.phone-btn-vol-down {
-  left: calc(50% - 195px - 22px);
-  top: calc(26px + 160px);
+/* Power button (right side) */
+.phone-device-outer::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 112px;
   width: 4px;
-  height: 52px;
-  border-radius: 2px 0 0 2px;
-  box-shadow: inset 1px 0 0 rgba(255,255,255,.07), 1px 0 0 rgba(0,0,0,.3);
-}
-
-/* Power / sleep */
-.phone-btn-power {
-  right: calc(50% - 195px - 22px);
-  top: calc(26px + 130px);
-  width: 4px;
-  height: 70px;
+  height: 62px;
+  background: #222224;
   border-radius: 0 2px 2px 0;
-  box-shadow: inset -1px 0 0 rgba(255,255,255,.07), -1px 0 0 rgba(0,0,0,.3);
+  box-shadow: inset 1px 0 0 rgba(255,255,255,.08);
+  pointer-events: none;
 }
 
 /* App label chips */
@@ -416,17 +450,17 @@ body {
 }
 
 .app-label-wa {
-  background: rgba(37,211,102,.12);
-  color: #35d475;
-  border: 1px solid rgba(37,211,102,.22);
+  background: rgba(22,163,74,.1);
+  color: #1a8a42;
+  border: 1px solid rgba(22,163,74,.22);
   opacity: 1;
   transform: translateY(0);
 }
 
 .app-label-yp {
-  background: rgba(94,23,235,.18);
-  color: #a78bfa;
-  border: 1px solid rgba(94,23,235,.28);
+  background: rgba(109,40,217,.1);
+  color: #6d28d9;
+  border: 1px solid rgba(109,40,217,.22);
   opacity: 0;
   transform: translateY(6px);
 }
@@ -439,9 +473,9 @@ body {
   position: relative;
   width: 390px;
   max-width: 100%;
-  height: calc(100vh - 148px);
-  max-height: 700px;
-  min-height: 480px;
+  height: calc(100vh - 170px);
+  max-height: 678px;
+  min-height: 460px;
   overflow: hidden;
 }
 
@@ -486,32 +520,14 @@ body {
   overflow: hidden;
   width: 100%;
   height: 100%;
-  border-radius: 46px;
-  box-shadow:
-    /* pantalla: borde interior sutil */
-    inset 0 0 0 1px rgba(255,255,255,.45),
-    /* marco del celular */
-    0 0 0 9px #1c1c1e,
-    /* brillo del borde del marco */
-    0 0 0 10px rgba(255,255,255,.11),
-    /* contorno exterior */
-    0 0 0 11px rgba(0,0,0,.07),
-    /* sombra principal */
-    0 28px 72px rgba(0,0,0,.32),
-    0 10px 28px rgba(0,0,0,.18),
-    0 3px 8px rgba(0,0,0,.1);
-  transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
+  border-radius: 42px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+  transition: transform .45s cubic-bezier(.16,1,.3,1);
 }
 
+/* yp-shadow now handled by phone-device-outer:has() */
 .phone-container.yp-shadow {
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.45),
-    0 0 0 9px #1c1c1e,
-    0 0 0 10px rgba(255,255,255,.11),
-    0 0 0 11px rgba(0,0,0,.07),
-    0 28px 72px rgba(94,23,235,.28),
-    0 10px 28px rgba(94,23,235,.18),
-    0 3px 8px rgba(0,0,0,.1);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
 }
 
 .phone-container.sp-push-right { transform: translateX(22%); }
@@ -520,7 +536,7 @@ body {
 .phone-wrap {
   position: absolute;
   inset: 0;
-  border-radius: 46px;
+  border-radius: 42px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -767,26 +783,28 @@ body {
 
 /* ── REPLAY BUTTON ── */
 .replay-btn {
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--border);
+  background: #ffffff;
+  border: 1px solid #d4d9e4;
   border-radius: 20px;
   padding: 8px 18px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--ink-mid);
+  color: #5c6b84;
   cursor: pointer;
-  transition: background .15s, border-color .15s, color .15s;
+  transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
   font-family: var(--sans);
   display: flex;
   align-items: center;
   gap: 7px;
   letter-spacing: -.01em;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07);
 }
 
 .replay-btn:hover {
-  border-color: rgba(0,169,79,.45);
-  color: #4dcc8a;
-  background: rgba(0,169,79,.08);
+  border-color: rgba(0,169,79,.4);
+  color: #16833e;
+  background: rgba(0,169,79,.05);
+  box-shadow: 0 1px 6px rgba(0,169,79,.15);
 }
 
 /* ── YoSiLa PROGRESS CARD ── */
@@ -1343,12 +1361,12 @@ body {
   .demo-wrap { grid-template-columns: 1fr; }
   .left-panel {
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #e4e8ef;
     max-height: 220px;
     flex-direction: row;
     overflow-x: auto;
   }
-  .left-section { border-top: none; border-right: 1px solid var(--border); min-width: 200px; }
+  .left-section { border-top: none; border-right: 1px solid #e4e8ef; min-width: 200px; }
   .chat-panel { padding: 12px; }
   .phones-stage { height: 60vh; min-height: 400px; }
 }

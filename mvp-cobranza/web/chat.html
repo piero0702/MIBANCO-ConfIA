@@ -59,13 +59,12 @@
       </span>
     </div>
 
-    <!-- Botones laterales decorativos del celular -->
-    <div class="phone-side-btn phone-btn-vol-up" aria-hidden="true"></div>
-    <div class="phone-side-btn phone-btn-vol-down" aria-hidden="true"></div>
-    <div class="phone-side-btn phone-btn-power" aria-hidden="true"></div>
+    <!-- Frame físico del celular: Dynamic Island + botones laterales via CSS -->
+    <div class="phone-device-outer">
+      <div class="phone-di" aria-hidden="true"></div>
 
-    <!-- Escenario de dos celulares — sender phone vive FUERA del container principal -->
-    <div class="phones-stage" id="phonesStage">
+      <!-- Escenario de dos celulares — sender phone vive FUERA del container principal -->
+      <div class="phones-stage" id="phonesStage">
 
       <!-- Sender phone: celular separado, entra desde la izquierda -->
       <div class="phone-wrap sender-phone" id="senderPhone">
@@ -130,7 +129,8 @@
 
       </div><!-- /phone-container -->
 
-    </div><!-- /phones-stage -->
+      </div><!-- /phones-stage -->
+    </div><!-- /phone-device-outer -->
 
     <!-- Botón replay -->
     <button class="replay-btn" id="replayBtn" title="Repetir animación">
