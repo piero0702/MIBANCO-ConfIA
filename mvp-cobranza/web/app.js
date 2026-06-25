@@ -8,7 +8,7 @@ const soles = n => "S/ " + Math.round(n).toLocaleString("es-PE");
 const milesK = n => "S/" + (Math.abs(n) >= 1000 ? (n / 1000).toFixed(0) + "k" : Math.round(n));
 const CH = { whatsapp: "WhatsApp", sms: "SMS", llamada: "Llamada", campo: "Campo" };
 
-let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, FILTER = "todos", SELC = null;
+let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, FILTER = "demo", SELC = null;
 
 async function boot() {
   const get = f => fetch("data/" + f).then(r => r.json()).catch(() => null);
@@ -17,7 +17,7 @@ async function boot() {
   ]);
   setupTabs();
   renderBacktest();
-  renderDecList(); if (CLIENTES.length) selectCli(CLIENTES[0].cliente_id);
+  renderDecList(); const _first = CLIENTES.filter(passF)[0] || CLIENTES[0]; if (_first) selectCli(_first.cliente_id);
   renderPresets(); recomputeYK();
   renderFlow();
 }
@@ -61,6 +61,7 @@ function renderBacktest() {
 /* ---------------- DECISIÓN POR CLIENTE ---------------- */
 function passF(d) {
   if (FILTER === "todos") return true;
+  if (FILTER === "demo") return !!d.es_demo;
   if (FILTER === "entrevistas") return String(d.cliente_id).startsWith("ENT");
   if (FILTER === "nocontactar") return d.accion === "NO CONTACTAR";
   return d.segmento.riesgo === FILTER;
@@ -93,32 +94,134 @@ function renderDecDetail(d) {
   ].join("");
   const note = d.nota ? `<div class="dd-note">entrevista · ${d.nota}</div>` : "";
 
+  // bloque central: simulador (casos demo) o calendario (resto)
+  const central = (d.es_demo && d.simulacion) ? simHtml(d) : calendarHtml(d.calendario);
+
+  // detalle de la decisión (dentro del colapsable "Por qué")
   const r = (k, v, why) => `<div class="dd-r"><div class="dk">${k}</div><div class="dv">${v}${why?`<span class="why">${why}</span>`:""}</div></div>`;
-  let decide;
-  if (no) {
-    decide = `<div class="dd-decide">
-      ${r("Acción", "⛔ NO CONTACTAR", "Ya prometió o pagó: no se insiste (anti-fatiga).")}
-      ${r("Frecuencia", "Máx 0 contactos", dec.frecuencia.nota)}
-    </div>`;
-  } else {
-    decide = `<div class="dd-decide">
-      ${r("Acción", "✓ CONTACTAR")}
-      ${r("Canal", CH[dec.canal.canal], dec.canal.motivo)}
-      ${r("Momento", dec.momento.cuando, "Franja "+dec.momento.franja+" · evitar "+dec.momento.evitar)}
-      ${r("Frecuencia", "Máx "+dec.frecuencia.tope_contactos+" contacto(s)", dec.frecuencia.nota)}
-      ${r("Tono", cap(dec.tono), "Tutear, cercano y verificablemente Mibanco")}
-    </div>
-    <div class="dd-msg">
-      <div class="dd-msg-h">${CH[dec.canal.canal]} ${dec.canal.verificable?'<span class="verif">✓ verificable</span>':''}</div>
-      <div class="dd-bubble">${dec.mensaje}</div>
-    </div>
-    ${rankHtml(dec.canal.ranking)}`;
-  }
+  const decideRows = no
+    ? `<div class="dd-decide">${r("Acción", "⛔ NO CONTACTAR", "Ya prometió o pagó: no se insiste.")}</div>`
+    : `<div class="dd-decide">
+        ${r("Canal", "💬 WhatsApp verificable", dec.canal.canal !== 'whatsapp' ? "Escala a llamada/visita solo si no responde (último recurso, no se elimina ningún canal)." : "Oficial, anti-extorsión. Mayor conversión y 15× más barato que llamar.")}
+        ${r("Momento", dec.momento.cuando, "Franja " + dec.momento.franja + " · Lun-Vie 7-19h, sábado solo digital")}
+        ${r("Tono", cap(dec.tono), "Cercano y verificablemente Mibanco")}
+      </div>`;
+
   $("#decDetail").innerHTML = `
     <div class="dd-head">
       <div><div class="dd-name">${d.nombre}</div><div class="dd-tags">${tags}</div></div>
       <span class="pr" style="background:var(--navy);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-weight:700;flex:none">${Math.round(d.prioridad)}</span>
-    </div>${note}${porqueHtml(d.porque, d.segmento, d.ficha)}${decide}${fichaHtml(d.ficha)}${calendarHtml(d.calendario)}`;
+    </div>${note}
+    ${qsHtml(d)}
+    ${yapeHtml(d.yape)}
+    ${central}
+    <details class="collap"><summary>Por qué esta decisión</summary><div class="collap-body">${porqueHtml(d.porque, d.segmento, d.ficha)}${decideRows}</div></details>
+    <details class="collap"><summary>Datos del cliente (del Excel)</summary><div class="collap-body">${fichaHtml(d.ficha)}</div></details>
+    ${(d.es_demo && d.simulacion) ? `<details class="collap"><summary>Calendario del mes (resumen)</summary><div class="collap-body">${calendarHtml(d.calendario)}</div></details>` : ''}
+  `;
+  if (d.es_demo && d.simulacion) mountSim(d);
+}
+
+/* ---------------- QUICK SCOPE (ejecutivo) ---------------- */
+function qsHtml(d) {
+  const cal = d.calendario, no = d.accion === "NO CONTACTAR";
+  const prox = (cal.contactos && cal.contactos.length) ? cal.contactos[0].fecha : "—";
+  const escala = !no && cal.contactos && cal.contactos.some(c => c.canal !== 'whatsapp');
+  const canalTxt = no ? "—" : (escala ? "💬 WhatsApp +esc." : "💬 WhatsApp");
+  return `<div class="dd-qs">
+    <div class="qs-st"><div class="qs-v ${no?'muted':''}">${no ? 'No contactar' : cal.total_contactos + '/' + cal.tope}</div><div class="qs-l">contactos / mes</div></div>
+    <div class="qs-st"><div class="qs-v">${cal.etapa || '—'}</div><div class="qs-l">etapa de mora</div></div>
+    <div class="qs-st"><div class="qs-v">${canalTxt}</div><div class="qs-l">canal</div></div>
+    <div class="qs-st"><div class="qs-v">${no ? '—' : prox}</div><div class="qs-l">próximo contacto</div></div>
+  </div>`;
+}
+
+/* ---------------- CONEXIÓN YAPE (mini-gráfico) ---------------- */
+function yapeHtml(y) {
+  if (!y) return "";
+  const max = Math.max(...y.dias.map(d => d.monto), 1);
+  const fmt = m => m >= 1000 ? "S/" + (m / 1000).toFixed(1) + "k" : "S/" + m;
+  const bars = y.dias.map(d => {
+    const h = Math.max(6, Math.round(d.monto / max * 100));
+    const hot = d.monto >= y.umbral;
+    return `<div class="yp-col">
+      <span class="yp-val ${hot?'hot':''}">${fmt(d.monto)}</span>
+      <div class="yp-track"><div class="yp-bar ${hot?'hot':''}" style="height:${h}%">${hot?'<span class="yp-star">⭐</span>':''}</div></div>
+      <span class="yp-lbl">${d.label}</span>
+    </div>`;
+  }).join("");
+  const nudge = y.buen_dia
+    ? `<div class="yp-nudge"><b>💡 Oportunidad de prepago.</b> ${y.sugerencia}</div>`
+    : `<div class="yp-nudge calm">${y.sugerencia}</div>`;
+  return `<div class="dd-yape">
+    <div class="dd-cal-h">Conexión Yape · ventas últimos 7 días <span class="cal-badge gris">simulado · promedio S/${y.promedio}</span></div>
+    <div class="yp-chart">${bars}</div>
+    ${nudge}
+  </div>`;
+}
+
+/* ---------------- SIMULADOR día-a-día + mini-chat WhatsApp ---------------- */
+function simHtml(d) {
+  const et = d.simulacion.etapas;
+  const TK = { preventivo: "Al día", temprana: "Temprana", media: "Media", tardia: "Tardía", yosila: "YoSiLa" };
+  let idx = et.findIndex(e => e.key === d.simulacion.default); if (idx < 0) idx = 1;
+  const ticks = et.map((e, i) => `<span class="${i===idx?'on':''}">${TK[e.key] || e.key}</span>`).join("");
+  return `<div class="dd-sim">
+    <div class="dd-cal-h">Simulador · ¿qué le mandamos según pasa el tiempo? <span class="cal-badge">mueve el slider</span></div>
+    <div class="sim-slider">
+      <input type="range" id="simRange" min="0" max="${et.length-1}" step="1" value="${idx}" />
+      <div class="sim-ticks">${ticks}</div>
+    </div>
+    <div class="sim-meta" id="simMeta"></div>
+    <div class="sim-phone"><div class="sim-head">💬 Mibanco Cobranzas <span class="verif">✅ Verificado</span></div><div class="sim-chat" id="simChat"></div></div>
+    <button class="sim-play" id="simPlay">▶ reproducir conversación</button>
+  </div>`;
+}
+let _simTimers = [];
+function _clearSim() { _simTimers.forEach(clearTimeout); _simTimers.length = 0; }
+function _simWait(ms) { return new Promise(r => _simTimers.push(setTimeout(r, ms))); }
+function fmtWA(s) { return s.replace(/\*(.*?)\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
+function renderSimMeta(et) {
+  const canal = et.canal === 'campo' ? '💬 WhatsApp → 📞 llamada → 🚶 visita (último recurso)'
+    : et.canal === 'llamada' ? '💬 WhatsApp → 📞 llamada del asesor (si no responde)'
+    : '💬 WhatsApp verificable';
+  $("#simMeta").innerHTML = `<span class="sim-etapa">${et.label}</span> · <b>${et.n_contactos}</b> contacto(s) este mes · ${canal}`;
+}
+async function playSim(et) {
+  _clearSim();
+  const chat = $("#simChat"); if (!chat) return;
+  chat.innerHTML = `<div class="sim-day">hoy</div>`;
+  for (const m of et.conversacion) {
+    await _simWait(420);
+    if (!$("#simChat")) return; // panel cambió
+    if (m.de === "sistema") {
+      const cls = m.tipo === "campo" ? "campo" : m.tipo === "llamada" ? "llamada" : "prog";
+      const el = document.createElement("div"); el.className = "sim-sys " + cls;
+      el.innerHTML = fmtWA(m.texto); chat.appendChild(el);
+    } else if (m.de === "banco") {
+      const typ = document.createElement("div"); typ.className = "sim-msg bank typing";
+      typ.innerHTML = `<div class="sim-bubble"><span class="dots"><span></span><span></span><span></span></span></div>`;
+      chat.appendChild(typ); chat.scrollTop = chat.scrollHeight;
+      await _simWait(Math.min(800 + m.texto.length * 9, 1600));
+      if (!$("#simChat")) return; typ.remove();
+      const el = document.createElement("div"); el.className = "sim-msg bank";
+      el.innerHTML = `<div class="sim-bubble">${fmtWA(m.texto)}</div>`; chat.appendChild(el);
+    } else {
+      const el = document.createElement("div"); el.className = "sim-msg client";
+      el.innerHTML = `<div class="sim-bubble">${fmtWA(m.texto)}</div>`; chat.appendChild(el);
+    }
+    chat.scrollTop = chat.scrollHeight;
+  }
+}
+function mountSim(d) {
+  const et = d.simulacion.etapas;
+  const range = $("#simRange"); if (!range) return;
+  const apply = () => { const e = et[+range.value]; renderSimMeta(e);
+    $$("#decDetail .sim-ticks span").forEach((s, i) => s.classList.toggle("on", i === +range.value));
+    playSim(e); };
+  range.oninput = apply;
+  $("#simPlay").onclick = () => playSim(et[+range.value]);
+  apply();
 }
 function rankHtml(rank) {
   if (!rank || !rank.length) return "";
@@ -133,13 +236,14 @@ function rankHtml(rank) {
 }
 function calendarHtml(cal) {
   if (!cal) return "";
+  const ch = c => c.canal === 'llamada' ? '📞 Llamada' : c.canal === 'campo' ? '🚶 Visita' : '💬 WhatsApp';
   const items = (cal.contactos || []).map(c => `
     <div class="cal-item">
       <span class="cal-date">${c.fecha}</span>
       <div class="cal-body">
         <div class="cal-top">
           <span class="cal-etapa">${c.etapa}</span>
-          <span class="cal-ch">💬 WhatsApp${c.verificable ? ' <span class="verif">✓ verificable</span>' : ''}</span>
+          <span class="cal-ch ${c.canal!=='whatsapp'?'esc':''}">${ch(c)}${c.verificable && c.canal==='whatsapp' ? ' <span class="verif">✓ verificable</span>' : ''}</span>
         </div>
         <div class="cal-msg">${c.mensaje}</div>
       </div>
