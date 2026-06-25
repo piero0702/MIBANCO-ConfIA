@@ -111,13 +111,25 @@ flex-shrink: 0; transition: all .15s;
 display: flex; align-items: center; justify-content: center;
 background: var(--bg); padding: 24px; overflow: hidden;
 }
-.phone-wrap {
+.phone-container {
+position: relative;
 width: 390px; max-width: 100%;
 height: calc(100vh - 130px); max-height: 720px; min-height: 480px;
-border-radius: 22px; overflow: hidden;
 box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.1);
-display: flex; flex-direction: column; background: var(--wa-bg);
+border-radius: 22px;
 }
+.phone-wrap {
+position: absolute; inset: 0;
+border-radius: 22px; overflow: hidden;
+display: flex; flex-direction: column;
+background: var(--wa-bg);
+transition: transform .45s cubic-bezier(.16,1,.3,1);
+will-change: transform;
+}
+.wa-phone  { transform: translateX(0); z-index: 1; }
+.yape-phone { transform: translateX(105%); z-index: 2; }
+.yape-phone.yp-visible { transform: translateX(0); }
+.wa-phone.yp-push       { transform: translateX(-12%); }
 
 /* ── WHATSAPP HEADER ── */
 .wa-head {
@@ -279,22 +291,15 @@ flex-shrink: 0; color: #fff;
   --yape-l: #EDE4FF;
 }
 
-/* ── PHONE TOGGLE TABS ── */
-.phone-tabs {
-  display: flex; gap: 8px; margin-bottom: 12px; width: 390px; max-width: 100%;
+/* ── YAPE REGISTRO: pasos animados ── */
+.yp-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: #f8f4ff; border: 1px solid var(--yape-l); margin-bottom: 8px;
+  opacity: 0; transform: translateX(20px);
+  transition: opacity .35s ease, transform .35s ease;
 }
-.phone-tab {
-  flex: 1; padding: 10px 14px; border-radius: 11px; font-weight: 700;
-  font-size: 13px; border: 2px solid var(--line); background: #fff;
-  cursor: pointer; transition: all .18s ease; font-family: var(--sans, sans-serif);
-  color: #555;
-}
-.phone-tab:hover { border-color: #ccc; background: #f8f8f8; }
-.phone-tab#tabWa.active { border-color: var(--wa); background: #f0fdf4; color: #075E54; }
-.phone-tab#tabYape.active { border-color: var(--yape); background: var(--yape-l); color: var(--yape-d); }
-.tab-badge { color: #e53935; font-size: 16px; margin-left: 3px; animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-.hidden { display: none !important; }
+.yp-step.yp-step-visible { opacity: 1; transform: translateX(0); }
 
 /* ── YAPE PHONE ── */
 .yape-phone { background: #fafafa; }
@@ -352,12 +357,6 @@ flex-shrink: 0; color: #fff;
 /* ── YAPE REGISTRO STATE ── */
 .yp-reg { padding: 18px 16px; background: #fff; min-height: 100%; }
 .yp-reg-title { font-weight: 800; font-size: 15px; color: var(--yape-d); margin-bottom: 14px; }
-.yp-step {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 10px;
-  background: #f8f4ff; border: 1px solid var(--yape-l); margin-bottom: 8px;
-}
-.yp-step.active { background: var(--yape-l); border-color: var(--yape); }
 .yp-ic {
   width: 24px; height: 24px; border-radius: 50%;
   background: var(--yape); color: #fff;
@@ -428,5 +427,5 @@ flex-shrink: 0; color: #fff;
 .left-panel { border-right: none; border-bottom: 1px solid var(--line); max-height: 220px; flex-direction: row; overflow-x: auto; }
 .left-section { border-top: none; border-right: 1px solid var(--line); min-width: 200px; }
 .chat-panel { padding: 12px; }
-.phone-wrap { height: 60vh; min-height: 400px; }
+.phone-container { height: 60vh; min-height: 400px; }
   }

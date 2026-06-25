@@ -236,23 +236,6 @@ scrollBottom();
 }
 
 /* ── Yape second phone ── */
-function setYapeIdle() {
-document.getElementById("yapeHead").querySelector(".yp-head-title").textContent = "yape";
-document.getElementById("yapeBody").innerHTML = `
-<div class="yp-idle">
-  <div class="yp-idle-logo">💜</div>
-  <div class="yp-idle-name">yape</div>
-  <div class="yp-idle-bal-card">
-    <div class="yp-idle-bal-label">Saldo disponible</div>
-    <div class="yp-idle-bal">S/ 1,234.50</div>
-  </div>
-  <div class="yp-idle-btns">
-    <div class="yp-idle-btn">💸 Pagar</div>
-    <div class="yp-idle-btn">📥 Recargar</div>
-    <div class="yp-idle-btn primary">💜 Yapear</div>
-  </div>
-</div>`;
-}
 
 function setYapeContent(tipo, msg) {
 const head = document.getElementById("yapeHead").querySelector(".yp-head-title");
@@ -300,36 +283,27 @@ body.innerHTML = `
 }
 }
 
-function notifyYapeTab() {
-const badge = document.getElementById("yapeBadge");
-if (badge) badge.hidden = false;
+async function animateYapeSteps() {
+const steps = document.querySelectorAll("#yapeBody .yp-step");
+for (const step of steps) {
+step.classList.add("yp-step-visible");
+await later(650);
+}
+await later(2000);
 }
 
-function resetYapeTab() {
-const badge = document.getElementById("yapeBadge");
-if (badge) badge.hidden = true;
-setYapeIdle();
-showPhone("wa");
-}
-
-function showPhone(which) {
-const wa = document.querySelector(".wa-phone");
-const yp = document.querySelector(".yape-phone");
-const tabWa = document.getElementById("tabWa");
-const tabYp = document.getElementById("tabYape");
-if (which === "yape") {
-wa.classList.add("hidden"); yp.classList.remove("hidden");
-tabWa.classList.remove("active"); tabYp.classList.add("active");
-document.getElementById("yapeBadge").hidden = true;
+async function showYapeScreen(tipo, msg) {
+setYapeContent(tipo, msg);
+document.getElementById("yapePhone").classList.add("yp-visible");
+document.getElementById("waPhone").classList.add("yp-push");
+if (tipo === "registro") {
+await animateYapeSteps();
 } else {
-yp.classList.add("hidden"); wa.classList.remove("hidden");
-tabYp.classList.remove("active"); tabWa.classList.add("active");
+await later(3800);
 }
-}
-
-function setupPhoneTabs() {
-document.getElementById("tabWa").addEventListener("click", () => showPhone("wa"));
-document.getElementById("tabYape").addEventListener("click", () => showPhone("yape"));
+document.getElementById("yapePhone").classList.remove("yp-visible");
+document.getElementById("waPhone").classList.remove("yp-push");
+await later(500);
 }
 
 function appendSysCard(msg) {
@@ -408,11 +382,9 @@ if (msg.de === "sistema") {
 if (msg.tipo === "progreso") {
 appendProgressCard(msg);
 } else if (msg.tipo === "yape-registro") {
-setYapeContent("registro");
-notifyYapeTab();
+await showYapeScreen("registro", null);
 } else if (msg.tipo === "yape-transaccion") {
-setYapeContent("transaccion", msg);
-notifyYapeTab();
+await showYapeScreen("transaccion", msg);
 } else {
 appendSysCard(msg);
 }
@@ -485,13 +457,12 @@ hdr.innerHTML = `
 
 function resetAndPlay() {
 clearTimers();
-resetYapeTab();
+document.getElementById("yapePhone")?.classList.remove("yp-visible");
+document.getElementById("waPhone")?.classList.remove("yp-push");
 reproducir();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-setupPhoneTabs();
-setYapeIdle();
 renderPerfiles();
 renderEtapas();
 updateWAHeader();
