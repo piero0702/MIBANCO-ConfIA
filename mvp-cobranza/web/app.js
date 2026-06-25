@@ -118,7 +118,7 @@ function renderDecDetail(d) {
     <div class="dd-head">
       <div><div class="dd-name">${d.nombre}</div><div class="dd-tags">${tags}</div></div>
       <span class="pr" style="background:var(--navy);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-weight:700;flex:none">${Math.round(d.prioridad)}</span>
-    </div>${note}${decide}${calendarHtml(d.calendario)}`;
+    </div>${note}${porqueHtml(d.porque, d.segmento, d.ficha)}${decide}${fichaHtml(d.ficha)}${calendarHtml(d.calendario)}`;
 }
 function rankHtml(rank) {
   if (!rank || !rank.length) return "";
@@ -152,6 +152,52 @@ function calendarHtml(cal) {
       <span class="cal-badge">${cal.total_contactos}/${cal.tope} este mes</span></div>
     ${body}
     ${cal.total_contactos ? `<div class="cal-note">${cal.nota}</div>` : ''}
+  </div>`;
+}
+function porqueHtml(p, seg, f) {
+  if (!p) return "";
+  const probPct = Math.round((f?.prob_repago_7d || 0) * 100);
+  return `<div class="dd-porque">
+    <div class="dd-cal-h">Por qué esta decisión <span class="cal-badge">riesgo ${seg.riesgo} · ${p.categoria_mora}</span></div>
+    <div class="pq-prob">
+      <div class="pq-prob-h">Probabilidad de repago · 7 días, sin contactarlo</div>
+      <div class="pq-bar"><div class="pq-bar-fill" style="width:${probPct}%"></div><span class="pq-bar-lbl">${probPct}%</span></div>
+      <div class="pq-prob-note">${p.prob_repago}</div>
+    </div>
+    <div class="pq-list">
+      <div class="pq-item"><b>Riesgo</b>${p.riesgo}</div>
+      <div class="pq-item"><b>Cuántos contactos</b>${p.tope}</div>
+      <div class="pq-item"><b>Decisión</b>${p.contactar}</div>
+    </div>
+  </div>`;
+}
+function fichaHtml(f) {
+  if (!f) return "";
+  const num = n => (n || 0).toLocaleString("es-PE");
+  const cell = (k, v) => `<div class="fi"><span class="fi-k">${k}</span><span class="fi-v${(v === null || v === undefined || v === "" || v === "—") ? " muted" : ""}">${(v === null || v === undefined || v === "") ? "—" : v}</span></div>`;
+  const si = b => b ? "Sí" : "No";
+  return `<div class="dd-ficha">
+    <div class="dd-cal-h">Datos del cliente <span class="cal-badge gris">del Excel del banco</span></div>
+    <div class="fi-grid">
+      ${cell("Edad", f.edad ? f.edad + " años" : null)}
+      ${cell("Región", f.region)}
+      ${cell("Zona", f.zona)}
+      ${cell("Producto", f.producto)}
+      ${cell("Saldo", "S/ " + num(f.saldo_restante))}
+      ${cell("Cuota", "S/ " + num(f.cuota_mensual))}
+      ${cell("Días de mora", f.dias_mora)}
+      ${cell("Prob. impago", Math.round(f.prob_default * 100) + "%")}
+      ${cell("Paga a tiempo", Math.round(f.ratio_pago * 100) + "%")}
+      ${cell("Atrasos previos", f.num_atrasos_previos)}
+      ${cell("Mora promedio", f.dias_mora_promedio ? f.dias_mora_promedio + " d" : null)}
+      ${cell("Último pago", f.ultimo_pago_dias ? "hace " + f.ultimo_pago_dias + " d" : null)}
+      ${cell("Digital", si(f.es_digital))}
+      ${cell("Usa app", f.uso_app != null ? Math.round(f.uso_app * 100) + "%" : null)}
+      ${cell("Usa WhatsApp", si(f.uso_whatsapp))}
+      ${cell("Interacción digital", f.interaccion_digital ? f.interaccion_digital + "/100" : null)}
+      ${cell("Score banco (no se usa)", f.score_riesgo)}
+      ${cell("Prob. repago 30d", f.prob_repago_30d != null ? Math.round(f.prob_repago_30d * 100) + "%" : null)}
+    </div>
   </div>`;
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }

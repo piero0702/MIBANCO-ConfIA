@@ -80,6 +80,85 @@ def construir_calendario(cli: dict, cfg: dict) -> dict:
 
 
 # --------------------------------------------------------------------------- #
+# Explicacion por cliente: datos del Excel + por que de la decision
+# --------------------------------------------------------------------------- #
+def _categoria_mora(dias: int) -> str:
+    if dias <= 0:
+        return "Al día / preventivo"
+    if dias <= 30:
+        return "Mora temprana (1-30 días)"
+    if dias <= 60:
+        return "Mora media (31-60 días)"
+    return "Mora alta (60+ días)"
+
+
+def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
+    """Devuelve (ficha, porque). `ficha` = las propiedades reales del Excel del cliente.
+    `porque` = el razonamiento de la decision (riesgo, etapa, prob. de repago, tope)."""
+    dias = int(cli.get("dias_mora", 0))
+    tramo = rules.tramo_de_mora(dias, cfg)
+    base7 = float(cli.get("prob_pago_7d_base", 0) or 0)
+    base30 = float(cli.get("prob_pago_30d_base", 0) or 0)
+    prob7 = base7 if base7 > 0 else tramo["pago_7d"]   # real si existe, si no la tasa del tramo
+    riesgo = d["segmento"]["riesgo"]
+    prob_default = float(cli.get("prob_default", 0.2))
+    ratio = float(cli.get("ratio_pago", 0))
+    atrasos = int(cli.get("num_atrasos_previos", 0))
+    tope_ep = d["decision"]["frecuencia"]["tope_contactos"]
+    tope_mes = d["calendario"]["tope"]
+    total_mes = d["calendario"]["total_contactos"]
+
+    ficha = {
+        "edad": cli.get("edad") or None,
+        "region": cli.get("region") or "—",
+        "zona": cli.get("zona") or "—",
+        "producto": cli.get("producto", "microcrédito"),
+        "es_digital": bool(cli.get("es_digital", 0)),
+        "uso_app": round(float(cli.get("uso_app", 0) or 0), 2),
+        "uso_whatsapp": bool(cli.get("uso_whatsapp", 0)),
+        "interaccion_digital": round(float(cli.get("interaccion_digital_score", 0) or 0)),
+        "score_riesgo": round(float(cli.get("score_riesgo", 0) or 0)) or None,
+        "prob_default": round(prob_default, 3),
+        "ratio_pago": round(ratio, 2),
+        "num_atrasos_previos": atrasos,
+        "dias_mora_promedio": round(float(cli.get("dias_mora_promedio", 0) or 0)),
+        "ultimo_pago_dias": int(cli.get("ultimo_pago_dias", 0) or 0) or None,
+        "saldo_restante": round(float(cli.get("saldo_restante", 0) or 0)),
+        "cuota_mensual": round(float(cli.get("cuota_mensual", 0) or 0)),
+        "dias_mora": dias,
+        "prob_repago_7d": round(prob7, 3),
+        "prob_repago_30d": round(base30, 3) if base30 else None,
+    }
+
+    por_riesgo = (f"Riesgo {riesgo.upper()} — prob. de impago {prob_default:.0%}, "
+                  f"paga {ratio:.0%} de sus cuotas a tiempo, {atrasos} atraso(s) previos. "
+                  f"El score del banco ({ficha['score_riesgo'] or '—'}) NO se usa para decidir: "
+                  f"en la data tiene correlación ~0 con el pago real (ruido).")
+    por_prob = (f"{prob7:.0%} de probabilidad de pagar en 7 días sin que lo contactemos"
+                + (f" ({base30:.0%} a 30 días)" if base30 else "")
+                + (". Conviene solo un recordatorio preventivo." if dias <= 0
+                   else ". El contacto temprano rinde casi el doble que el tardío."))
+    if tope_ep == 0:
+        por_tope = "Tope 0: ya prometió o pagó, no se insiste (anti-fatiga)."
+    else:
+        por_tope = (f"Máx {tope_ep} contacto(s) por episodio porque es riesgo {riesgo} "
+                    f"(regla: bajo=1, medio=2, alto=3 — el sobre-contacto cansa y baja el pago, "
+                    f"no más). En todo el mes, hasta {tope_mes} cruzando etapas; "
+                    f"se programaron {total_mes}.")
+    contactar = ("NO contactar — " + d["decision"]["frecuencia"]["nota"]) if d["accion"] == "NO CONTACTAR" \
+        else ("Contactar por " + d["decision"]["canal"]["canal_nombre"] + " — " + d["decision"]["canal"]["motivo"])
+
+    porque = {
+        "categoria_mora": _categoria_mora(dias),
+        "riesgo": por_riesgo,
+        "prob_repago": por_prob,
+        "tope": por_tope,
+        "contactar": contactar,
+    }
+    return ficha, porque
+
+
+# --------------------------------------------------------------------------- #
 # 1) Mibanco-confIA: decision por cliente
 # --------------------------------------------------------------------------- #
 def construir_clientes(muestra: int) -> tuple[list[dict], str]:
@@ -96,6 +175,7 @@ def construir_clientes(muestra: int) -> tuple[list[dict], str]:
         # senal de no-contactar por fatiga (tope alcanzado)
         d["accion"] = "NO CONTACTAR" if d["decision"]["frecuencia"]["tope_contactos"] == 0 else "CONTACTAR"
         d["calendario"] = construir_calendario(c, cfg)
+        d["ficha"], d["porque"] = construir_explicacion(c, d, cfg)
         decisiones.append(d)
     decisiones.sort(key=lambda d: d["prioridad"], reverse=True)
     return decisiones, fuente

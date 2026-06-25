@@ -89,7 +89,8 @@ def cargar_reales(muestra: int | None = 300) -> list[dict]:
     df = cli.copy()
     if cred is not None:
         cols = [c for c in ["cliente_id", "credito_id", "dias_mora", "tramo_mora",
-                             "saldo_restante", "cuota_mensual", "estado_credito"]
+                             "saldo_restante", "cuota_mensual", "estado_credito",
+                             "producto", "prob_pago_7d_base", "prob_pago_30d_base"]
                 if c in cred.columns]
         df = df.merge(cred[cols], on="cliente_id", how="left")
 
@@ -119,7 +120,7 @@ def _normalizar(r: dict) -> dict:
     return {
         "cliente_id": g("cliente_id", default=None),
         "nombre": nombre,
-        "edad": g("edad"),
+        "edad": int(g("edad", default=0) or 0),
         "region": g("region", default=""),
         "zona": g("zona", default=""),
         "tipo_cliente": g("tipo_cliente", default=""),
@@ -131,6 +132,17 @@ def _normalizar(r: dict) -> dict:
         "saldo_restante": float(g("saldo_restante", default=0) or 0),
         "cuota_mensual": float(g("cuota_mensual", default=0) or 0),
         "promesa_pago": int(g("promesa_pago", default=0) or 0),
+        # --- propiedades extra del Excel, para explicar la decision por cliente ---
+        "producto": g("producto", default="microcredito"),
+        "tramo_mora": str(g("tramo_mora", default="")),
+        "score_riesgo": float(g("score_riesgo", default=0) or 0),
+        "uso_app": float(g("uso_app", default=0) or 0),
+        "uso_whatsapp": int(g("uso_whatsapp", default=0) or 0),
+        "interaccion_digital_score": float(g("interaccion_digital_score", default=0) or 0),
+        "dias_mora_promedio": float(g("dias_mora_promedio", default=0) or 0),
+        "ultimo_pago_dias": int(g("ultimo_pago_dias", default=0) or 0),
+        "prob_pago_7d_base": float(g("prob_pago_7d_base", default=0) or 0),
+        "prob_pago_30d_base": float(g("prob_pago_30d_base", default=0) or 0),
         "nota": "",
     }
 
