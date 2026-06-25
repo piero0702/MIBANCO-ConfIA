@@ -580,27 +580,40 @@ flex-shrink: 0; color: #fff;
   letter-spacing: .01em;
 }
 
-/* ── SENDER PHONE (celular separado, entra desde la izquierda) ── */
-.phone-container.sp-active { overflow: visible; }
+/* ── PHONES STAGE: contexto para los dos celulares ── */
+.phones-stage {
+  position: relative;
+  /* mismo tamaño que phone-container para no romper el layout */
+  width: 390px; max-width: 100%;
+  height: calc(100vh - 130px); max-height: 720px; min-height: 480px;
+}
 
-.sender-phone {
-  /* Sale del flow de inset: 0 — se posiciona como celular independiente */
-  inset: unset !important;
+/* phone-container ahora vive dentro del stage y se mueve como bloque */
+.phone-container {
+  transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
+  height: 100%;
+}
+.phone-container.sp-push-right { transform: translateX(22%); }
+
+/* ── SENDER PHONE: celular independiente a la izquierda del stage ── */
+.phones-stage .sender-phone {
+  /* Override phone-wrap inset: 0 — vive FUERA del container principal */
+  position: absolute;
+  inset: unset;
+  right: 100%;          /* justo a la izquierda del stage */
+  margin-right: -18px;  /* pequeño solapamiento visual */
   top: 5%;
-  bottom: 5%;
-  right: calc(100% - 22px);   /* queda a la izquierda, sobresale 22px del borde */
-  left: auto;
-  width: 68%;
+  height: 90%;
+  width: 66%;
   background: #f5f5f5;
   border-radius: 24px;
-  border: 2px solid rgba(0,0,0,.10);
-  box-shadow: -8px 16px 48px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.12);
+  border: 2px solid rgba(0,0,0,.08);
+  box-shadow: -10px 18px 52px rgba(0,0,0,.30), 0 2px 6px rgba(0,0,0,.10);
   transform: translateX(-115%);
-  z-index: 5;
   transition: transform .48s cubic-bezier(.16,1,.3,1);
+  z-index: 5;
 }
 .sender-phone.sp-visible { transform: translateX(0); }
-.wa-phone.sp-push-right  { transform: translateX(20%); }
 
 .sp-body {
   flex: 1; overflow: hidden; position: relative;

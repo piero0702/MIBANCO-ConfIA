@@ -453,9 +453,8 @@ document.getElementById("senderBody").innerHTML = `
   <div class="sp-success-note">Llegó al instante · sin costo</div>
 </div>`;
 
-document.getElementById("phoneContainer").classList.add("sp-active");
 document.getElementById("senderPhone").classList.add("sp-visible");
-document.getElementById("waPhone").classList.add("sp-push-right");
+document.getElementById("phoneContainer").classList.add("sp-push-right");
 
 await later(1800);
 
@@ -468,8 +467,7 @@ if (succ) succ.classList.add("sp-success-show");
 await later(1800);
 
 document.getElementById("senderPhone").classList.remove("sp-visible");
-document.getElementById("waPhone").classList.remove("sp-push-right");
-document.getElementById("phoneContainer").classList.remove("sp-active");
+document.getElementById("phoneContainer").classList.remove("sp-push-right");
 await later(600);
 
 await showYapePush(msg);
@@ -690,9 +688,9 @@ clearTimers();
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("senderPhone")?.classList.remove("sp-visible");
-document.getElementById("waPhone")?.classList.remove("yp-push", "sp-push-right");
+document.getElementById("waPhone")?.classList.remove("yp-push");
+document.getElementById("phoneContainer")?.classList.remove("sp-push-right", "yp-shadow");
 document.getElementById("appLabel")?.classList.remove("yp-mode");
-document.getElementById("phoneContainer")?.classList.remove("yp-shadow", "sp-active");
 reproducir();
 }
 

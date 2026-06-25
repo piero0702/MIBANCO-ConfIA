@@ -47,37 +47,10 @@
       <span class="app-label-yp" id="appLabelYp">💜 yape</span>
     </div>
 
-    <div class="phone-container" id="phoneContainer">
+    <!-- Escenario de dos celulares — sender phone vive FUERA del container principal -->
+    <div class="phones-stage" id="phonesStage">
 
-      <!-- WhatsApp phone -->
-      <div class="phone-wrap wa-phone" id="waPhone">
-        <div class="wa-head" id="waHeader"></div>
-        <div class="wa-body" id="chatBody"></div>
-        <div class="wa-footer">
-          <span class="wa-attach">📎</span>
-          <div class="wa-input-box">Escribe un mensaje...</div>
-          <div class="wa-mic">🎤</div>
-        </div>
-      </div>
-
-      <!-- Yape phone (overlay, entra desde la derecha automáticamente) -->
-      <div class="phone-wrap yape-phone" id="yapePhone">
-        <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
-        <div class="yp-head">
-          <span class="yp-back">←</span>
-          <span class="yp-head-title" id="yapeHeadTitle">yape</span>
-          <div class="yp-head-avatar">💜</div>
-        </div>
-        <div class="yp-body" id="yapeBody"></div>
-        <div class="yp-nav">
-          <span class="yp-nav-ic active">🏠</span>
-          <span class="yp-nav-ic">💜</span>
-          <span class="yp-nav-ic">📋</span>
-          <span class="yp-nav-ic">👤</span>
-        </div>
-      </div>
-
-      <!-- Sender phone (entra desde la IZQUIERDA — muestra al pagador haciendo el Yape) -->
+      <!-- Sender phone: celular separado, entra desde la izquierda -->
       <div class="phone-wrap sender-phone" id="senderPhone">
         <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
         <div class="yp-head">
@@ -94,7 +67,40 @@
         </div>
       </div>
 
-    </div>
+      <!-- Container principal: WhatsApp + Yape (se mueve como bloque) -->
+      <div class="phone-container" id="phoneContainer">
+
+        <!-- WhatsApp phone -->
+        <div class="phone-wrap wa-phone" id="waPhone">
+          <div class="wa-head" id="waHeader"></div>
+          <div class="wa-body" id="chatBody"></div>
+          <div class="wa-footer">
+            <span class="wa-attach">📎</span>
+            <div class="wa-input-box">Escribe un mensaje...</div>
+            <div class="wa-mic">🎤</div>
+          </div>
+        </div>
+
+        <!-- Yape phone (overlay, entra desde la derecha) -->
+        <div class="phone-wrap yape-phone" id="yapePhone">
+          <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
+          <div class="yp-head">
+            <span class="yp-back">←</span>
+            <span class="yp-head-title" id="yapeHeadTitle">yape</span>
+            <div class="yp-head-avatar">💜</div>
+          </div>
+          <div class="yp-body" id="yapeBody"></div>
+          <div class="yp-nav">
+            <span class="yp-nav-ic active">🏠</span>
+            <span class="yp-nav-ic">💜</span>
+            <span class="yp-nav-ic">📋</span>
+            <span class="yp-nav-ic">👤</span>
+          </div>
+        </div>
+
+      </div><!-- /phone-container -->
+
+    </div><!-- /phones-stage -->
 
     <!-- Botón replay -->
     <button class="replay-btn" id="replayBtn" title="Repetir animación">▶ Repetir</button>
