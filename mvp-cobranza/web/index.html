@@ -11,60 +11,148 @@
 </head>
 <body>
 
-
 <!-- ═══════════════════ HEADER ═══════════════════ -->
 <header class="app-header">
-  <div class="header-inner">
-    <div class="header-brand">
-      <div class="brand-logomark" aria-hidden="true">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="40" height="40" rx="11" fill="#E2231A"/>
-          <path d="M10 27V16.5C10 15.9 10.2 15.4 10.7 15C11.2 14.6 11.8 14.4 12.5 14.4C13.1 14.4 13.7 14.6 14.2 15C14.7 15.4 14.9 15.8 15 16.2L18.3 22.5C18.6 23.1 19 23.4 19.5 23.4C20 23.4 20.4 23.1 20.7 22.5L24 16.2C24.1 15.8 24.3 15.4 24.8 15C25.3 14.6 25.9 14.4 26.5 14.4C27.2 14.4 27.8 14.6 28.3 15C28.8 15.4 29 15.9 29 16.5V27H26.5V18L23.1 24.3C22.8 24.9 22.4 25.4 21.9 25.7C21.4 26 20.9 26.2 20.3 26.2C19.1 26.2 18.2 25.7 17.5 24.6L13.5 18V27H10Z" fill="white"/>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <div class="brand-name">Motor de Cobranza Inteligente</div>
-        <div class="brand-sub">
-          <span class="brand-pill">PoC</span>
-          AsesorIA · YateKobro · IAthon ULIMA × Mibanco 2026
-        </div>
-      </div>
-    </div>
-    <a href="chat.html" style="background:#25D366;color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;flex-shrink:0">💬 Demo Conversación →</a>
-    <div class="header-meta">
-      <span class="src-badge" id="srcBadge">fuente: —</span>
-      <div class="header-hint">Salida real de <code>engine/*.py</code> · regenera con <code>python engine/build.py</code></div>
-    </div>
-  </div>
+<div class="header-inner">
+<div class="header-brand">
+<div class="brand-logomark" aria-hidden="true">
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="40" height="40" rx="11" fill="#E2231A"/>
+<path d="M10 27V16.5C10 15.9 10.2 15.4 10.7 15C11.2 14.6 11.8 14.4 12.5 14.4C13.1 14.4 13.7 14.6 14.2 15C14.7 15.4 14.9 15.8 15 16.2L18.3 22.5C18.6 23.1 19 23.4 19.5 23.4C20 23.4 20.4 23.1 20.7 22.5L24 16.2C24.1 15.8 24.3 15.4 24.8 15C25.3 14.6 25.9 14.4 26.5 14.4C27.2 14.4 27.8 14.6 28.3 15C28.8 15.4 29 15.9 29 16.5V27H26.5V18L23.1 24.3C22.8 24.9 22.4 25.4 21.9 25.7C21.4 26 20.9 26.2 20.3 26.2C19.1 26.2 18.2 25.7 17.5 24.6L13.5 18V27H10Z" fill="white"/>
+</svg>
+</div>
+<div class="brand-text">
+<div class="brand-name">Motor de Cobranza Inteligente</div>
+<div class="brand-sub">
+<span class="brand-pill">PoC</span>
+AsesorIA · YateKobro · IAthon ULIMA × Mibanco 2026
+</div>
+</div>
+</div>
+<a href="chat.html" style="background:#25D366;color:#fff;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;flex-shrink:0">💬 Demo Conversación →</a>
+<div class="header-meta">
+<span class="src-badge" id="srcBadge">fuente: —</span>
+<div class="header-hint">Salida real de <code>engine/*.py</code> · regenera con <code>python engine/build.py</code></div>
+</div>
+</div>
 </header>
-
 
 <!-- ═══════════════════ TABS ═══════════════════ -->
 <nav class="app-tabs" role="navigation" aria-label="Módulos del motor">
-  <div class="tabs-inner">
-    <button class="tab active" data-tab="asesoria" aria-selected="true">
-      <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      AsesorIA · Decisión
-    </button>
-    <button class="tab" data-tab="yatekobro" aria-selected="false">
-      <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      YateKobro · Imputación
-    </button>
-    <button class="tab" data-tab="flujo" aria-selected="false">
-      <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-      Flujo end-to-end
-    </button>
-  </div>
+<div class="tabs-inner">
+<button class="tab active" data-tab="asesoria" aria-selected="true">
+<svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+AsesorIA · Decisión
+</button>
+<button class="tab" data-tab="yatekobro" aria-selected="false">
+<svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+YateKobro · Imputación
+</button>
+<button class="tab" data-tab="flujo" aria-selected="false">
+<svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+Flujo end-to-end
+</button>
+</div>
 </nav>
 
-
-<!-- ═══════════════════ MÓDULO 1 · ASESORIA ═══════════════════ -->
+<!-- ════════════════════ MÓDULO 1 · ASESORIA ════════════════════ -->
 <main class="panel active" id="tab-asesoria">
 
+<section class="card">
+<div class="card-h">
+<h2>Backtest de la política</h2>
+<span class="card-sub">Tope de 2 contactos + canal por perfil digital, computado sobre la tabla de contactos. <b id="btFuente"></b></span>
+</div>
+<div class="bt" id="btTable"><div class="loading">corriendo backtest…</div></div>
+</section>
 
-  <section class="card">
-    <div class="card-h">
-      <div class="card-title-group">
-        <h2>Backtest de la política</h2>
-        <span class="card-sub">Tope de 2 contactos + canal por perfil digital, computado sobre la tabla de contactos. <b id="btFuente"></b></span>
-      </div>
+<section class="card">
+<div class="card-h">
+<h2>Decisión por cliente</h2>
+<span class="card-sub">El motor decide, para cada cliente: <b>a quién no molestar</b>, canal, momento, frecuencia, tono y mensaje verificable.</span>
+</div>
+<div class="dec">
+<div class="dec-list">
+<div class="dec-filters" id="decFilters">
+<button class="chip on" data-f="todos">Todos</button>
+<button class="chip" data-f="entrevistas">Entrevistados</button>
+<button class="chip" data-f="nocontactar">No contactar</button>
+<button class="chip" data-f="alto">Riesgo alto</button>
+</div>
+<div class="dec-rows" id="decRows"></div>
+</div>
+<div class="dec-detail" id="decDetail"><div class="empty">Selecciona un cliente →</div></div>
+</div>
+</section>
+</main>
+
+<!-- ════════════════════ MÓDULO 2 · YATEKOBRO ════════════════════ -->
+<main class="panel" id="tab-yatekobro">
+<section class="card">
+<div class="card-h">
+<h2>Motor de imputación YateKobro</h2>
+<span class="card-sub">Un % de cada venta Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se notifica en 3 momentos y se apaga solo al completar la cuota.</span>
+</div>
+
+<div class="yk">
+<div class="yk-controls">
+<div class="yk-presets" id="ykPresets"></div>
+
+<div class="yk-field">
+<label>Crédito (saldo S/)</label>
+<input type="number" id="ykSaldo" value="3000" min="500" step="100" />
+</div>
+<div class="yk-field-row">
+<div class="yk-field"><label>Tasa EA</label><input type="number" id="ykTasa" value="50" min="10" max="120" step="1" /><span class="unit">%</span></div>
+<div class="yk-field"><label>Plazo</label><input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" /><span class="unit">m</span></div>
+</div>
+<div class="yk-field">
+<label>% por venta Yape <b id="ykPctV">2%</b></label>
+<div class="seg" id="ykPct"><button data-v="1">1%</button><button data-v="2" class="on">2%</button><button data-v="3">3%</button><button data-v="5">5%</button></div>
+</div>
+<div class="yk-field">
+<label>Ventas por día en Yape <b id="ykVentasV">S/ 1,000</b></label>
+<input type="range" id="ykVentas" min="200" max="2500" step="100" value="1000" />
+</div>
+<div class="yk-mode" id="ykMode"></div>
+</div>
+
+<div class="yk-out">
+<div class="yk-amort" id="ykAmort"></div>
+<div class="yk-bars" id="ykBars"></div>
+<div class="yk-resumen" id="ykResumen"></div>
+
+<div class="yk-split">
+<div class="yk-ledger-wrap">
+<div class="mini-h">Ledger día a día <span id="ykLedMode" class="ledtag"></span></div>
+<div class="ledger" id="ykLedger"></div>
+</div>
+<div class="yk-events-wrap">
+<div class="mini-h">Notificaciones emitidas (solo 3)</div>
+<div class="events" id="ykEvents"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- ════════════════════ MÓDULO 3 · FLUJO ════════════════════ -->
+<main class="panel" id="tab-flujo">
+<section class="card">
+<div class="card-h">
+<h2>Flujo end-to-end de la solución</h2>
+<span class="card-sub">Cómo se conectan las capas: del dato a la conversación, sin una sola llamada de cobranza.</span>
+</div>
+<div class="flow" id="flow"></div>
+</section>
+</main>
+
+<footer class="lab-foot">
+<span>AsesorIA + YateKobro · IAthon ULIMA × Mibanco 2026 · Equipo 8</span>
+<span id="footMeta"></span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
