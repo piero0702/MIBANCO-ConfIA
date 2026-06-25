@@ -154,6 +154,7 @@
         <h2>Mibanco-confIA · decisión por cliente</h2>
         <span class="card-sub">El motor <b>Mibanco-confIA</b> decide, para cada cliente: <b>a quién no molestar</b>, canal, momento, frecuencia, tono y mensaje. Selecciona un cliente y verás <b>sus datos del Excel</b>, <b>por qué</b> se toma cada decisión y su <b>calendario de contactos del mes</b>.</span>
       </div>
+      <button class="add-cli" id="addCliBtn">➕ Simular ingreso de cliente</button>
     </div>
     <div class="dec">
       <div class="dec-list">
@@ -527,6 +528,15 @@
   <span class="foot-meta">Recupera más, sin perseguir.</span>
 </footer>
 
+<!-- ═══════════ MODAL · Simular ingreso de cliente nuevo ═══════════ -->
+<div class="modal-ov" id="ncModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Simular ingreso de cliente">
+    <div class="modal-h"><b>➕ Simular ingreso de un cliente nuevo</b><button class="modal-x" id="ncClose" aria-label="Cerrar">✕</button></div>
+    <div class="modal-body" id="ncBody"></div>
+  </div>
+</div>
+
 <script src="app.js"></script>
+<script src="nuevo-cliente.js"></script>
 </body>
 </html>

@@ -73,7 +73,7 @@ function renderDecList() {
     const no = d.accion === "NO CONTACTAR";
     return `<div class="drow ${String(d.cliente_id)===String(SELC)?'on':''}" data-id="${d.cliente_id}">
       <span class="pr" style="background:${col}">${pr}</span>
-      <span class="nm">${d.nombre}<small>${d.segmento.tramo_mora} · ${d.segmento.es_digital?'digital':'no digital'} · ${CH[d.decision.canal.canal]}</small></span>
+      <span class="nm">${d.es_nuevo?'<span class="nuevo-tag">NUEVO</span> ':''}${d.nombre}<small>${d.segmento.tramo_mora} · ${d.segmento.es_digital?'digital':'no digital'} · ${CH[d.decision.canal.canal]}</small></span>
       <span class="act ${no?'act-no':'act-si'}">${no?'no contactar':'contactar'}</span>
     </div>`;
   }).join("");
