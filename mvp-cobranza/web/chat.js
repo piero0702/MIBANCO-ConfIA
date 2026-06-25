@@ -89,25 +89,36 @@ texto: "✅ Agendado para las 15:00, Alessia.\nTu asesor Juan García (verificab
 ],
 yatekobro: [
 { de: "sistema", tipo: "progreso",
+titulo: "YoSiLa en marcha · día 12",
+interes_pct: 72, capital_pct: 0,
+sub: "12 días · 28 transacciones Yape",
+delay: 400 },
+{ de: "banco", delay: 700,
+texto: "*Mibanco* ✅ 📊\n¡Alessia, van muy bien! Llevan 12 días.\nEl interés de junio va al 72% — cada Yape que recibís suma automático." },
+{ de: "sistema", tipo: "yape-transaccion",
+remitente: "Juan Quispe", monto: 95, pct: 2, interes_pct: 79,
+delay: 1200 },
+{ de: "cliente", delay: 1800,
+texto: "😍 wow no me había dado cuenta de todo eso" },
+{ de: "banco", delay: 900,
+texto: "¡Así es Alessia! Cada cliente que te paga por Yape → el 2% va directo a la cuota.\nVos solo cobrás. YoSiLa hace el resto. 💙" },
+{ de: "sistema", tipo: "progreso",
 titulo: "🎉 ¡Interés 100% cubierto!",
 interes_pct: 100, capital_pct: 40,
 sub: "17 días · 42 transacciones · interés: VENCIDO ✅",
-delay: 400 },
+delay: 1200 },
 { de: "banco", delay: 700,
-texto: "*Mibanco* ✅ 🎉\n¡Alessia, ya cubriste el 100% del interés de junio!\nCada Yape que recibiste en tu negocio — el 2% fue automático a tu cuota.\nLo que te queda (S/350) es plata TUYA devolviendo capital, no costo del banco.\nLlevas 17 días y 42 transacciones." },
-{ de: "cliente", delay: 1800,
-texto: "😍 ¡me encanta! ni me di cuenta que estaba pagando la cuota" },
-{ de: "banco", delay: 1000,
-texto: "¡Así funciona! 📱 Cada vez que recibís un pago por Yape:\n🔓 Abrís la app e ingresás tu contraseña\n💜 Tocás «Yapear» y el pago entra al instante\n📊 El 2% va automático a tu cuota — primero interés ✅, luego capital\nVos solo cobrás. YoSiLa hace el resto." },
+texto: "*Mibanco* ✅ 🎉\n¡Ya cubriste el 100% del interés de junio, Alessia!\nLo que te queda (S/350) es plata TUYA devolviendo capital, no costo del banco." },
+{ de: "sistema", tipo: "yape-transaccion",
+remitente: "Sofía Ramos", monto: 120, pct: 2, interes_pct: 100,
+delay: 1000 },
 { de: "cliente", delay: 1600,
 texto: "ojalá lo hubiera activado antes 🙌 qué fácil" },
-{ de: "banco", delay: 900,
-texto: "¡Al ritmo actual tu cuota completa en ~10 días más!\nYoSiLa se para solo cuando llegue. 💙" },
 { de: "sistema", tipo: "progreso",
 titulo: "✅ ¡Cuota PAGADA! Auto-stop",
 interes_pct: 100, capital_pct: 100,
 sub: "28 días · 67 transacciones · 0 llamadas de cobranza",
-delay: 1200 },
+delay: 1400 },
 { de: "banco", delay: 800,
 texto: "*Mibanco* ✅ ✅\n¡Cuota de junio PAGADA, Alessia! 🎉\nYoSiLa se paró automático.\nCero llamadas. Cero presión. Todo con tus ventas de Yape 💙\n¿Adelantamos julio?\nSÍ → seguimos al 2%\nNO → quedamos pausados" },
 { de: "cliente", delay: 1400,
@@ -168,27 +179,27 @@ texto: "Para eso estamos Powel. Juntos lo resolvemos. 💙" },
 ],
 yatekobro: [
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama YoSiLa.\nCada pago Yape que recibís en tu negocio, un % va directo a tu cuota.\n¿Querés que te expliquemos cómo funciona?" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama YoSiLa.\nCada pago Yape que recibís en tu negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo funciona?" },
 { de: "cliente", delay: 2000,
 texto: "¿y eso cómo sería?" },
-{ de: "banco", delay: 1000,
-texto: "Primero necesitás tener Yape activo, Powel. Solo la primera vez:\n📱 Descargás Yape (Play Store o App Store)\n📋 Te registrás con tu número de celular\n🪪 Validás tu identidad con tu DNI — sin necesitar cuenta BCP\n🔐 Creás tu contraseña personal\n\n¿Ya tenés Yape instalado?" },
+{ de: "banco", delay: 900,
+texto: "Primero necesitás tener Yape, Powel. Es gratis y demora 5 minutos:" },
+{ de: "sistema", tipo: "yape-registro", delay: 1200 },
 { de: "cliente", delay: 2200,
 texto: "no, todavía no lo tengo" },
 { de: "banco", delay: 1000,
-texto: "Sin problema 🤝 Tu asesora María puede acompañarte en ese registro — es una sola vez y demora 5 minutos.\n\nDespués, cada vez que recibís un pago de un cliente por Yape es así de simple:\n🔓 Abrís Yape e ingresás tu contraseña\n💜 El pago entra al instante (botón morado «Yapear»)\n✅ Si el monto supera S/60, Yape te pide un código extra por seguridad\n📊 El % que elegís va automático a tu cuota\n\nTu límite diario es S/500 (podés subirlo a S/2,000 desde los ajustes)." },
+texto: "Sin problema 🤝 Tu asesora María te acompaña una sola vez.\nCuando ya tenés Yape, cada cliente que te paga por Yape se ve así:" },
+{ de: "sistema", tipo: "yape-transaccion",
+remitente: "Carmen Flores", monto: 75, pct: 2, interes_pct: 45,
+delay: 1400 },
 { de: "cliente", delay: 2000,
-texto: "ah no sabía que era tan fácil. ¿y cómo se conecta con mi cuota?" },
-{ de: "banco", delay: 1000,
-texto: "Ahí entra YoSiLa, Powel 📊\nCada Yape que recibís → el % que elegís va a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego lo que es tuyo (capital)\n• Cuando la cuota está completa → para solo\n\nSin llamadas. Sin visitas. Se maneja solo. 💙" },
-{ de: "cliente", delay: 1600,
-texto: "me parece bien, ¿cómo lo activo?" },
+texto: "no sabía que era tan fácil ¿y cómo lo activo para mi cuota?" },
 { de: "banco", delay: 900,
-texto: "Respondé acá mismo con el número que elegís:\n1️⃣ = 1% por venta\n2️⃣ = 2% por venta\n3️⃣ = 5% por venta\nY listo — quedás registrado (Res. SBS 02522-2025). 📋" },
+texto: "Con YoSiLa, ese % que ves arriba va automático a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego el capital (lo que es tuyo)\n• Se para solo al completar\n\nActivalo respondiendo acá mismo:\n1️⃣ = 1% · 2️⃣ = 2% · 3️⃣ = 5%" },
 { de: "cliente", delay: 1400,
 texto: "2" },
 { de: "banco", delay: 800,
-texto: "✅ YoSiLa activado al 2%, Powel.\nEn cuanto recibas Yapes, el % empieza a trabajar para vos. 💙\nTe avisamos cuando el interés esté cubierto y cuando la cuota esté completa.\nSin llamadas. Sin presión." },
+texto: "✅ YoSiLa activado al 2%, Powel.\nEn cuanto recibas Yapes, el % trabaja solo para tu cuota. 💙\nTe avisamos al cubrir el interés y al completar la cuota.\nSin llamadas. Sin presión." },
 ],
 },
 };
@@ -220,6 +231,66 @@ function appendDateDivider(label) {
 const el = document.createElement("div");
 el.className = "date-divider";
 el.innerHTML = `<span>${label}</span>`;
+chatBody().appendChild(el);
+scrollBottom();
+}
+
+function appendYapeSwitch(label) {
+const el = document.createElement("div");
+el.className = "yape-switch";
+el.textContent = label || "📱 Vista en Yape";
+chatBody().appendChild(el);
+scrollBottom();
+}
+
+function appendYapeRegistro() {
+const el = document.createElement("div");
+el.className = "yape-card";
+el.innerHTML = `
+<div class="yape-card-hd">
+  <span>💜</span><span>yape</span>
+  <span class="yape-hd-badge">Registro · solo la primera vez</span>
+</div>
+<div class="yape-reg-title">Registrate gratis</div>
+<div class="yape-reg-steps">
+  <div class="yp-step"><span class="yp-ic">✓</span><div><b>Descargá Yape</b><small>Google Play o App Store</small></div></div>
+  <div class="yp-step"><span class="yp-ic">✓</span><div><b>Ingresá tu número de celular</b><small>Verificación por SMS automática</small></div></div>
+  <div class="yp-step"><span class="yp-ic">✓</span><div><b>Validá con tu DNI</b><small>Sin necesitar cuenta BCP</small></div></div>
+  <div class="yp-step active"><span class="yp-ic">→</span><div><b>Creá tu contraseña personal</b><small>¡Ya estás dentro de Yape!</small></div></div>
+</div>
+<div class="yape-reg-ok">✅ Listo para recibir pagos · transferencias gratuitas</div>`;
+chatBody().appendChild(el);
+scrollBottom();
+}
+
+function appendYapeTransaccion(msg) {
+const el = document.createElement("div");
+el.className = "yape-card";
+const pct = msg.pct || 2;
+const aporte = (msg.monto * pct / 100).toFixed(2);
+const intPct = Math.min(100, msg.interes_pct || 0);
+el.innerHTML = `
+<div class="yape-card-hd">
+  <span>💜</span><span>yape</span>
+  <span class="yape-hd-badge">Pago recibido</span>
+</div>
+<div class="yape-tx-main">
+  <div class="yape-tx-ico">💰</div>
+  <div class="yape-tx-amount">+ S/ ${Number(msg.monto).toFixed(2)}</div>
+  <div class="yape-tx-from">de ${msg.remitente}</div>
+  <div class="yape-tx-time">${hora()} · Llegó al instante ✓</div>
+</div>
+<div class="yape-yosila-strip">
+  <div class="yape-ys-h">⚡ YoSiLa · ${pct}% por venta → cuota Mibanco</div>
+  <div class="yape-ys-row">
+    <span>S/ ${aporte} imputado automáticamente</span>
+    <span class="yape-ys-ok">✓ imputado</span>
+  </div>
+  <div class="yape-ys-prog">
+    <div class="yape-ys-prog-lbl"><span>Interés del mes</span><span>${intPct}%${intPct >= 100 ? ' ✅' : ''}</span></div>
+    <div class="yape-ys-track"><div class="yape-ys-fill" style="width:${intPct}%"></div></div>
+  </div>
+</div>`;
 chatBody().appendChild(el);
 scrollBottom();
 }
@@ -299,6 +370,12 @@ await later(msg.delay || 600);
 if (msg.de === "sistema") {
 if (msg.tipo === "progreso") {
 appendProgressCard(msg);
+} else if (msg.tipo === "yape-registro") {
+appendYapeSwitch("📱 Vista en Yape · Registro");
+appendYapeRegistro();
+} else if (msg.tipo === "yape-transaccion") {
+appendYapeSwitch("📱 Vista en Yape · Pago recibido");
+appendYapeTransaccion(msg);
 } else {
 appendSysCard(msg);
 }
