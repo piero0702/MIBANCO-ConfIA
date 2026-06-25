@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo Conversación · Mibanco-confIA + YoSiLa · Mibanco</title>
+<link rel="stylesheet" href="chat.css" />
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<header class="lab-bar">
+<div class="lb-left">
+<span class="lb-logo">m</span>
+<div class="lb-title">
+<strong>Demo Conversación · Mibanco-confIA + YoSiLa</strong>
+<span>Cómo se ve la IA de cobranza en WhatsApp — 2 perfiles × 5 etapas de mora</span>
+</div>
+</div>
+<a href="index.html" class="lb-back">← Volver al dashboard</a>
+</header>
+
+<!-- MAIN -->
+<div class="demo-wrap">
+
+<!-- PANEL IZQUIERDO -->
+<aside class="left-panel">
+<div class="left-section">
+<p class="section-title">Perfil del cliente</p>
+<div id="profileList"></div>
+</div>
+<div class="left-section">
+<p class="section-title">Etapa de mora</p>
+<div class="stage-list" id="etapaList"></div>
+</div>
+</aside>
+
+<!-- CHAT PANEL -->
+<div class="chat-panel">
+<div class="phone-wrap">
+
+<!-- WhatsApp header -->
+<div class="wa-head" id="waHeader"></div>
+
+<!-- Chat body -->
+<div class="wa-body" id="chatBody"></div>
+
+<!-- Footer input (decorativo) -->
+<div class="wa-footer">
+<span class="wa-attach">📎</span>
+<div class="wa-input-box">Escribe un mensaje...</div>
+<div class="wa-mic">🎤</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<script src="chat.js"></script>
+</body>
+</html>

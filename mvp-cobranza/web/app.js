@@ -1,7 +1,5 @@
 /* ============================================================
-   Lab UI — Motor de Cobranza Inteligente (AsesorIA + YateKobro)
-   Lee la salida real de engine/*.py (web/data/*.json) y la muestra.
-   El what-if de YateKobro replica la imputación del motor (yatekobro.py).
+   Motor de Cobranza Inteligente — Mibanco-confIA + YoSiLa
    ============================================================ */
 "use strict";
 const $ = (s, r = document) => r.querySelector(s);
@@ -18,13 +16,10 @@ async function boot() {
     get("clientes.json"), get("backtest.json"), get("yatekobro.json"), get("config.json"),
   ]);
   setupTabs();
-  renderSource();
   renderBacktest();
   renderDecList(); if (CLIENTES.length) selectCli(CLIENTES[0].cliente_id);
   renderPresets(); recomputeYK();
   renderFlow();
-  $("#footMeta").textContent =
-    `AsesorIA: ${CLIENTES.length} clientes · backtest ${BACKTEST.fuente} · YateKobro ${YK.casos?.length||0} casos`;
 }
 
 /* ---------------- TABS ---------------- */
@@ -40,12 +35,6 @@ function setupTabs() {
   const h = location.hash.replace("#", "");
   if (h) activateTab(h);
 }
-function renderSource() {
-  const f = BACKTEST.fuente || "sintetico";
-  const el = $("#srcBadge"); el.textContent = "fuente: " + f; el.classList.add(f);
-  $("#btFuente").textContent = `Computado sobre ${(BACKTEST.n_creditos||0).toLocaleString("es-PE")} créditos (fuente: ${f}).`;
-}
-
 /* ---------------- BACKTEST ---------------- */
 function renderBacktest() {
   const b = BACKTEST.baseline, p = BACKTEST.politica;
@@ -57,7 +46,7 @@ function renderBacktest() {
       <div class="bt-big-l">costo de cobranza<br><b>${milesK(b.costo_total)} → ${milesK(p.costo_total)}</b> en la muestra</div>
     </div>
     <div class="bt-grid">
-      <div class="h">métrica</div><div class="h now">Gestión actual</div><div class="h ia">Política AsesorIA</div>
+      <div class="h">métrica</div><div class="h now">Gestión actual</div><div class="h ia">Con Mibanco-confIA</div>
       ${row("Contactos / crédito", b.contactos_x_credito, p.contactos_x_credito)}
       ${row("Costo / crédito", soles(b.costo_x_credito), soles(p.costo_x_credito))}
       ${row("Pago por contacto", (b.pago_x_contacto*100).toFixed(1)+"%", (p.pago_x_contacto*100).toFixed(1)+"%")}
@@ -81,7 +70,7 @@ function renderDecList() {
     const pr = Math.round(d.prioridad);
     const col = pr >= 55 ? "var(--mb-red)" : pr >= 35 ? "var(--warn)" : "var(--good)";
     const no = d.accion === "NO CONTACTAR";
-    return `<div class="drow ${d.cliente_id===SELC?'on':''}" data-id="${d.cliente_id}">
+    return `<div class="drow ${String(d.cliente_id)===String(SELC)?'on':''}" data-id="${d.cliente_id}">
       <span class="pr" style="background:${col}">${pr}</span>
       <span class="nm">${d.nombre}<small>${d.segmento.tramo_mora} · ${d.segmento.es_digital?'digital':'no digital'} · ${CH[d.decision.canal.canal]}</small></span>
       <span class="act ${no?'act-no':'act-si'}">${no?'no contactar':'contactar'}</span>
@@ -90,7 +79,7 @@ function renderDecList() {
   $("#decRows").innerHTML = rows || "<div class='empty'>sin clientes</div>";
   $$("#decRows .drow").forEach(el => el.onclick = () => selectCli(el.dataset.id));
 }
-function selectCli(id) { SELC = id; renderDecList(); renderDecDetail(CLIENTES.find(d => d.cliente_id === id)); }
+function selectCli(id) { SELC = id; renderDecList(); renderDecDetail(CLIENTES.find(d => String(d.cliente_id) === String(id))); }
 
 function renderDecDetail(d) {
   if (!d) return;
@@ -129,7 +118,7 @@ function renderDecDetail(d) {
     <div class="dd-head">
       <div><div class="dd-name">${d.nombre}</div><div class="dd-tags">${tags}</div></div>
       <span class="pr" style="background:var(--navy);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-weight:700;flex:none">${Math.round(d.prioridad)}</span>
-    </div>${note}${decide}`;
+    </div>${note}${decide}${calendarHtml(d.calendario)}`;
 }
 function rankHtml(rank) {
   if (!rank || !rank.length) return "";
@@ -141,6 +130,29 @@ function rankHtml(rank) {
       <span class="rkv">S/${Math.round(r.valor_neto)}</span></div>`;
   }).join("");
   return `<div class="rank"><div class="rank-h">¿Por qué ese canal? valor neto = recuperación − costo</div>${bars}</div>`;
+}
+function calendarHtml(cal) {
+  if (!cal) return "";
+  const items = (cal.contactos || []).map(c => `
+    <div class="cal-item">
+      <span class="cal-date">${c.fecha}</span>
+      <div class="cal-body">
+        <div class="cal-top">
+          <span class="cal-etapa">${c.etapa}</span>
+          <span class="cal-ch">💬 WhatsApp${c.verificable ? ' <span class="verif">✓ verificable</span>' : ''}</span>
+        </div>
+        <div class="cal-msg">${c.mensaje}</div>
+      </div>
+    </div>`).join("");
+  const body = cal.total_contactos
+    ? items
+    : `<div class="cal-empty">Sin contactos programados este mes.<br>${cal.nota || ''}</div>`;
+  return `<div class="dd-cal">
+    <div class="dd-cal-h">Calendario de contactos · ${cal.mes}
+      <span class="cal-badge">${cal.total_contactos}/${cal.tope} este mes</span></div>
+    ${body}
+    ${cal.total_contactos ? `<div class="cal-note">${cal.nota}</div>` : ''}
+  </div>`;
 }
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
@@ -175,7 +187,7 @@ function loadPreset(i) {
   setPct(c.pct);
   $("#ykVentas").value = c.ventas_dia_media; $("#ykVentasV").textContent = soles(c.ventas_dia_media);
   ykMode = "python";
-  renderYK(c, "motor Python · variabilidad real");
+  renderYK(c, "ventas con variabilidad");
 }
 
 function setPct(v) {
@@ -223,9 +235,9 @@ function simulaLive(saldo, tasaEA, plazo, pct, ventas, maxDias = 60) {
 function evt(tipo, dia, am, intAc, txs) {
   const cap = Math.round(am.capital);
   let titulo, mensaje;
-  if (tipo === "interes_50") { titulo = "Interés 50%"; mensaje = `*Mibanco* ✅ 📊 YateKobro: ya cubriste el 50% del interés de este mes (S/${Math.round(intAc)} de S/${Math.round(am.interes)}). Seguimos 💪`; }
+  if (tipo === "interes_50") { titulo = "Interés 50%"; mensaje = `*Mibanco* ✅ 📊 YoSiLa: ya cubriste el 50% del interés de este mes (S/${Math.round(intAc)} de S/${Math.round(am.interes)}). Seguimos 💪`; }
   else if (tipo === "interes_100") { titulo = "Interés 100% (estrella)"; mensaje = `*Mibanco* ✅ 🎉 ¡Ya cubriste el 100% del interés!\nLo que te queda (S/${cap}) es plata tuya que estás devolviendo, no costo del banco. Llevas ${dia} días, ${txs} transacciones.`; }
-  else { titulo = "Cuota completa → auto-stop"; mensaje = `*Mibanco* ✅ ✅ ¡Cuota PAGADA! YateKobro se paró automático.\n¿Quieres adelantar la próxima cuota y seguir reduciendo interés? Responde SÍ o NO.`; }
+  else { titulo = "Cuota completa → auto-stop"; mensaje = `*Mibanco* ✅ ✅ ¡Cuota PAGADA! YoSiLa se paró automático.\n¿Quieres adelantar la próxima cuota y seguir reduciendo interés? Responde SÍ o NO.`; }
   return { tipo, dia, titulo, mensaje, verificable: true };
 }
 
@@ -234,12 +246,14 @@ function recomputeYK() {
   const saldo = +$("#ykSaldo").value, tasa = (+$("#ykTasa").value) / 100,
         plazo = +$("#ykPlazo").value, ventas = +$("#ykVentas").value;
   ykMode = "live";
-  renderYK(simulaLive(saldo, tasa, plazo, ykPct, ventas), "what-if · ventas constantes");
+  renderYK(simulaLive(saldo, tasa, plazo, ykPct, ventas), "simulación · ventas constantes");
 }
 
 function renderYK(sim, modeLabel) {
+  const iMen = Math.pow(1 + sim.credito.tasa_ea, 1 / 12) - 1;
   const am = `cuota <b>${soles(sim.cuota)}</b> = interés <b>${soles(sim.interes_obj)}</b> + capital <b>${soles(sim.capital_obj)}</b>
-    <span style="color:var(--muted)"> · crédito S/${sim.credito.saldo} a ${sim.credito.plazo_meses}m (${Math.round(sim.credito.tasa_ea*100)}% EA) · ${sim.pct}% por venta</span>`;
+    <span style="color:var(--muted)"> · crédito S/${sim.credito.saldo} a ${sim.credito.plazo_meses}m (${Math.round(sim.credito.tasa_ea*100)}% EA) · ${sim.pct}% por venta</span>
+    <div class="amort-formula">Cuota francesa &nbsp;·&nbsp; i = (1+EA)<sup>1/12</sup> − 1 = <b>${(iMen*100).toFixed(2)}%</b>/mes &nbsp;·&nbsp; cuota = saldo·i ⁄ (1−(1+i)<sup>−n</sup>) &nbsp;·&nbsp; interés del mes = saldo·i &nbsp;·&nbsp; capital = cuota − interés</div>`;
   $("#ykAmort").innerHTML = am;
 
   const last = sim.ledger[sim.ledger.length - 1] || { interes_pct: 0, capital_pct: 0, interes_ac: 0, capital_ac: 0 };
@@ -274,8 +288,8 @@ function renderYK(sim, modeLabel) {
     </div>`).join("") : `<div class="evt-empty">sin eventos (sube las ventas o el %)</div>`;
 
   $("#ykMode").innerHTML = ykMode === "python"
-    ? "Mostrando una <b>corrida real del motor</b> <code>yatekobro.py</code> (ventas diarias con variabilidad). Mueve un control para pasar a what-if."
-    : "<b>What-if en vivo</b>: misma lógica de imputación del motor, con ventas constantes (determinista). Elige un preset para ver una corrida real con variabilidad.";
+    ? "Caso de ejemplo con <b>ventas diarias con variabilidad</b> (como un negocio real). Mueve un control para simular tu propio caso."
+    : "<b>Simulación en vivo</b>: misma lógica de imputación, con ventas constantes. Elige un caso de ejemplo para ver ventas con variabilidad.";
 }
 function bar(label, pct, ac, obj, kind, win) {
   pct = Math.min(100, pct);
@@ -292,12 +306,12 @@ $("#ykVentas").oninput = e => { $("#ykVentasV").textContent = soles(+e.target.va
 function renderFlow() {
   const steps = [
     ["Transacciones Yape", "El ML estima el ingreso diario real del cliente (Credicorp es dueño de Yape y Mibanco)."],
-    ["AsesorIA decide", "¿Contactar? ¿a quién no molestar? canal por perfil, tope 2, momento y tono. Sugiere YateKobro a los candidatos."],
-    ["WhatsApp verificable", "Único canal: *Mibanco* ✅ oficial. Anti-extorsión. Oferta y configuración de YateKobro por chat."],
+    ["Mibanco-confIA decide", "¿Contactar? ¿a quién no molestar? canal por perfil, tope de contactos, momento y tono. Sugiere YoSiLa a los candidatos."],
+    ["WhatsApp verificable", "Único canal: *Mibanco* ✅ oficial. Anti-extorsión. Oferta y configuración de YoSiLa por chat."],
     ["Cliente activa y elige %", "Sin app, sin formulario. Responde un número por WhatsApp y queda registrado (consentimiento, Res. SBS 02522-2025)."],
     ["Motor de imputación", "Cada venta Yape: % → interés primero, luego capital (Art. 29.2, SBS 3274-2017). Ledger transparente."],
     ["Notificación en 3 momentos", "Interés 50%, interés 100% (el gancho emocional), cuota completa. Nada de spam."],
-    ["Auto-stop", "Al completar la cuota, YateKobro se apaga solo. Cero llamadas. Nunca persigue."],
+    ["Auto-stop", "Al completar la cuota, YoSiLa se apaga solo. Cero llamadas. Nunca persigue."],
   ];
   $("#flow").innerHTML = steps.map((s, i) =>
     `<div class="fstep"><div class="fnum">${i+1}</div><div class="fbody"><b>${s[0]}</b><small>${s[1].replace(/\*Mibanco\* ✅/g,'<b>Mibanco ✅</b>')}</small></div></div>

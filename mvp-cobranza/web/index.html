@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Motor de Cobranza Inteligente · AsesorIA + YateKobro · Mibanco</title>
+<title>Mibanco-confIA · Cobranza Inteligente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -17,61 +17,120 @@
     <div class="header-brand">
       <div class="brand-logomark" aria-hidden="true">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="40" height="40" rx="11" fill="#E2231A"/>
+          <rect width="40" height="40" rx="11" fill="#00A94F"/>
           <path d="M10 27V16.5C10 15.9 10.2 15.4 10.7 15C11.2 14.6 11.8 14.4 12.5 14.4C13.1 14.4 13.7 14.6 14.2 15C14.7 15.4 14.9 15.8 15 16.2L18.3 22.5C18.6 23.1 19 23.4 19.5 23.4C20 23.4 20.4 23.1 20.7 22.5L24 16.2C24.1 15.8 24.3 15.4 24.8 15C25.3 14.6 25.9 14.4 26.5 14.4C27.2 14.4 27.8 14.6 28.3 15C28.8 15.4 29 15.9 29 16.5V27H26.5V18L23.1 24.3C22.8 24.9 22.4 25.4 21.9 25.7C21.4 26 20.9 26.2 20.3 26.2C19.1 26.2 18.2 25.7 17.5 24.6L13.5 18V27H10Z" fill="white"/>
         </svg>
       </div>
       <div class="brand-text">
         <div class="brand-name">Motor de Cobranza Inteligente</div>
-        <div class="brand-sub">
-          <span class="brand-pill">PoC</span>
-          AsesorIA · YateKobro · IAthon ULIMA × Mibanco 2026
-        </div>
+        <div class="brand-sub">Mibanco-confIA · YoSiLa · IAthon ULIMA × Mibanco 2026</div>
       </div>
     </div>
-    <div class="header-meta">
-      <span class="src-badge" id="srcBadge">fuente: —</span>
-      <div class="header-hint">Salida real de <code>engine/*.py</code> · regenera con <code>python engine/build.py</code></div>
-    </div>
+    <a href="chat.html" class="header-chat">💬 Ver la conversación →</a>
   </div>
 </header>
 
 <!-- ═══════════════════ TABS ═══════════════════ -->
-<nav class="app-tabs" role="navigation" aria-label="Módulos del motor">
+<nav class="app-tabs" role="navigation" aria-label="Secciones">
   <div class="tabs-inner">
-    <button class="tab active" data-tab="asesoria" aria-selected="true">
+    <button class="tab active" data-tab="inicio" aria-selected="true">
+      <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+      Inicio
+    </button>
+    <button class="tab" data-tab="asesoria" aria-selected="false">
       <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-      AsesorIA · Decisión
+      Decisión
     </button>
     <button class="tab" data-tab="yatekobro" aria-selected="false">
       <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      YateKobro · Imputación
+      YoSiLa
     </button>
     <button class="tab" data-tab="flujo" aria-selected="false">
       <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-      Flujo end-to-end
+      Flujo
+    </button>
+    <button class="tab" data-tab="tecnicas" aria-selected="false">
+      <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9zM9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>
+      Soluciones técnicas
     </button>
   </div>
 </nav>
 
-<!-- ═══════════════════ MÓDULO 1 · ASESORIA ═══════════════════ -->
-<main class="panel active" id="tab-asesoria">
+<!-- ═══════════════════ MÓDULO 0 · INICIO ═══════════════════ -->
+<main class="panel active" id="tab-inicio">
 
   <section class="card">
     <div class="card-h">
       <div class="card-title-group">
-        <h2>Backtest de la política</h2>
-        <span class="card-sub">Tope de 2 contactos + canal por perfil digital, computado sobre la tabla de contactos. <b id="btFuente"></b></span>
+        <h2>El problema: cobranza a ciegas</h2>
+        <span class="card-sub">El reto del IAthon: decidir a quién, cuándo, por qué canal y cómo cobrar — para recuperar más, gastar menos y no quemar la relación con el cliente.</span>
       </div>
     </div>
-    <div class="bt" id="btTable"><div class="loading"><span class="loading-dot"></span>Calculando backtest…</div></div>
+    <div class="prose">
+      <p>Hoy la cobranza contacta casi a todos por igual: en promedio <b>5.7 intentos por crédito</b>,
+      muchos por canales caros (llamada, campo). El <b>62.8% de esos contactos se ignora</b> y se
+      gastan <b>S/658 mil</b>, de los cuales casi <b>S/346 mil</b> no mueven ni un sol de pago.</p>
+      <p>El cliente lo vive como persecución. Y en un país donde la extorsión telefónica es pan de
+      cada día, mucha gente ya ni contesta — aunque sea el propio banco el que llama.</p>
+      <p><b>¿A quién le hablamos?</b> Microempresarios de flujo variable: digitales y no digitales,
+      morosos y al día. Lo que todos tienen en común es simple — <b>no rechazan pagar, rechazan
+      cómo se les cobra</b>.</p>
+    </div>
   </section>
 
   <section class="card">
     <div class="card-h">
       <div class="card-title-group">
+        <h2>Supuestos, restricciones y consideraciones</h2>
+        <span class="card-sub">Lo que asumimos y respetamos para que la propuesta sea aplicable en el negocio real.</span>
+      </div>
+    </div>
+    <div class="prose">
+      <p><b>Datos.</b> Trabajamos sobre las 3 tablas reales del reto: 50,000 clientes, 194,664
+      créditos y 572,553 contactos de cobranza.</p>
+      <p><b>Costos por canal</b> (los que usa el motor): WhatsApp S/0.10, SMS S/0.20, llamada S/1.50
+      y visita de campo S/8.00. Por eso mover volumen a WhatsApp baja el costo aunque se mantengan
+      los toques.</p>
+      <p><b>Reglas del negocio que respetamos.</b> No se elimina ningún canal. El contacto va de
+      lunes a viernes de 7am a 7pm, los sábados solo por canal digital, y evitamos la mañana (el
+      negocio recién abre).</p>
+      <p><b>Sobre el tope de contactos.</b> El backtest mide un tope de 2 por <i>episodio</i> de
+      cobranza (la ventana de ~7 días alrededor de un vencimiento). En el calendario del mes un
+      cliente puede ver hasta 7 toques si va cruzando varias etapas de mora; un buen pagador, hasta
+      3. Todo por WhatsApp. Así se sostiene el ahorro de <b>−79%</b> sin contradicción.</p>
+      <p><b>Una decisión clave.</b> Los scores de riesgo del dataset (prob_default, score_riesgo)
+      resultaron ruido — casi sin relación con el pago real. Por eso el motor decide con señales de
+      comportamiento: canal, días de mora, fatiga de contacto y respuesta del cliente.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
+        <h2>Cómo leer este dashboard</h2>
+        <span class="card-sub">Cuatro secciones, de la decisión a la conversación.</span>
+      </div>
+    </div>
+    <div class="flow">
+      <div class="fstep"><div class="fnum">1</div><div class="fbody"><b>Decisión</b><small>El motor ordena a quién contactar primero, por qué canal y con qué mensaje — y a quién mejor no molestar. Al elegir un cliente ves su calendario de contactos del mes.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">2</div><div class="fbody"><b>YoSiLa</b><small>El módulo opt-in que cobra solo: un % de cada venta por Yape va a la cuota, sin una sola llamada.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">3</div><div class="fbody"><b>Flujo</b><small>Cómo se conecta todo, del dato a la conversación.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">4</div><div class="fbody"><b>Soluciones técnicas</b><small>Qué construiríamos para llevar esto a producción de verdad.</small></div></div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════════ MÓDULO 1 · DECISIÓN (Mibanco-confIA) ═══════════════════ -->
+<main class="panel" id="tab-asesoria">
+
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
         <h2>Decisión por cliente</h2>
-        <span class="card-sub">El motor decide, para cada cliente: <b>a quién no molestar</b>, canal, momento, frecuencia, tono y mensaje verificable.</span>
+        <span class="card-sub">El motor decide, para cada cliente: <b>a quién no molestar</b>, canal, momento, frecuencia, tono y mensaje verificable. Selecciona un cliente para ver su <b>calendario de contactos del mes</b>.</span>
       </div>
     </div>
     <div class="dec">
@@ -84,64 +143,46 @@
         </div>
         <div class="dec-rows" id="decRows"></div>
       </div>
-      <div class="dec-detail" id="decDetail">
-        <div class="empty">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3;margin-bottom:8px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Selecciona un cliente
-        </div>
-      </div>
+      <div class="dec-detail" id="decDetail"><div class="empty">Selecciona un cliente →</div></div>
     </div>
   </section>
 
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
+        <h2>Backtest de la política</h2>
+        <span class="card-sub">Qué pasaría si aplicáramos esta política a la cartera: tope de contactos + canal por perfil digital, evaluado sobre los 572,553 contactos reales del dataset.</span>
+      </div>
+    </div>
+    <div class="bt" id="btTable"><div class="loading"><span class="loading-dot"></span>corriendo backtest…</div></div>
+  </section>
 </main>
 
-<!-- ═══════════════════ MÓDULO 2 · YATEKOBRO ═══════════════════ -->
+<!-- ═══════════════════ MÓDULO 2 · YOSILA ═══════════════════ -->
 <main class="panel" id="tab-yatekobro">
   <section class="card">
     <div class="card-h">
       <div class="card-title-group">
-        <h2>Motor de imputación YateKobro</h2>
-        <span class="card-sub">Un % de cada venta Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se notifica en 3 momentos y se apaga solo al completar la cuota.</span>
+        <h2>YoSiLa · el cliente se cobra solo</h2>
+        <span class="card-sub">Un % de cada venta por Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se avisa en 3 momentos y se apaga solo al completar la cuota.</span>
       </div>
     </div>
 
     <div class="yk">
       <div class="yk-controls">
-        <div class="yk-section-label">Perfiles reales del motor</div>
         <div class="yk-presets" id="ykPresets"></div>
-
-        <div class="yk-divider"><span>o configura manualmente</span></div>
 
         <div class="yk-field">
           <label>Crédito (saldo S/)</label>
-          <div class="input-wrap">
-            <input type="number" id="ykSaldo" value="3000" min="500" step="100" />
-          </div>
+          <input type="number" id="ykSaldo" value="3000" min="500" step="100" />
         </div>
         <div class="yk-field-row">
-          <div class="yk-field">
-            <label>Tasa EA</label>
-            <div class="input-wrap has-unit">
-              <input type="number" id="ykTasa" value="50" min="10" max="120" step="1" />
-              <span class="unit">%</span>
-            </div>
-          </div>
-          <div class="yk-field">
-            <label>Plazo</label>
-            <div class="input-wrap has-unit">
-              <input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" />
-              <span class="unit">m</span>
-            </div>
-          </div>
+          <div class="yk-field"><label>Tasa EA</label><div class="input-wrap has-unit"><input type="number" id="ykTasa" value="50" min="10" max="120" step="1" /><span class="unit">%</span></div></div>
+          <div class="yk-field"><label>Plazo</label><div class="input-wrap has-unit"><input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" /><span class="unit">m</span></div></div>
         </div>
         <div class="yk-field">
           <label>% por venta Yape <b id="ykPctV">2%</b></label>
-          <div class="seg" id="ykPct">
-            <button data-v="1">1%</button>
-            <button data-v="2" class="on">2%</button>
-            <button data-v="3">3%</button>
-            <button data-v="5">5%</button>
-          </div>
+          <div class="seg" id="ykPct"><button data-v="1">1%</button><button data-v="2" class="on">2%</button><button data-v="3">3%</button><button data-v="5">5%</button></div>
         </div>
         <div class="yk-field">
           <label>Ventas por día en Yape <b id="ykVentasV">S/ 1,000</b></label>
@@ -161,7 +202,7 @@
             <div class="ledger" id="ykLedger"></div>
           </div>
           <div class="yk-events-wrap">
-            <div class="mini-h">Notificaciones emitidas <span class="mini-count">solo 3</span></div>
+            <div class="mini-h">Notificaciones emitidas (solo 3)</div>
             <div class="events" id="ykEvents"></div>
           </div>
         </div>
@@ -183,13 +224,50 @@
   </section>
 </main>
 
-<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<!-- ═══════════════════ MÓDULO 4 · SOLUCIONES TÉCNICAS ═══════════════════ -->
+<main class="panel" id="tab-tecnicas">
+
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
+        <h2>Los 4 modelos que deciden</h2>
+        <span class="card-sub">Bajo el capó, Mibanco-confIA es una cadena de cuatro modelos. Cada uno responde una pregunta.</span>
+      </div>
+    </div>
+    <div class="flow">
+      <div class="fstep"><div class="fnum">1</div><div class="fbody"><b>¿Vale la pena contactar?</b><small>Predice si el cliente pagaría solo. Si es muy probable, no se le molesta — al buen pagador no se le trata como moroso. (Gradient boosting sobre su historial de pago.)</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">2</div><div class="fbody"><b>¿Por qué canal?</b><small>Estima la probabilidad de pago por canal y elige el de mayor valor neto (recuperación − costo). Por eso WhatsApp gana casi siempre, y la llamada se reserva para donde paga su costo.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">3</div><div class="fbody"><b>¿En qué momento?</b><small>La mejor franja según el perfil, más una señal extra: si Yape detecta un buen día de ventas, al día siguiente se sugiere adelantar cuota. Siempre dentro del horario permitido.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">4</div><div class="fbody"><b>¿Cómo le hablamos?</b><small>Clasifica al cliente en uno de 4 perfiles (digital/no digital × moroso/al día) y ajusta el tono: agradecido al que se adelanta, empático al que la está pasando difícil.</small></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
+        <h2>Del dato a la conversación</h2>
+        <span class="card-sub">Cómo fluye la información hasta el mensaje que recibe el cliente.</span>
+      </div>
+    </div>
+    <div class="flow">
+      <div class="fstep"><div class="fnum">→</div><div class="fbody"><b>Las 3 tablas + Yape</b><small>Clientes, créditos y contactos del dataset, más el flujo diario de ventas por Yape.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">→</div><div class="fbody"><b>Ingeniería de variables</b><small>Score digital, índice de fatiga, perfil emocional (4 cuadrantes), días a vencimiento, pulso de ventas Yape.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">→</div><div class="fbody"><b>Los 4 modelos</b><small>Deciden si contactar, por qué canal, cuándo y con qué tono.</small></div></div>
+      <div class="fconn"></div>
+      <div class="fstep"><div class="fnum">✓</div><div class="fbody"><b>Un mensaje por WhatsApp verificable</b><small>Identidad oficial <b>Mibanco ✅</b>, anti-extorsión. Un solo toque, claro y amable.</small></div></div>
+    </div>
+    <div class="bt-note" style="margin:0 22px 22px">En esta demo las decisiones están <b>precalculadas</b> para que se puedan explorar. En producción, los 4 modelos se entrenan sobre los <b>572,553 contactos reales</b> del dataset, usando el resultado de pago de cada contacto como etiqueta (aprendizaje supervisado).</div>
+  </section>
+</main>
+
 <footer class="app-footer">
-  <span class="foot-brand">
-    <svg width="16" height="16" viewBox="0 0 40 40" fill="none" style="vertical-align:middle;margin-right:6px"><rect width="40" height="40" rx="8" fill="#E2231A"/><path d="M10 27V16.5C10 15.9 10.2 15.4 10.7 15C11.2 14.6 11.8 14.4 12.5 14.4C13.1 14.4 13.7 14.6 14.2 15C14.7 15.4 14.9 15.8 15 16.2L18.3 22.5C18.6 23.1 19 23.4 19.5 23.4C20 23.4 20.4 23.1 20.7 22.5L24 16.2C24.1 15.8 24.3 15.4 24.8 15C25.3 14.6 25.9 14.4 26.5 14.4C27.2 14.4 27.8 14.6 28.3 15C28.8 15.4 29 15.9 29 16.5V27H26.5V18L23.1 24.3C22.8 24.9 22.4 25.4 21.9 25.7C21.4 26 20.9 26.2 20.3 26.2C19.1 26.2 18.2 25.7 17.5 24.6L13.5 18V27H10Z" fill="white"/></svg>
-    AsesorIA + YateKobro · IAthon ULIMA × Mibanco 2026 · Equipo 8
-  </span>
-  <span id="footMeta" class="foot-meta"></span>
+  <span class="foot-brand">Mibanco-confIA + YoSiLa · IAthon ULIMA × Mibanco 2026 · Equipo 8</span>
+  <span class="foot-meta">Recupera más, sin perseguir.</span>
 </footer>
 
 <script src="app.js"></script>
