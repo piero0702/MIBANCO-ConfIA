@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cobranza Inteligente · Mibanco — PoC</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">m</span>
+    <div>
+      <div class="brand-name">Mibanco · Cobranza Inteligente</div>
+      <div class="brand-sub">Motor de decisión con IA — a quién, por qué canal, en qué momento y cómo</div>
+    </div>
+  </div>
+  <div class="fuente" id="fuente">cargando…</div>
+</header>
+
+<!-- Tira de KPIs de impacto -->
+<section class="kpis" id="kpis"></section>
+
+<main class="grid">
+  <!-- Cola de prioridad -->
+  <aside class="panel queue">
+    <div class="panel-head">
+      <h2>Cola de prioridad</h2>
+      <span class="hint">La IA ordena a quién contactar primero</span>
+    </div>
+    <div class="filters" id="filters">
+      <button data-f="todos" class="chip active">Todos</button>
+      <button data-f="entrevistas" class="chip">Entrevistados</button>
+      <button data-f="bajo" class="chip">Riesgo bajo</button>
+      <button data-f="alto" class="chip">Riesgo alto</button>
+    </div>
+    <div class="client-list" id="clientList"></div>
+  </aside>
+
+  <!-- Detalle de decisión -->
+  <section class="panel detail" id="detail">
+    <div class="empty">Selecciona un cliente para ver la decisión de la IA</div>
+  </section>
+</main>
+
+<footer class="foot">
+  PoC IAthon ULIMA × Mibanco · Reto 1 — Reinventando la Cobranza Inteligente ·
+  decisiones generadas por el motor (engine/rules.py) sobre <span id="footN"></span> clientes.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

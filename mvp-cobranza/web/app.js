@@ -1,211 +1,230 @@
-/* Cobranza Inteligente — Mibanco PoC (frontend) */
-const CH_ICON = { whatsapp: "💬", sms: "✉️", llamada: "📞", campo: "🚶" };
-const RISK_LABEL = { bajo: "Riesgo bajo", medio: "Riesgo medio", alto: "Riesgo alto" };
-
-let CLIENTES = [], KPIS = {}, CFG = {}, SELECTED = null, FILTER = "todos";
-
-async function boot() {
-  const [c, k, cfg] = await Promise.all([
-    fetch("data/clientes.json").then(r => r.json()),
-    fetch("data/kpis.json").then(r => r.json()),
-    fetch("data/config.json").then(r => r.json()),
-  ]);
-  CLIENTES = c; KPIS = k; CFG = cfg;
-  renderFuente(); renderKpis(); renderList();
-  if (CLIENTES.length) select(CLIENTES[0].cliente_id);
-  document.getElementById("footN").textContent = CLIENTES.length;
-  document.querySelectorAll("#filters .chip").forEach(b =>
-    b.onclick = () => { FILTER = b.dataset.f; setActiveChip(b); renderList(); });
-}
-
-function setActiveChip(b){ document.querySelectorAll("#filters .chip").forEach(x=>x.classList.remove("active")); b.classList.add("active"); }
-
-function renderFuente() {
-  const el = document.getElementById("fuente");
-  const real = KPIS.fuente_datos === "real";
-  el.textContent = real ? "● Datos REALES del reto" : "● Datos sintéticos (demo)";
-  el.classList.add(real ? "real" : "sintetico");
-}
-
+/* ============================================================
+   AsesorIA + YateKobro — demo del cliente final
+   Vanilla JS, sin dependencias.
+   ============================================================ */
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const soles = n => "S/ " + Math.round(n).toLocaleString("es-PE");
+const wait = ms => new Promise(r => setTimeout(r, reduced ? 0 : ms));
 
-function renderKpis() {
-  const ex = KPIS.extrapolacion_cartera || {};
-  const cards = [
-    { v: KPIS.ahorro_pct + "%", l: "Menos costo de cobranza", sub: "vs gestión actual", good:true },
-    { v: "−" + KPIS.reduccion_contactos_pct + "%", l: "Menos contactos", sub: KPIS.contactos_actual + " → " + KPIS.contactos_ia, good:true },
-    { v: KPIS.digital_first_pct + "%", l: "Digital-first", sub: "WhatsApp/SMS primero" },
-    { v: soles(KPIS.recuperacion_esperada_soles), l: "Recuperación esperada", sub: KPIS.n_clientes + " clientes (muestra)" },
-    { v: soles(ex.ahorro_anual_estimado_soles||0), l: "Ahorro extrapolado", sub: "a " + (ex.clientes_totales||0).toLocaleString("es-PE") + " clientes", good:true },
-  ];
-  document.getElementById("kpis").innerHTML = cards.map(c =>
-    `<div class="kpi"><div class="v ${c.good?'good':''}">${c.v}</div><div class="l">${c.l}</div><div class="sub">${c.sub}</div></div>`
-  ).join("");
+/* ---------------------------------------------------------------
+   1) GUION DE LA CONVERSACIÓN (mensajes reales del documento)
+   Cada paso: quién habla, contenido, y respuestas que puede dar el cliente.
+--------------------------------------------------------------- */
+const NEXT = {};        // mapa: id de respuesta -> índice del paso siguiente
+const SCRIPT = [
+  { who: "in", t: `Hola Rosa 👋 Te escribe <strong>Mibanco</strong> ✅<br>Tu cuota de <strong>S/310</strong> vence en 7 días. Podés pagar por Yape, la app o un agente BCP. ¡Gracias por tu puntualidad! 🙌`, tm: "9:02" },
+  { who: "in", t: `¿Querés activar <strong>YateKobro</strong>? Con un pequeño % de cada venta por Yape vas cubriendo tu cuota sin sentirla — y reducís lo que pagás de interés.`, tm: "9:02",
+    replies: [
+      { id: "act2", label: "Activar al 2%" },
+      { id: "act5", label: "Mejor al 5%" },
+      { id: "no",   label: "Ahora no" },
+    ] },
+
+  // rama: activar 2%
+  { branch: "act2", who: "out", t: `2`, tm: "9:03" },
+  { who: "in", t: `✅ <strong>YateKobro activado al 2%</strong>, Rosa.<br>Cada Yape que recibas, el 2% va directo a tu cuota. Primero cubre el interés del mes, después el capital.<br>Para pausarlo cuando quieras, escribí <strong>PARAR</strong>.`, tm: "9:03" },
+  { who: "in", t: `📊 Ya cubriste el <strong>50% del interés</strong> de este mes (S/51 de S/103). Seguimos 💪`, tm: "Mar 11:20",
+    yk: { intPct: 50, capPct: 0, intM: "S/51 / S/103", capM: "S/0 / S/207" } },
+  { who: "in", win: true, t: `🎉 ¡Rosa, ya cubriste el <strong>100% del interés</strong> de junio!<br>Lo que te queda (S/207) es <strong>plata tuya que estás devolviendo</strong>, no costo del banco. Llevás 5 días, 21 transacciones.`, tm: "Jue 16:40",
+    yk: { intPct: 100, capPct: 0, intM: "S/103 / S/103 ✓", capM: "S/0 / S/207" } },
+  { who: "in", win: true, t: `✅ <strong>¡Cuota de junio PAGADA, Rosa!</strong> YateKobro se pausó automático.<br>¿Querés adelantar la cuota de julio y seguir reduciendo interés?`, tm: "Lun 12:10",
+    yk: { intPct: 100, capPct: 100, intM: "S/103 / S/103 ✓", capM: "S/207 / S/207 ✓" },
+    replies: [
+      { id: "si", label: "Sí, seguir" },
+      { id: "parar", label: "No, pausar" },
+    ] },
+  { branch: "si", who: "out", t: `Sí`, tm: "Lun 12:11" },
+  { who: "in", t: `🙌 ¡Genial! Seguimos al 2% con la cuota de julio. Te dejamos tranquila y solo confirmamos cerca de la fecha.`, tm: "Lun 12:11", end: true },
+  { branch: "parar", who: "out", t: `No`, tm: "Lun 12:11" },
+  { who: "in", t: `✅ Listo Rosa, quedamos pausados hasta que se acerque julio. Cero llamadas, cero molestias. Gracias por tu confianza 🤝`, tm: "Lun 12:11", end: true },
+
+  // rama: activar 5%
+  { branch: "act5", who: "out", t: `5`, tm: "9:03" },
+  { who: "in", t: `✅ <strong>YateKobro activado al 5%</strong>, Rosa. A este ritmo cubrís tu cuota mucho más rápido. Primero el interés, después el capital.`, tm: "9:03" },
+  { who: "in", win: true, t: `🎉 ¡Rosa, ya cubriste el <strong>100% del interés</strong>! En 2 días. Lo que queda es plata tuya. Seguimos hasta completar la cuota.`, tm: "Mié 18:05",
+    yk: { intPct: 100, capPct: 30, intM: "S/103 / S/103 ✓", capM: "S/62 / S/207" }, end: true },
+
+  // rama: ahora no
+  { branch: "no", who: "out", t: `Ahora no`, tm: "9:03" },
+  { who: "in", t: `Sin problema, Rosa 🙂 Te dejamos el recordatorio amable y nada más. Si cambiás de idea, escribí <strong>YATEKOBRO</strong> cuando quieras.`, tm: "9:03", end: true },
+];
+
+// indexar ramas
+SCRIPT.forEach((s, i) => { if (s.branch) NEXT[s.branch] = i; });
+
+const body = $("#waBody");
+const repliesBox = $("#waReplies");
+let busy = false;
+
+function clearReplies() { repliesBox.innerHTML = `<span class="wa-ph">Escribe un mensaje…</span>`; }
+
+function bubble(step) {
+  const el = document.createElement("div");
+  el.className = `msg ${step.who}${step.win ? " win" : ""}`;
+  let html = step.t;
+  if (step.yk) html += ykBar(step.yk);
+  html += `<span class="tm">${step.tm || ""}${step.who === "out" ? " ✓✓" : ""}</span>`;
+  el.innerHTML = html;
+  body.appendChild(el);
+  body.scrollTop = body.scrollHeight;
+  return el;
 }
 
-function passFilter(d){
-  if (FILTER === "todos") return true;
-  if (FILTER === "entrevistas") return String(d.cliente_id).startsWith("ENT");
-  return d.segmento.riesgo === FILTER;
-}
-
-function renderList() {
-  const list = CLIENTES.filter(passFilter);
-  document.getElementById("clientList").innerHTML = list.map(d => {
-    const pr = d.prioridad, col = pr>=55?"var(--mb-red)":pr>=35?"var(--amber)":"var(--green)";
-    return `<div class="client ${d.cliente_id===SELECTED?'active':''}" data-id="${d.cliente_id}">
-      <div class="pri" style="background:${col}">${Math.round(pr)}</div>
-      <div class="who"><div class="nm">${d.nombre}</div>
-        <div class="meta">${d.segmento.tramo_mora} · ${d.segmento.es_digital?'digital':'no digital'}</div></div>
-      <span class="badge b-${d.segmento.riesgo}">${d.segmento.riesgo}</span>
-      <span class="ch-ico">${CH_ICON[d.decision.canal.canal]}</span>
-    </div>`;
-  }).join("");
-  document.querySelectorAll(".client").forEach(el => el.onclick = () => select(el.dataset.id));
-}
-
-function select(id){ SELECTED = id; renderList(); renderDetail(CLIENTES.find(d=>d.cliente_id===id)); }
-
-function renderDetail(d){
-  if(!d) return;
-  const s=d.segmento, dec=d.decision, im=d.impacto;
-  const tags = [
-    `<span class="badge b-${s.riesgo}">${RISK_LABEL[s.riesgo]}</span>`,
-    `<span class="badge ${s.es_digital?'b-bajo':'b-medio'}">${s.es_digital?'Digital':'No digital'}</span>`,
-    s.buen_pagador?`<span class="badge b-bajo">Buen pagador</span>`:"",
-    `<span class="badge b-medio">${s.tramo_mora}</span>`,
-  ].join("");
-
-  const note = d.nota ? `<div class="note">🗣️ <b>Insight entrevista:</b> ${d.nota}</div>` : "";
-
-  // ANTES (gestión actual)
-  const before = `<div class="col before"><h3><b>● HOY</b> — gestión actual</h3>
-    <div class="line"><span class="ic">📢</span><div><div class="k">Contactos</div>
-      <div class="val strike">~${CFG.baseline.contactos_por_credito} al mes, a ciegas</div></div></div>
-    <div class="line"><span class="ic">🎲</span><div><div class="k">Canal</div>
-      <div class="val strike">Cualquiera, descoordinado (cada asesor por su lado)</div></div></div>
-    <div class="line"><span class="ic">🙈</span><div><div class="k">Resultado típico</div>
-      <div class="val strike">${Math.round(CFG.baseline.pct_ignorados*100)}% ignora · se siente perseguido</div></div></div>
-    <div class="line"><span class="ic">💸</span><div><div class="k">Costo estimado</div>
-      <div class="val strike">${soles(im.costo_actual_estimado)} / crédito</div></div></div>
-  </div>`;
-
-  // DESPUÉS (IA)
-  const after = `<div class="col after"><h3><b>● CON IA</b> — decisión del motor</h3>
-    ${drow(CH_ICON[dec.canal.canal], "Canal", dec.canal.canal_nombre, dec.canal.motivo)}
-    ${drow("🗓️", "Momento", dec.momento.cuando, "Franja "+dec.momento.franja+" · evitar "+dec.momento.evitar)}
-    ${drow("🎚️", "Frecuencia", "Máx "+dec.frecuencia.tope_contactos+" contacto(s)", dec.frecuencia.nota)}
-    ${drow("💬", "Tono", capit(dec.tono), "Tutear, cercano y verificablemente Mibanco")}
-    ${messagePreview(dec)}
-  </div>`;
-
-  const impact = `<div class="impact">
-    <div class="istat"><div class="iv good">${im.ahorro_pct}%</div><div class="il">menos costo en este crédito (${soles(im.ahorro_soles)})</div></div>
-    <div class="istat"><div class="iv">${soles(im.recuperacion_esperada)}</div><div class="il">recuperación esperada (pago × cuota)</div></div>
-  </div>`;
-
-  document.getElementById("detail").innerHTML = `
-    <div class="detail-head"><div><div class="name">${d.nombre}</div><div class="tags">${tags}</div></div>
-      <div class="pri" style="background:var(--navy);width:48px;height:48px;border-radius:12px;font-size:16px">${Math.round(d.prioridad)}</div></div>
-    ${note}
-    <div class="cols">${before}${after}</div>
-    ${impact}
-    ${rankingHtml(dec.canal.ranking)}
-    ${whatifHtml(d)}`;
-
-  wireWhatif(d);
-}
-
-function drow(ic,k,v,sub){
-  return `<div class="drow"><div class="di">${ic}</div><div><div class="dk">${k}</div>
-    <div class="dv">${v}</div><div class="dsub">${sub||""}</div></div></div>`;
-}
-function capit(s){return s? s.charAt(0).toUpperCase()+s.slice(1):s;}
-
-function messagePreview(dec){
-  const verif = dec.canal.verificable ? `<span class="wa-verif">✓ verificado</span>` : "";
-  const isCall = dec.canal.canal==="llamada"||dec.canal.canal==="campo";
-  return `<div class="phone">
-    <div class="wa-head">${CH_ICON[dec.canal.canal]} ${dec.canal.canal_nombre} ${verif}</div>
-    <div class="bubble ${isCall?'call':''}">${dec.mensaje}<div class="t">${dec.momento.franja.split('-')[0]} ✓✓</div></div>
+function ykBar(yk) {
+  return `<div class="ykbar">
+    <div class="ykrow"><span>Interés</span><span>${yk.intPct}%</span></div>
+    <div class="yktrack"><div class="ykfill int" style="width:${yk.intPct}%"></div></div>
+    <div class="ykrow"><span>Capital · tuyo</span><span>${yk.capPct}%</span></div>
+    <div class="yktrack"><div class="ykfill cap" style="width:${yk.capPct}%"></div></div>
   </div>`;
 }
 
-function rankingHtml(rank){
-  if(!rank||!rank.length) return "";
-  const max = Math.max(...rank.map(r=>r.valor_neto), 1);
-  const bars = rank.map((r,i)=>{
-    const w = Math.max(2, (r.valor_neto/max)*100);
-    return `<div class="bar ${i===0?'win':''}"><span class="bn">${CH_ICON[r.canal]} ${r.canal}</span>
-      <span class="track"><span class="fill" style="width:${w}%"></span></span>
-      <span class="bv">S/${Math.round(r.valor_neto)}</span></div>`;
-  }).join("");
-  return `<div class="rank"><h4>¿Por qué ese canal? · valor neto esperado (recuperación − costo)</h4>${bars}</div>`;
+async function typing(ms = 900) {
+  const t = document.createElement("div");
+  t.className = "typing";
+  t.innerHTML = "<i></i><i></i><i></i>";
+  body.appendChild(t);
+  body.scrollTop = body.scrollHeight;
+  await wait(ms);
+  t.remove();
 }
 
-/* ---------- WHAT-IF: port compacto del motor (rules.py) a JS ---------- */
-function whatifHtml(d){
-  const s=d.segmento;
-  return `<div class="whatif"><h4>🔬 Simulador en vivo — cambia el escenario y la IA re-decide</h4>
-    <div class="wi-row"><label>Días de mora</label>
-      <input type="range" id="wiMora" min="0" max="120" value="${s.dias_mora}">
-      <span class="wval" id="wiMoraV">${s.dias_mora} d</span></div>
-    <div class="wi-row"><label>Cuota (S/)</label>
-      <input type="range" id="wiCuota" min="120" max="1500" step="20" value="${Math.round(d._cuota||cuotaOf(d))}">
-      <span class="wval" id="wiCuotaV">S/ ${Math.round(d._cuota||cuotaOf(d))}</span></div>
-    <div class="wi-row"><label>Perfil digital</label>
-      <span class="toggle" id="wiDig"><button data-v="1" class="${s.es_digital?'on':''}">Digital</button>
-      <button data-v="0" class="${!s.es_digital?'on':''}">No digital</button></span></div>
-    <div class="wi-row"><label>Riesgo</label>
-      <span class="toggle" id="wiRiesgo">${["bajo","medio","alto"].map(r=>`<button data-v="${r}" class="${s.riesgo===r?'on':''}">${r}</button>`).join("")}</span></div>
-    <div id="wiOut"></div></div>`;
+function showReplies(replies) {
+  repliesBox.innerHTML = "";
+  replies.forEach(r => {
+    const b = document.createElement("button");
+    b.className = "wa-reply";
+    b.textContent = r.label;
+    b.onclick = () => choose(r.id);
+    repliesBox.appendChild(b);
+  });
 }
 
-function cuotaOf(d){ return d.impacto.recuperacion_esperada / d.decision.canal.pago_estimado; }
-
-function wireWhatif(d){
-  const st = { mora:d.segmento.dias_mora, cuota:Math.round(cuotaOf(d)),
-               digital:d.segmento.es_digital?1:0, riesgo:d.segmento.riesgo,
-               saldo:d.impacto?cuotaOf(d)*4:0 };
-  const mora=document.getElementById("wiMora"), cuota=document.getElementById("wiCuota");
-  mora.oninput=()=>{st.mora=+mora.value;document.getElementById("wiMoraV").textContent=st.mora+" d";recompute(st);};
-  cuota.oninput=()=>{st.cuota=+cuota.value;document.getElementById("wiCuotaV").textContent="S/ "+st.cuota;st.saldo=st.cuota*4;recompute(st);};
-  document.querySelectorAll("#wiDig button").forEach(b=>b.onclick=()=>{
-    st.digital=+b.dataset.v;tog("#wiDig",b);recompute(st);});
-  document.querySelectorAll("#wiRiesgo button").forEach(b=>b.onclick=()=>{
-    st.riesgo=b.dataset.v;tog("#wiRiesgo",b);recompute(st);});
-  recompute(st);
-}
-function tog(sel,btn){document.querySelectorAll(sel+" button").forEach(x=>x.classList.remove("on"));btn.classList.add("on");}
-
-function tramoDe(dias){ for(const r of CFG.tramos_mora.rangos){ if(dias<=r.max_dias) return r; } }
-function pagoEst(canal,dig){ return CFG.canales[canal].pago_7d * CFG.ajuste_canal_por_perfil_digital[dig?"digital":"no_digital"][canal]; }
-
-function decidirJS(st){
-  const tramo=tramoDe(st.mora), base=Math.max(st.cuota,1);
-  let perm=["whatsapp","sms"], montoAlto=(st.saldo||st.cuota*4)>=3000;
-  if(st.riesgo==="alto"||montoAlto) perm.push("llamada");
-  if(st.riesgo==="alto"&&montoAlto) perm.push("campo");
-  if(!st.digital&&!perm.includes("llamada")) perm.push("llamada");
-  const rank=perm.map(c=>{const p=pagoEst(c,st.digital);return {canal:c,valor_neto:p*base-CFG.canales[c].costo,pago:p};})
-    .sort((a,b)=>b.valor_neto-a.valor_neto);
-  const elegido=rank[0].canal;
-  const tope=CFG.topes_contacto.por_riesgo[st.riesgo];
-  const costoIA=CFG.canales[elegido].costo*Math.max(tope,1);
-  const costoActual=CFG.baseline.contactos_por_credito*0.99;
-  return { canal:elegido, nombre:CFG.canales[elegido].nombre, tramo, tope,
-    recup: rank[0].pago*st.cuota, ahorro:costoActual-costoIA,
-    ahorroPct: Math.round((costoActual-costoIA)/costoActual*100) };
+// reproduce pasos secuenciales hasta toparse con replies / end / branch
+async function play(from) {
+  if (busy) return; busy = true;
+  let i = from;
+  while (i < SCRIPT.length) {
+    const step = SCRIPT[i];
+    if (step.branch && i !== from) break;     // llegó a otra rama: parar
+    if (step.who === "in") await typing(step.win ? 1100 : 850);
+    bubble(step);
+    await wait(step.win ? 700 : 380);
+    if (step.replies) { showReplies(step.replies); busy = false; return; }
+    if (step.end) { clearReplies(); busy = false; return; }
+    i++;
+  }
+  busy = false;
 }
 
-function recompute(st){
-  const r=decidirJS(st);
-  document.getElementById("wiOut").innerHTML=
-    `<div class="drow" style="margin-top:12px;background:#eef9f2;border-color:#bce8cf">
-      <div class="di" style="background:#d6f3e0">${CH_ICON[r.canal]}</div>
-      <div><div class="dk">Nueva decisión IA · ${r.tramo.etiqueta} (${r.tramo.etapa})</div>
-      <div class="dv">${r.nombre} · máx ${r.tope} contacto(s)</div>
-      <div class="dsub">Recuperación esperada ${soles(r.recup)} · ${r.ahorroPct}% menos costo</div></div></div>`;
+async function choose(id) {
+  if (busy) return;
+  clearReplies();
+  await play(NEXT[id]);
 }
 
-boot();
+/* arranque del chat al cargar y con el botón */
+let started = false;
+async function startChat() {
+  if (started) return; started = true;
+  await play(0);
+}
+$("#ctaPlay").onclick = () => {
+  if (started) { $("#demo").scrollIntoView({ behavior: "smooth", block: "center" }); }
+  else startChat();
+};
+$("#waSend").onclick = startChat;
+
+/* ---------------------------------------------------------------
+   2) SIMULADOR YATEKOBRO (números del documento)
+--------------------------------------------------------------- */
+const CUOTA = 310, INTERES = 103, CAPITAL = 207;
+let pct = 2, ventas = 1000;
+
+function plural(n) { return n === 1 ? "día" : "días"; }
+
+function renderSim() {
+  const aporte = ventas * (pct / 100);                 // S/ por día a la cuota
+  const dInt = Math.ceil(INTERES / aporte);
+  const dCuota = Math.ceil(CUOTA / aporte);
+
+  $("#ventasV").textContent = soles(ventas);
+  $("#aporteDia").textContent = soles(aporte);
+  $("#diasInteres").textContent = dInt + " " + plural(dInt);
+  $("#diasCuota").textContent = dCuota + " " + plural(dCuota);
+
+  // barras: estado "interés 100% + parte del capital" como en el caso estrella
+  const capAcumDemo = Math.min(CAPITAL, Math.round(CAPITAL * 0.4)); // 40% capital de muestra
+  setBar("int", 100, INTERES, INTERES);
+  setBar("cap", Math.round(capAcumDemo / CAPITAL * 100), capAcumDemo, CAPITAL);
+  $("#intWin").textContent = "¡vencido! ✓";
+
+  // nota contextual honesta
+  let nota = "";
+  if (aporte * 31 < CUOTA) {
+    nota = `Con ventas bajas, YateKobro cubre el interés (lo más caro) pero la cuota necesita un empujón extra a fin de mes — y aun así, sin una sola llamada de cobranza.`;
+  } else if (dInt <= 3) {
+    nota = `Un negocio activo de Gamarra vence su interés en ${dInt} ${plural(dInt)} y cancela la cuota en ${dCuota} ${plural(dCuota)} — todo con sus propias ventas, cero cobranza.`;
+  } else {
+    nota = `Rosa vence el interés en ${dInt} ${plural(dInt)} y completa su cuota en ${dCuota} ${plural(dCuota)}, sin sentir el descuento y sin recibir una sola llamada.`;
+  }
+  $("#simNote").textContent = nota;
+}
+
+function setBar(kind, p, monto, total) {
+  $(`#${kind}Fill`).style.width = p + "%";
+  $(`#${kind}Pct`).textContent = p + "%";
+  $(`#${kind}Monto`).textContent = `S/${monto} de S/${total}`;
+}
+
+$$("#segPct button").forEach(b => b.onclick = () => {
+  $$("#segPct button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  pct = +b.dataset.v;
+  renderSim();
+});
+$("#ventas").oninput = e => { ventas = +e.target.value; renderSim(); };
+
+/* ---------------------------------------------------------------
+   3) CONTADORES animados + REVEAL on scroll
+--------------------------------------------------------------- */
+function animateCount(el) {
+  if (el.dataset.done) return;          // anima una sola vez
+  el.dataset.done = "1";
+  const target = parseFloat(el.dataset.count);
+  const pre = el.dataset.prefix || "";
+  const suf = el.dataset.suffix || "";
+  const decimals = (String(target).split(".")[1] || "").length;
+  if (reduced) { el.textContent = pre + Math.abs(target).toFixed(decimals) + suf; return; }
+  const dur = 1100, t0 = performance.now(), sign = target < 0 ? "−" : "";
+  const abs = Math.abs(target);
+  function frame(now) {
+    const k = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (pre || sign) + (abs * e).toFixed(decimals) + suf;
+    if (k < 1) requestAnimationFrame(frame);
+    else el.textContent = (pre || sign) + abs.toFixed(decimals) + suf;
+  }
+  requestAnimationFrame(frame);
+}
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add("in");
+    if (en.target.dataset.count) animateCount(en.target);
+    $$("[data-count]", en.target).forEach(animateCount);
+    io.unobserve(en.target);
+  });
+}, { threshold: 0.2 });
+
+// Cada contador vive dentro de un .reveal; observar solo .reveal evita doble animación.
+$$(".reveal").forEach(el => io.observe(el));
+
+/* init */
+renderSim();
+// auto-arranca el chat un instante después de cargar, para que el jurado vea movimiento
+if (!reduced) setTimeout(startChat, 600); else startChat();
