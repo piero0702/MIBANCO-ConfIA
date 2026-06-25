@@ -238,7 +238,7 @@ scrollBottom();
 /* ── Yape second phone ── */
 
 function setYapeContent(tipo, msg) {
-const head = document.getElementById("yapeHead").querySelector(".yp-head-title");
+const head = document.getElementById("yapeHeadTitle");
 const body = document.getElementById("yapeBody");
 if (tipo === "registro") {
 head.textContent = "Registro";
@@ -270,7 +270,7 @@ body.innerHTML = `
     <div class="yp-tx-row"><span>De</span><span>${msg.remitente}</span></div>
     <div class="yp-tx-row"><span>Estado</span><span>✅ Acreditado</span></div>
     <div class="yp-ys-strip">
-      <div class="yp-ys-strip-h">⚡ YoSiLa · ${pct}% por venta → cuota Mibanco</div>
+      <div class="yp-ys-strip-h">⚡ YoSiLa · ${pct}% por venta → cuota Mibanco <span class="yp-ys-live">● activo</span></div>
       <div class="yp-ys-strip-row">
         <span>S/ ${aporte} imputado a cuota</span>
         <span class="yp-ys-ok">✓ imputado</span>
@@ -296,6 +296,8 @@ async function showYapeScreen(tipo, msg) {
 setYapeContent(tipo, msg);
 document.getElementById("yapePhone").classList.add("yp-visible");
 document.getElementById("waPhone").classList.add("yp-push");
+document.getElementById("appLabel").classList.add("yp-mode");
+document.getElementById("phoneContainer").classList.add("yp-shadow");
 if (tipo === "registro") {
 await animateYapeSteps();
 } else {
@@ -303,6 +305,8 @@ await later(3800);
 }
 document.getElementById("yapePhone").classList.remove("yp-visible");
 document.getElementById("waPhone").classList.remove("yp-push");
+document.getElementById("appLabel").classList.remove("yp-mode");
+document.getElementById("phoneContainer").classList.remove("yp-shadow");
 await later(500);
 }
 
@@ -459,6 +463,8 @@ function resetAndPlay() {
 clearTimers();
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("waPhone")?.classList.remove("yp-push");
+document.getElementById("appLabel")?.classList.remove("yp-mode");
+document.getElementById("phoneContainer")?.classList.remove("yp-shadow");
 reproducir();
 }
 
@@ -466,5 +472,6 @@ document.addEventListener("DOMContentLoaded", () => {
 renderPerfiles();
 renderEtapas();
 updateWAHeader();
+document.getElementById("replayBtn").addEventListener("click", resetAndPlay);
 reproducir();
 });

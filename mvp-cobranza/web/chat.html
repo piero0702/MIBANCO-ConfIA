@@ -39,35 +39,48 @@
 <!-- CHAT PANEL -->
 <div class="chat-panel">
 
-  <div class="phone-container">
+  <div class="phone-ui-wrap">
 
-    <!-- WhatsApp phone -->
-    <div class="phone-wrap wa-phone" id="waPhone">
-      <div class="wa-head" id="waHeader"></div>
-      <div class="wa-body" id="chatBody"></div>
-      <div class="wa-footer">
-        <span class="wa-attach">📎</span>
-        <div class="wa-input-box">Escribe un mensaje...</div>
-        <div class="wa-mic">🎤</div>
-      </div>
+    <!-- Etiqueta flotante de app activa -->
+    <div class="app-label" id="appLabel">
+      <span class="app-label-wa" id="appLabelWa">💬 WhatsApp</span>
+      <span class="app-label-yp" id="appLabelYp">💜 yape</span>
     </div>
 
-    <!-- Yape phone (overlay, entra desde la derecha automáticamente) -->
-    <div class="phone-wrap yape-phone" id="yapePhone">
-      <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
-      <div class="yp-head">
-        <span class="yp-back">←</span>
-        <span class="yp-head-title" id="yapeHeadTitle">yape</span>
-        <div class="yp-head-avatar">💜</div>
+    <div class="phone-container" id="phoneContainer">
+
+      <!-- WhatsApp phone -->
+      <div class="phone-wrap wa-phone" id="waPhone">
+        <div class="wa-head" id="waHeader"></div>
+        <div class="wa-body" id="chatBody"></div>
+        <div class="wa-footer">
+          <span class="wa-attach">📎</span>
+          <div class="wa-input-box">Escribe un mensaje...</div>
+          <div class="wa-mic">🎤</div>
+        </div>
       </div>
-      <div class="yp-body" id="yapeBody"></div>
-      <div class="yp-nav">
-        <span class="yp-nav-ic active">🏠</span>
-        <span class="yp-nav-ic">💜</span>
-        <span class="yp-nav-ic">📋</span>
-        <span class="yp-nav-ic">👤</span>
+
+      <!-- Yape phone (overlay, entra desde la derecha automáticamente) -->
+      <div class="phone-wrap yape-phone" id="yapePhone">
+        <div class="yp-status-bar">9:41 &nbsp;···· ▲ 100%</div>
+        <div class="yp-head">
+          <span class="yp-back">←</span>
+          <span class="yp-head-title" id="yapeHeadTitle">yape</span>
+          <div class="yp-head-avatar">💜</div>
+        </div>
+        <div class="yp-body" id="yapeBody"></div>
+        <div class="yp-nav">
+          <span class="yp-nav-ic active">🏠</span>
+          <span class="yp-nav-ic">💜</span>
+          <span class="yp-nav-ic">📋</span>
+          <span class="yp-nav-ic">👤</span>
+        </div>
       </div>
+
     </div>
+
+    <!-- Botón replay -->
+    <button class="replay-btn" id="replayBtn" title="Repetir animación">▶ Repetir</button>
 
   </div>
 
