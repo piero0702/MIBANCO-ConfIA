@@ -90,11 +90,17 @@ texto: "✅ Agendado para las 15:00, Alessia.\nTu asesor Juan García (verificab
 yatekobro: [
 { de: "banco", delay: 500,
 texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
-{ de: "cliente", delay: 1800,
-texto: "sí, dale! 👂" },
-{ de: "banco", delay: 1000,
-texto: "Funciona así:\n• Recibís un Yape por una venta ✅\n• El % que elegís va directo a tu cuota Mibanco\n• Primero cubre el interés del mes 📈\n• Luego el capital (lo que es tuyo)\n• Se para SOLO al completar\n0 llamadas. 0 formularios. Solo tus ventas trabajando. 💙\n\nElegí el % acá:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%" },
-{ de: "cliente", delay: 1400,
+{ de: "banco", tipo: "img-yosila", delay: 1000, datos: {
+  nombre: "Alessia Borrelli",
+  credito: "S/ 3,200 · 24 meses",
+  cuota: 450, interes: 98, capital: 352,
+  ventas_dia: 920, pct: 2, dias_interes: 6, dias_cuota: 25,
+}},
+{ de: "cliente", delay: 2000,
+texto: "esto está buenísimo 😮 ¿cómo lo activo?" },
+{ de: "banco", delay: 800,
+texto: "Fácil — respondé acá con el % que querés:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%\n(El 2% es lo más popular — cubrís la cuota sin sentirla.)" },
+{ de: "cliente", delay: 1200,
 texto: "2" },
 { de: "banco", delay: 800,
 texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibás → 2% va a tu cuota.\nTe avisamos en 3 momentos: interés 50% · interés 100% 🎉 · cuota completa → se para solo.\n¡A vender! 💙" },
@@ -186,7 +192,13 @@ texto: "Para eso estamos Powel. Juntos lo resolvemos. 💙" },
 yatekobro: [
 { de: "banco", delay: 600,
 texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
-{ de: "cliente", delay: 2000,
+{ de: "banco", tipo: "img-yosila", delay: 1000, datos: {
+  nombre: "Powel Aliaga",
+  credito: "S/ 1,800 · 18 meses",
+  cuota: 260, interes: 55, capital: 205,
+  ventas_dia: 480, pct: 2, dias_interes: 6, dias_cuota: 28,
+}},
+{ de: "cliente", delay: 2200,
 texto: "¿y eso cómo sería?" },
 { de: "banco", delay: 900,
 texto: "Primero necesitás tener Yape, Powel 📱\nEs gratis y demora 5 minutos — tu asesora María te acompaña una sola vez:" },
@@ -320,6 +332,64 @@ body.innerHTML = `
   </div>
 </div>`;
 }
+}
+
+function appendImgYoSiLa(msg) {
+const d = msg.datos;
+const aporteDia = Math.round(d.ventas_dia * d.pct / 100);
+const el = document.createElement("div");
+el.className = "msg msg-bank";
+const h = hora();
+el.innerHTML = `
+<div class="msg-img-bubble">
+  <div class="yk-img-card">
+    <div class="yk-img-head">
+      <span class="yk-img-logo">💜 YoSiLa</span>
+      <span class="yk-img-badge">Mibanco ✅</span>
+    </div>
+    <div class="yk-img-nombre">${d.nombre}</div>
+    <div class="yk-img-section-label">Tu cuota de este mes</div>
+    <div class="yk-img-cuota">S/ ${d.cuota.toFixed(2)}</div>
+    <div class="yk-img-breakdown">
+      <div class="yk-img-b-row">
+        <span>Interés del mes</span>
+        <span class="yk-img-int">S/ ${d.interes}.00</span>
+      </div>
+      <div class="yk-img-b-row">
+        <span>Capital a devolver</span>
+        <span>S/ ${d.capital}.00</span>
+      </div>
+      <div class="yk-img-b-row yk-img-b-last">
+        <span>Crédito</span>
+        <span>${d.credito}</span>
+      </div>
+    </div>
+    <div class="yk-img-divider"></div>
+    <div class="yk-img-section-label">📊 Simulación YoSiLa al ${d.pct}%</div>
+    <div class="yk-img-sim">
+      <div class="yk-img-sim-row">
+        <span>Ventas Yape/día (estimado)</span>
+        <span><b>S/ ${d.ventas_dia.toLocaleString("es-PE")}</b></span>
+      </div>
+      <div class="yk-img-sim-row">
+        <span>Aporte diario al ${d.pct}%</span>
+        <span class="yk-img-green"><b>S/ ${aporteDia} / día</b></span>
+      </div>
+      <div class="yk-img-sim-row">
+        <span>Interés cubierto en aprox.</span>
+        <span><b>~${d.dias_interes} días</b></span>
+      </div>
+      <div class="yk-img-sim-row yk-img-sim-hl">
+        <span>Cuota completa en aprox.</span>
+        <span><b>~${d.dias_cuota} días</b></span>
+      </div>
+    </div>
+    <div class="yk-img-foot">0 llamadas · 0 visitas · se para solo al completar</div>
+  </div>
+</div>
+<div class="msg-meta">${h} <span class="ticks">✓✓</span></div>`;
+chatBody().appendChild(el);
+scrollBottom();
 }
 
 async function showYapePush(msg) {
@@ -457,11 +527,18 @@ await showYapeScreen("transaccion", msg);
 appendSysCard(msg);
 }
 } else if (msg.de === "banco") {
+if (msg.tipo === "img-yosila") {
+appendTyping();
+await later(1200);
+removeTyping();
+appendImgYoSiLa(msg);
+} else {
 const typDelay = 900 + msg.texto.length * 14;
 appendTyping();
 await later(Math.min(typDelay, 2000));
 removeTyping();
 appendBubble(msg);
+}
 } else {
 appendBubble(msg);
 }
