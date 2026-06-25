@@ -343,9 +343,16 @@ function loadPreset(i) {
   $("#ykTasa").value = Math.round(c.credito.tasa_ea * 100);
   $("#ykPlazo").value = c.credito.plazo_meses;
   setPct(c.pct);
-  $("#ykVentas").value = c.ventas_dia_media; $("#ykVentasV").textContent = soles(c.ventas_dia_media);
+  // descomponer ventas_dia_media en txns × avg para los sliders
+  const vd = c.ventas_dia_media || 1000;
+  const avgV = Math.min(500, Math.max(10, Math.round(vd / 30 / 5) * 5));
+  const txnV = Math.min(200, Math.max(5, Math.round(vd / avgV / 5) * 5));
+  if ($("#ykTxns")) { $("#ykTxns").value = txnV; if ($("#ykTxnsV")) $("#ykTxnsV").textContent = txnV + " ventas"; }
+  if ($("#ykAvg")) { $("#ykAvg").value = avgV; if ($("#ykAvgV")) $("#ykAvgV").textContent = soles(avgV); }
+  if ($("#ykVentasV")) $("#ykVentasV").textContent = soles(txnV * avgV);
   ykMode = "python";
   renderYK(c, "ventas con variabilidad");
+  renderPctCompare(c.credito.saldo, c.credito.tasa_ea, c.credito.plazo_meses, vd);
 }
 
 function setPct(v) {
@@ -401,10 +408,36 @@ function evt(tipo, dia, am, intAc, txs) {
 
 function recomputeYK() {
   $$("#ykPresets .preset").forEach(x => x.classList.remove("on"));
-  const saldo = +$("#ykSaldo").value, tasa = (+$("#ykTasa").value) / 100,
-        plazo = +$("#ykPlazo").value, ventas = +$("#ykVentas").value;
+  const saldo = +$("#ykSaldo").value, tasa = (+$("#ykTasa").value) / 100, plazo = +$("#ykPlazo").value;
+  const txns = +$("#ykTxns").value || 30, avg = +$("#ykAvg").value || 35;
+  const ventas = txns * avg;
+  if ($("#ykTxnsV")) $("#ykTxnsV").textContent = txns + " ventas";
+  if ($("#ykAvgV")) $("#ykAvgV").textContent = soles(avg);
+  if ($("#ykVentasV")) $("#ykVentasV").textContent = soles(ventas);
   ykMode = "live";
   renderYK(simulaLive(saldo, tasa, plazo, ykPct, ventas), "simulación · ventas constantes");
+  renderPctCompare(saldo, tasa, plazo, ventas);
+}
+
+function renderPctCompare(saldo, tasa, plazo, ventas) {
+  const el = $("#ykPctCompare"); if (!el) return;
+  const PCTS = [1, 2, 3, 5];
+  const cards = PCTS.map(p => {
+    const sim = simulaLive(saldo, tasa, plazo, p, ventas);
+    const r = sim.resumen;
+    const aporte = ventas * p / 100;
+    return `<div class="pct-card ${p === ykPct ? 'on' : ''}" onclick="setPct(${p});recomputeYK()">
+      <div class="pct-card-h">${p}%</div>
+      <div class="pct-card-aporte">${soles(aporte)}<small>/día</small></div>
+      <div class="pct-card-rows">
+        <div><span>Interés vencido</span><b>${r.dia_interes_vencido ? 'día ' + r.dia_interes_vencido : '—'}</b></div>
+        <div><span>Cuota completa</span><b>${r.completo ? 'día ' + r.dia_cuota_completa : '+' + r.dias_simulados + 'd'}</b></div>
+        <div><span>Ventas realizadas</span><b>${r.transacciones}</b></div>
+      </div>
+    </div>`;
+  }).join("");
+  el.innerHTML = `<div class="pct-compare-h">¿Cómo cambia la cuota según el %? <small>toca una tarjeta para simular</small></div>
+    <div class="pct-compare-scroll">${cards}</div>`;
 }
 
 function renderYK(sim, modeLabel) {
@@ -457,8 +490,7 @@ function bar(label, pct, ac, obj, kind, win) {
 }
 
 $$("#ykPct button").forEach(b => b.onclick = () => { setPct(+b.dataset.v); recomputeYK(); });
-["ykSaldo","ykTasa","ykPlazo"].forEach(id => $("#"+id).oninput = recomputeYK);
-$("#ykVentas").oninput = e => { $("#ykVentasV").textContent = soles(+e.target.value); recomputeYK(); };
+["ykSaldo","ykTasa","ykPlazo","ykTxns","ykAvg"].forEach(id => { const el = $("#"+id); if (el) el.oninput = recomputeYK; });
 
 /* ---------------- FLUJO ---------------- */
 function renderFlow() {
@@ -475,5 +507,15 @@ function renderFlow() {
     `<div class="fstep"><div class="fnum">${i+1}</div><div class="fbody"><b>${s[0]}</b><small>${s[1].replace(/\*Mibanco\* ✅/g,'<b>Mibanco ✅</b>')}</small></div></div>
      ${i<steps.length-1?'<div class="fconn"></div>':''}`).join("");
 }
+
+/* custom number spinner buttons */
+document.addEventListener("click", e => {
+  const b = e.target.closest(".nsb"); if (!b) return;
+  const inp = document.getElementById(b.dataset.id); if (!inp) return;
+  const step = +(inp.step) || 1, dir = +(b.dataset.dir);
+  const newVal = Math.min(+(inp.max) || Infinity, Math.max(+(inp.min) || -Infinity, (+inp.value) + step * dir));
+  inp.value = newVal;
+  inp.dispatchEvent(new Event("input", { bubbles: true }));
+});
 
 boot();

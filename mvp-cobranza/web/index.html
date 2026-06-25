@@ -185,6 +185,71 @@
 <!-- ═══════════════════ MÓDULO 2 · YOSILA ═══════════════════ -->
 <main class="panel" id="tab-yatekobro">
 
+  <!-- ── Simulador YoSiLa (primero, para el jurado) ── -->
+  <section class="card">
+    <div class="card-h">
+      <div class="card-title-group">
+        <h2>YoSiLa · el cliente se cobra solo</h2>
+        <span class="card-sub">Un % de cada venta por Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se avisa en 3 momentos y se apaga solo al completar la cuota.</span>
+      </div>
+    </div>
+
+    <div class="yk">
+      <div class="yk-controls">
+        <div class="yk-presets" id="ykPresets"></div>
+
+        <div class="yk-field">
+          <label>Crédito (saldo S/)</label>
+          <div class="num-spin">
+            <button class="nsb" data-id="ykSaldo" data-dir="-1">−</button>
+            <input type="number" id="ykSaldo" value="3000" min="500" step="100" />
+            <button class="nsb" data-id="ykSaldo" data-dir="1">+</button>
+          </div>
+        </div>
+        <div class="yk-field-row">
+          <div class="yk-field"><label>Tasa EA</label>
+            <div class="num-spin"><button class="nsb" data-id="ykTasa" data-dir="-1">−</button><input type="number" id="ykTasa" value="50" min="10" max="120" step="1" /><button class="nsb" data-id="ykTasa" data-dir="1">+</button><span class="ns-unit">%</span></div>
+          </div>
+          <div class="yk-field"><label>Plazo</label>
+            <div class="num-spin"><button class="nsb" data-id="ykPlazo" data-dir="-1">−</button><input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" /><button class="nsb" data-id="ykPlazo" data-dir="1">+</button><span class="ns-unit">m</span></div>
+          </div>
+        </div>
+        <div class="yk-field">
+          <label>% por venta Yape <b id="ykPctV">2%</b></label>
+          <div class="seg" id="ykPct"><button data-v="1">1%</button><button data-v="2" class="on">2%</button><button data-v="3">3%</button><button data-v="5">5%</button></div>
+        </div>
+        <div class="yk-field">
+          <label>Ventas por día en Yape <b id="ykTxnsV">30 ventas</b></label>
+          <input type="range" id="ykTxns" min="5" max="200" step="5" value="30" />
+        </div>
+        <div class="yk-field">
+          <label>Promedio por transacción <b id="ykAvgV">S/ 35</b></label>
+          <input type="range" id="ykAvg" min="10" max="500" step="5" value="35" />
+        </div>
+        <div class="yk-ventas-total">Ventas por día en Yape: <b id="ykVentasV">S/ 1,050</b></div>
+        <div class="yk-mode" id="ykMode"></div>
+      </div>
+
+      <div class="yk-out">
+        <div class="yk-amort" id="ykAmort"></div>
+        <div class="yk-bars" id="ykBars"></div>
+        <div class="yk-resumen" id="ykResumen"></div>
+        <div class="yk-pct-compare" id="ykPctCompare"></div>
+
+        <div class="yk-split">
+          <div class="yk-ledger-wrap">
+            <div class="mini-h">Ledger día a día <span id="ykLedMode" class="ledtag"></span></div>
+            <div class="ledger" id="ykLedger"></div>
+          </div>
+          <div class="yk-events-wrap">
+            <div class="mini-h">Notificaciones emitidas (solo 3)</div>
+            <div class="events" id="ykEvents"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Flujo de activación Yape por perfil ── -->
   <section class="card">
     <div class="card-h">
@@ -349,56 +414,6 @@
     </div><!-- /yape-paths -->
   </section>
 
-  <!-- ── Simulador YoSiLa ── -->
-  <section class="card">
-    <div class="card-h">
-      <div class="card-title-group">
-        <h2>YoSiLa · el cliente se cobra solo</h2>
-        <span class="card-sub">Un % de cada venta por Yape se imputa <b>primero al interés, luego al capital</b> (SBS 3274-2017 Art. 29.2). Se avisa en 3 momentos y se apaga solo al completar la cuota.</span>
-      </div>
-    </div>
-
-    <div class="yk">
-      <div class="yk-controls">
-        <div class="yk-presets" id="ykPresets"></div>
-
-        <div class="yk-field">
-          <label>Crédito (saldo S/)</label>
-          <input type="number" id="ykSaldo" value="3000" min="500" step="100" />
-        </div>
-        <div class="yk-field-row">
-          <div class="yk-field"><label>Tasa EA</label><div class="input-wrap has-unit"><input type="number" id="ykTasa" value="50" min="10" max="120" step="1" /><span class="unit">%</span></div></div>
-          <div class="yk-field"><label>Plazo</label><div class="input-wrap has-unit"><input type="number" id="ykPlazo" value="12" min="3" max="36" step="1" /><span class="unit">m</span></div></div>
-        </div>
-        <div class="yk-field">
-          <label>% por venta Yape <b id="ykPctV">2%</b></label>
-          <div class="seg" id="ykPct"><button data-v="1">1%</button><button data-v="2" class="on">2%</button><button data-v="3">3%</button><button data-v="5">5%</button></div>
-        </div>
-        <div class="yk-field">
-          <label>Ventas por día en Yape <b id="ykVentasV">S/ 1,000</b></label>
-          <input type="range" id="ykVentas" min="200" max="2500" step="100" value="1000" />
-        </div>
-        <div class="yk-mode" id="ykMode"></div>
-      </div>
-
-      <div class="yk-out">
-        <div class="yk-amort" id="ykAmort"></div>
-        <div class="yk-bars" id="ykBars"></div>
-        <div class="yk-resumen" id="ykResumen"></div>
-
-        <div class="yk-split">
-          <div class="yk-ledger-wrap">
-            <div class="mini-h">Ledger día a día <span id="ykLedMode" class="ledtag"></span></div>
-            <div class="ledger" id="ykLedger"></div>
-          </div>
-          <div class="yk-events-wrap">
-            <div class="mini-h">Notificaciones emitidas (solo 3)</div>
-            <div class="events" id="ykEvents"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <!-- ═══════════════════ MÓDULO 3 · FLUJO ═══════════════════ -->
