@@ -1,0 +1,31 @@
+{
+  "fuente_datos": "sintetico",
+  "n_clientes": 300,
+  "ahorro_muestra_soles": 1378.8,
+  "ahorro_pct": 81.5,
+  "recuperacion_esperada_soles": 74242.61,
+  "contactos_ia": 437,
+  "contactos_actual": 1710.0,
+  "reduccion_contactos_pct": 74.4,
+  "mix_canales_ia_pct": {
+    "whatsapp": 60.7,
+    "llamada": 39.3
+  },
+  "digital_first_pct": 60.7,
+  "extrapolacion_cartera": {
+    "clientes_totales": 50000,
+    "ahorro_anual_estimado_soles": 229800.0,
+    "nota": "Extrapolacion lineal de la muestra a 50k clientes. Referencial."
+  },
+  "baseline": {
+    "_nota": "Numeros cabecera del dataset para calcular el impacto.",
+    "costo_total_cobranza": 658027,
+    "costo_desperdiciado": 346319,
+    "pct_ignorados": 0.628,
+    "pct_contacto_efectivo": 0.372,
+    "contactos_por_credito": 5.7,
+    "total_contactos": 572553,
+    "total_creditos": 194665,
+    "total_clientes": 50000
+  }
+}

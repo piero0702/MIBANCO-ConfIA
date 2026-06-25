@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "descripcion": "Constantes del motor de decision de cobranza. Single source of truth para el motor Python (rules.py) y la web demo (app.js). Cada numero viene de un insight documentado.",
+    "fuentes": ["Insights_data_cobranzas.md", "Insights_entrevistas_cobranza.md", "Apuntes_reto_cobranzas_IAthon.md"]
+  },
+
+  "canales": {
+    "whatsapp": { "nombre": "WhatsApp oficial Mibanco", "pago_7d": 0.535, "costo": 0.10, "digital": true,  "verificable": true,  "insight": "data#1: ROI rey, 53.5% paga, S/0.10" },
+    "sms":      { "nombre": "SMS",                       "pago_7d": 0.451, "costo": 0.20, "digital": true,  "verificable": false, "insight": "data#1" },
+    "llamada":  { "nombre": "Llamada (asesor humano)",   "pago_7d": 0.473, "costo": 1.50, "digital": false, "verificable": false, "insight": "data#1, entrevistas#4 (no robot)" },
+    "campo":    { "nombre": "Visita de campo",           "pago_7d": 0.472, "costo": 8.00, "digital": false, "verificable": true,  "insight": "data#8: 6% contactos = 44% costo" }
+  },
+
+  "ajuste_canal_por_perfil_digital": {
+    "_nota": "Insight data#6: el canal debe calzar con el perfil. Multiplicadores sobre pago_7d base.",
+    "digital":    { "whatsapp": 1.033, "sms": 1.060, "llamada": 0.981, "campo": 0.985 },
+    "no_digital": { "whatsapp": 0.864, "sms": 0.842, "llamada": 1.017, "campo": 1.032 }
+  },
+
+  "tramos_mora": {
+    "_nota": "Insight data#5: la mora temprana paga casi el doble. dias -> {pago_7d, etiqueta, etapa}",
+    "rangos": [
+      { "max_dias": 0,   "etiqueta": "Al dia / preventivo", "etapa": "preventiva", "pago_7d": 0.554, "roi": 1548 },
+      { "max_dias": 7,   "etiqueta": "Mora 1-7d",            "etapa": "temprana",   "pago_7d": 0.474, "roi": 1339 },
+      { "max_dias": 15,  "etiqueta": "Mora 8-15d",           "etapa": "temprana",   "pago_7d": 0.473, "roi": 1337 },
+      { "max_dias": 30,  "etiqueta": "Mora 16-30d",          "etapa": "temprana",   "pago_7d": 0.472, "roi": 1335 },
+      { "max_dias": 60,  "etiqueta": "Mora 31-60d",          "etapa": "tardia",     "pago_7d": 0.378, "roi": 969 },
+      { "max_dias": 9999,"etiqueta": "Mora 60+d",            "etapa": "tardia",     "pago_7d": 0.321, "roi": 818 }
+    ]
+  },
+
+  "topes_contacto": {
+    "_nota": "Insight data#4 + entrevistas#2: sobre-contacto repele. Tope segun riesgo. Hoy todos reciben ~5.7 (data#7).",
+    "baseline_contactos_actual": 5.7,
+    "por_riesgo": { "bajo": 1, "medio": 2, "alto": 3 },
+    "extra_si_promesa_o_pago": 0
+  },
+
+  "umbrales_riesgo": {
+    "_nota": "score_riesgo y prob_default definen el segmento.",
+    "bajo_max_prob_default": 0.15,
+    "alto_min_prob_default": 0.40
+  },
+
+  "momento": {
+    "_nota": "Insight entrevistas#9: preventivo 2-4d antes; nunca en la mañana (abren negocio); mediodia/tarde. Insight data#9: la hora mueve poco, pero el speech cuida la franja.",
+    "anticipacion_preventiva_dias": 3,
+    "franja_recomendada": "13:00-18:00",
+    "franja_evitar": "07:00-10:00",
+    "horario_permitido": "Lun-Vie 07:00-19:00",
+    "insight": "restriccion del brief: lun-vie 7am-7pm"
+  },
+
+  "tono": {
+    "_nota": "Insight entrevistas#8: tono cercano y agradecido cambia el efecto. Apuntes: tutear.",
+    "default": "cercano",
+    "buen_pagador": "agradecido",
+    "alto_riesgo": "empatico-claro"
+  },
+
+  "baseline": {
+    "_nota": "Numeros cabecera del dataset para calcular el impacto.",
+    "costo_total_cobranza": 658027,
+    "costo_desperdiciado": 346319,
+    "pct_ignorados": 0.628,
+    "pct_contacto_efectivo": 0.372,
+    "contactos_por_credito": 5.7,
+    "total_contactos": 572553,
+    "total_creditos": 194665,
+    "total_clientes": 50000
+  }
+}
