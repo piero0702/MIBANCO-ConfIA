@@ -17,36 +17,23 @@ from __future__ import annotations
 import os, random, glob
 
 import rules
-from data_loader import DATA_DIRS, _limpiar_tramo_mora
+from data_loader import _limpiar_tramo_mora, _leer_tabla, datos_reales_disponibles
 
 
 # ----------------------------------------------------------------------------- #
 # Carga de la tabla de contactos (real o sintetica)
 # ----------------------------------------------------------------------------- #
-def _find_contactos() -> str | None:
-    for d in DATA_DIRS:
-        hits = glob.glob(os.path.join(d, "*ontactos*.xlsx"))
-        if hits:
-            return hits[0]
-    return None
-
-
 def cargar_contactos(max_filas: int | None = None) -> tuple[list[dict], str]:
     """Devuelve (contactos, fuente). Cada contacto: credito_id, es_digital,
-    canal_contacto, costo_contacto, pago_7d_post_contacto, intento_num."""
-    f = _find_contactos()
-    if f:
+    canal_contacto, costo_contacto, pago_7d_post_contacto, intento_num.
+    Lee de la cache CSV (rapido) o el xlsx; si no hay, cae a sinteticos."""
+    if datos_reales_disponibles():
         try:
-            import pandas as pd
-            df = _limpiar_tramo_mora(pd.read_excel(f))
+            df = _limpiar_tramo_mora(_leer_tabla("contactos", ["*ontactos*.xlsx"]))
             # perfil digital desde clientes si esta
-            fc = None
-            for d in DATA_DIRS:
-                h = glob.glob(os.path.join(d, "*Clientes*.xlsx"))
-                if h: fc = h[0]; break
-            if fc:
-                cli = pd.read_excel(fc)[["cliente_id", "es_digital"]]
-                df = df.merge(cli, on="cliente_id", how="left")
+            cli = _leer_tabla("clientes", ["*Clientes*.xlsx"])
+            if cli is not None and "es_digital" in cli.columns:
+                df = df.merge(cli[["cliente_id", "es_digital"]], on="cliente_id", how="left")
             if max_filas:
                 df = df.head(max_filas)
             cols = ["credito_id", "es_digital", "canal_contacto", "costo_contacto",

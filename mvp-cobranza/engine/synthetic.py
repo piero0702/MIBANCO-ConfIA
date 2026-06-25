@@ -63,13 +63,14 @@ def _rand_cliente(i: int, rng: random.Random) -> dict:
     }
 
 
-def generar(n: int = 120, seed: int = 7) -> list[dict]:
-    rng = random.Random(seed)
-    clientes = []
-    # 1) personajes reales primero (salen arriba en la demo)
+def personajes_entrevistas() -> list[dict]:
+    """Los 7 entrevistados reales como clientes (ids ENT-01..07). Se usan tanto en
+    modo sintetico como sobre data real (para que la lista tenga personas con nombre
+    y cita, no solo ids anonimos)."""
+    out = []
     for k, p in enumerate(PERSONAJES):
         nombre, dig, pd, rp, atr, mora, saldo, cuota, nota = p
-        clientes.append({
+        out.append({
             "cliente_id": f"ENT-{k+1:02d}",
             "nombre": nombre,
             "edad": 38, "genero": "F" if k % 2 == 0 else "M",
@@ -79,6 +80,13 @@ def generar(n: int = 120, seed: int = 7) -> list[dict]:
             "saldo_restante": saldo, "cuota_mensual": cuota,
             "promesa_pago": 0, "nota": nota,
         })
+    return out
+
+
+def generar(n: int = 120, seed: int = 7) -> list[dict]:
+    rng = random.Random(seed)
+    # 1) personajes reales primero (salen arriba en la demo)
+    clientes = personajes_entrevistas()
     # 2) relleno sintetico
     for i in range(1, n - len(PERSONAJES) + 1):
         clientes.append(_rand_cliente(i, rng))

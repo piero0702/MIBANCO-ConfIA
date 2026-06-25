@@ -127,7 +127,7 @@ def _evento(tipo: str, dia: int, nombre: str, am: dict,
     cuota, interes, capital = am["cuota"], am["interes"], am["capital"]
     falta = round(max(0.0, (interes + capital) - (interes_ac + capital_ac)), 0)
     if tipo == "interes_50":
-        msg = (f"📊 YateKobro — {n}: ya cubriste el 50% del interes de este mes "
+        msg = (f"📊 YoSiLa — {n}: ya cubriste el 50% del interes de este mes "
                f"(S/{interes_ac:.0f} de S/{interes:.0f}). Seguimos 💪")
         titulo = "Interes 50%"
     elif tipo == "interes_100":
@@ -136,7 +136,7 @@ def _evento(tipo: str, dia: int, nombre: str, am: dict,
                f"no costo del banco. Llevas {dia} dias, {txs} transacciones.")
         titulo = "Interes 100% (estrella)"
     else:  # cuota_completa
-        msg = (f"✅ ¡Cuota PAGADA, {n}! YateKobro se paro automatico.\n"
+        msg = (f"✅ ¡Cuota PAGADA, {n}! YoSiLa se paro automatico.\n"
                f"¿Quieres adelantar la proxima cuota y seguir reduciendo interes? "
                f"Responde SI o NO.")
         titulo = "Cuota completa -> auto-stop"

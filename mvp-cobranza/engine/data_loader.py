@@ -14,12 +14,16 @@ from __future__ import annotations
 import glob
 import os
 
-# Carpeta de datos reales (hermana de mvp-cobranza/, segun el README del proyecto)
+# Carpeta de datos reales. La primera ruta apunta al data_cobranzas del proyecto
+# (raiz "innv digital/examen/"); las demas son fallbacks segun el README.
 _HERE = os.path.dirname(__file__)
+_ROOT = os.path.abspath(os.path.join(_HERE, "..", "..", "..", "..", ".."))  # -> "innv digital"
 DATA_DIRS = [
+    os.path.join(_ROOT, "examen", "data_cobranzas"),
     os.path.join(_HERE, "..", "..", "data_cobranzas"),
     os.path.join(_HERE, "..", "data_cobranzas"),
     os.path.join(_HERE, "..", "..", "MIBANCO", "data_cobranzas"),
+    r"c:\Users\chori\OneDrive\Documentos\ULIMA\2026-1\innv digital\examen\data_cobranzas",
 ]
 
 
@@ -31,8 +35,32 @@ def _find(patron: str) -> str | None:
     return None
 
 
+def _cache_csv(kind: str) -> str | None:
+    """Ruta al CSV de cache (_cache/{kind}.csv) si existe. Mucho mas rapido que el
+    xlsx (el de contactos pesa ~98MB)."""
+    for d in DATA_DIRS:
+        c = os.path.join(d, "_cache", kind + ".csv")
+        if os.path.exists(c):
+            return c
+    return None
+
+
+def _leer_tabla(kind: str, patrones: list[str]):
+    """Devuelve un DataFrame de la tabla `kind` (clientes/creditos/contactos),
+    prefiriendo el CSV de cache; si no, el xlsx. None si no hay nada."""
+    import pandas as pd
+    c = _cache_csv(kind)
+    if c:
+        return pd.read_csv(c)
+    for p in patrones:
+        f = _find(p)
+        if f:
+            return pd.read_excel(f)
+    return None
+
+
 def datos_reales_disponibles() -> bool:
-    return _find("*Clientes*.xlsx") is not None
+    return _cache_csv("clientes") is not None or _find("*Clientes*.xlsx") is not None
 
 
 def _limpiar_tramo_mora(df):
@@ -47,16 +75,12 @@ def _limpiar_tramo_mora(df):
 
 
 def cargar_reales(muestra: int | None = 300) -> list[dict]:
-    """Carga y une los xlsx reales -> lista de dicts por cliente."""
-    import pandas as pd
-
-    f_cli = _find("*Clientes*.xlsx")
-    f_cred = _find("*[Cc]r*ditos*.xlsx") or _find("*Creditos*.xlsx")
-    f_cont = _find("*ontactos*.xlsx")
-
-    cli = pd.read_excel(f_cli)
-    cred = _limpiar_tramo_mora(pd.read_excel(f_cred)) if f_cred else None
-    cont = _limpiar_tramo_mora(pd.read_excel(f_cont)) if f_cont else None
+    """Carga y une las 3 tablas reales (cache CSV o xlsx) -> lista de dicts por cliente."""
+    cli = _leer_tabla("clientes", ["*Clientes*.xlsx"])
+    cred = _leer_tabla("creditos", ["*[Cc]r*ditos*.xlsx", "*Creditos*.xlsx"])
+    cont = _leer_tabla("contactos", ["*ontactos*.xlsx"])
+    cred = _limpiar_tramo_mora(cred) if cred is not None else None
+    cont = _limpiar_tramo_mora(cont) if cont is not None else None
 
     # Estado mas reciente del credito por cliente
     if cred is not None and "fecha_corte" in cred.columns:

@@ -1,9 +1,9 @@
 /* ============================================================
 Demo Conversación — WhatsApp-style chat
-AsesorIA + YateKobro · Mibanco IAthon
+Mibanco-confIA + YoSiLa · Mibanco IAthon
 ============================================================ */
 :root {
---mb-red: #E2231A;
+--mb-red: #00A94F; /* marca Mibanco: verde (este token solo se usa para branding aqui) */
 --navy: #0f1b2d;
 --good: #138a5b;
 --warn: #b9740f;
@@ -35,7 +35,7 @@ padding: 12px 22px; flex-shrink: 0; flex-wrap: wrap;
 .lb-logo {
 width: 34px; height: 34px; border-radius: 9px; background: var(--mb-red);
 display: grid; place-items: center; font-family: Georgia, serif;
-font-weight: 800; font-size: 20px; box-shadow: 0 3px 10px rgba(226,35,26,.45);
+font-weight: 800; font-size: 20px; box-shadow: 0 3px 10px rgba(0,169,79,.45);
 }
 .lb-title { display: flex; flex-direction: column; line-height: 1.2; }
 .lb-title strong { font-size: 15px; }
@@ -72,7 +72,7 @@ padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 11px;
 cursor: pointer; margin-bottom: 8px; transition: all .15s; background: #fff;
 }
 .profile-card:hover { background: #f8fafc; }
-.profile-card.active { border-color: var(--mb-red); background: #fdeceb; }
+.profile-card.active { border-color: var(--mb-red); background: #eaf8f0; }
 .profile-avatar {
 width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
 font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
@@ -96,7 +96,7 @@ padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 10px;
 cursor: pointer; background: #fff; text-align: left; width: 100%; transition: all .15s;
 }
 .stage-btn:hover { background: #f8fafc; }
-.stage-btn.active { border-color: var(--mb-red); background: #fdeceb; }
+.stage-btn.active { border-color: var(--mb-red); background: #eaf8f0; }
 .stage-dot {
 width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--line);
 flex-shrink: 0; transition: all .15s;
@@ -221,7 +221,7 @@ animation: fadeUp .2s ease;
 .sys-llamada { border-color: #b0c4f5; background: #f0f4fe; color: #1a4fa3; }
 .sys-campo { border-color: #c2e0c0; background: #f0f7ef; color: #2a6b28; }
 
-/* YateKobro progress card */
+/* YoSiLa progress card */
 .yk-card {
 align-self: flex-end; max-width: 82%;
 background: #fff; border-radius: 12px; padding: 12px 14px;

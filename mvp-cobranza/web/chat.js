@@ -1,7 +1,7 @@
 "use strict";
 /* ============================================================
-Demo Conversación — AsesorIA + YateKobro · Mibanco IAthon
-Chat WhatsApp estilo PoC: Alessia (digital) y Powel (no digital)
+Demo Conversación — Mibanco-confIA + YoSiLa · Mibanco IAthon
+Chat WhatsApp: Alessia (digital) y Powel (no digital)
 × 5 etapas de mora × animación mensaje a mensaje
 ============================================================ */
 
@@ -11,7 +11,7 @@ id: "alessia",
 nombre: "Alessia Borrelli",
 tipo: "Morosa · Digital",
 avatar: "AB",
-color: "#E2231A",
+color: "#00A94F",
 cuota: 450,
 canal: "whatsapp",
 nota: "Flujo variable de negocio. Pide flexibilidad.",
@@ -33,7 +33,7 @@ const ETAPAS = [
 { id: "temprana", label: "Mora 1–15 días", sub: "Etapa temprana" },
 { id: "media", label: "Mora 16–30 días", sub: "Etapa media" },
 { id: "tardia", label: "Mora 30+ días", sub: "Etapa tardía" },
-{ id: "yatekobro", label: "YateKobro ✅", sub: "Cubriendo la cuota" },
+{ id: "yatekobro", label: "YoSiLa ✅", sub: "Cubriendo la cuota" },
 ];
 
 const CONV = {
@@ -52,7 +52,7 @@ texto: "Hola Alessia 👋 *Mibanco* ✅\nVemos que tu cuota de S/450 venció hac
 { de: "cliente", delay: 2000,
 texto: "Uff sí, esta semana estuvo difícil... ¿puedo pagar la mitad ahora?" },
 { de: "banco", delay: 900,
-texto: "Claro Alessia 💙 Sin problema.\nAnotamos S/225 para hoy.\n¿Querés que activemos YateKobro para cubrir el resto automáticamente?\nCada venta por Yape aporta un % chiquito a tu cuota — sin sentirla." },
+texto: "Claro Alessia 💙 Sin problema.\nAnotamos S/225 para hoy.\n¿Querés que activemos YoSiLa para cubrir el resto automáticamente?\nCada venta por Yape aporta un % chiquito a tu cuota — sin sentirla." },
 { de: "cliente", delay: 1500,
 texto: "¿Cómo funciona eso?" },
 { de: "banco", delay: 1000,
@@ -60,16 +60,16 @@ texto: "Muy simple Alessia 📊\n• Elegís el % (ej: 2%)\n• Cada Yape recibi
 { de: "cliente", delay: 1800,
 texto: "dale, probamos! 💪" },
 { de: "banco", delay: 1000,
-texto: "✅ YateKobro activado al 2%, Alessia.\nTe aviso en 3 momentos:\n1️⃣ Interés al 50%\n2️⃣ Interés al 100% (el momento estrella 🎉)\n3️⃣ Cuota completa → se para solo\n¡Éxitos con las ventas!" },
+texto: "✅ YoSiLa activado al 2%, Alessia.\nTe aviso en 3 momentos:\n1️⃣ Interés al 50%\n2️⃣ Interés al 100% (el momento estrella 🎉)\n3️⃣ Cuota completa → se para solo\n¡Éxitos con las ventas!" },
 ],
 media: [
 { de: "sistema", tipo: "progreso",
-titulo: "YateKobro en marcha",
+titulo: "YoSiLa en marcha",
 interes_pct: 61, capital_pct: 0,
 sub: "12 días · 28 transacciones Yape",
 delay: 400 },
 { de: "banco", delay: 700,
-texto: "📊 YateKobro — Alessia\nInterés de junio: 61% cubierto (S/61 de S/100)\nLlevas 12 días y 28 transacciones Yape.\nSeguimos 💪" },
+texto: "📊 YoSiLa — Alessia\nInterés de junio: 61% cubierto (S/61 de S/100)\nLlevas 12 días y 28 transacciones Yape.\nSeguimos 💪" },
 { de: "cliente", delay: 1400,
 texto: "wow ni me di cuenta 😅 está buenísimo" },
 { de: "banco", delay: 900,
@@ -98,18 +98,18 @@ texto: "*Mibanco* ✅ 🎉\n¡Alessia, ya cubriste el 100% del interés de junio
 { de: "cliente", delay: 1800,
 texto: "😍 ¡me encanta esto! gracias Mibanco" },
 { de: "banco", delay: 1000,
-texto: "¡Gracias a vos por confiar, Alessia! 🙌\nAl ritmo actual, tu cuota estará completa en ~10 días más.\nYateKobro se para solo cuando llegue." },
+texto: "¡Gracias a vos por confiar, Alessia! 🙌\nAl ritmo actual, tu cuota estará completa en ~10 días más.\nYoSiLa se para solo cuando llegue." },
 { de: "sistema", tipo: "progreso",
 titulo: "✅ ¡Cuota PAGADA! Auto-stop",
 interes_pct: 100, capital_pct: 100,
 sub: "28 días · 67 transacciones · 0 llamadas de cobranza",
 delay: 1200 },
 { de: "banco", delay: 800,
-texto: "*Mibanco* ✅ ✅\n¡Cuota de junio PAGADA, Alessia! 🎉\nYateKobro se paró automático.\nCero llamadas. Cero presión. Todo con tus propias ventas 💙\n¿Adelantamos julio?\nSÍ → seguimos al 2%\nNO → quedamos pausados" },
+texto: "*Mibanco* ✅ ✅\n¡Cuota de junio PAGADA, Alessia! 🎉\nYoSiLa se paró automático.\nCero llamadas. Cero presión. Todo con tus propias ventas 💙\n¿Adelantamos julio?\nSÍ → seguimos al 2%\nNO → quedamos pausados" },
 { de: "cliente", delay: 1400,
 texto: "SÍ por favor! 🙌" },
 { de: "banco", delay: 800,
-texto: "✅ ¡Listo! YateKobro activo para julio.\n¡Éxitos con el negocio, Alessia! 💙" },
+texto: "✅ ¡Listo! YoSiLa activo para julio.\n¡Éxitos con el negocio, Alessia! 💙" },
 ],
 },
 
@@ -164,7 +164,7 @@ texto: "Para eso estamos Powel. Juntos lo resolvemos. 💙" },
 ],
 yatekobro: [
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ Hola Powel 👋\nSabemos que no usás Yape frecuentemente.\nPero si en algún momento empezás a recibir pagos por Yape, podemos activar YateKobro:\nCada venta → un % va automáticamente a tu cuota.\nSin llamadas. Sin presión. Se para solo. 💙\n¿Querés que te expliquemos cómo funciona?" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nSabemos que no usás Yape frecuentemente.\nPero si en algún momento empezás a recibir pagos por Yape, podemos activar YoSiLa:\nCada venta → un % va automáticamente a tu cuota.\nSin llamadas. Sin presión. Se para solo. 💙\n¿Querés que te expliquemos cómo funciona?" },
 { de: "cliente", delay: 2000,
 texto: "¿y eso cómo sería?" },
 { de: "banco", delay: 1000,
@@ -176,7 +176,7 @@ texto: "Respondé acá mismo con el número que elegís:\n1️⃣ = 1% por venta
 { de: "cliente", delay: 1400,
 texto: "2" },
 { de: "banco", delay: 800,
-texto: "✅ YateKobro activado al 2%, Powel.\nEn cuanto recibas Yapes, el % empieza a trabajar para vos. 💙\nSin llamadas. Sin presión.\nTe avisamos cuando el interés esté cubierto y cuando la cuota esté completa." },
+texto: "✅ YoSiLa activado al 2%, Powel.\nEn cuanto recibas Yapes, el % empieza a trabajar para vos. 💙\nSin llamadas. Sin presión.\nTe avisamos cuando el interés esté cubierto y cuando la cuota esté completa." },
 ],
 },
 };
