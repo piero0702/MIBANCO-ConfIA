@@ -1,0 +1,119 @@
+{
+  "features": [
+    "producto",
+    "dias_mora",
+    "tramo_mora",
+    "saldo_restante",
+    "cuota_mensual",
+    "num_contactos_ult7d",
+    "num_contactos_ult30d",
+    "dias_ultimo_contacto",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "contacto_mes_num",
+    "num_contactos_mes_credito",
+    "intento_num",
+    "intensidad_contacto",
+    "fatiga_contacto",
+    "recency_score",
+    "days_since_due",
+    "edad",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente",
+    "es_digital",
+    "uso_app",
+    "uso_whatsapp",
+    "interaccion_digital_score",
+    "canal_whatsapp",
+    "canal_sms",
+    "canal_llamada",
+    "canal_campo",
+    "score_riesgo",
+    "prob_default",
+    "num_atrasos_previos",
+    "dias_mora_promedio",
+    "ratio_pago",
+    "ultimo_pago_dias"
+  ],
+  "categoricas": [
+    "producto",
+    "tramo_mora",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "fatiga_contacto",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente"
+  ],
+  "label_map": {
+    "whatsapp": 0,
+    "sms": 1,
+    "llamada": 2,
+    "campo": 3
+  },
+  "accuracy": 0.5827,
+  "n_train": 237927,
+  "n_test": 41988,
+  "device": "cuda",
+  "best_iteration": 453,
+  "top_features": [
+    {
+      "feature": "canal_whatsapp",
+      "pct": 30.0
+    },
+    {
+      "feature": "es_digital",
+      "pct": 24.9
+    },
+    {
+      "feature": "canal_sms",
+      "pct": 13.5
+    },
+    {
+      "feature": "canal_campo",
+      "pct": 12.2
+    },
+    {
+      "feature": "uso_whatsapp",
+      "pct": 8.8
+    },
+    {
+      "feature": "ultimo_canal_contacto",
+      "pct": 1.6
+    },
+    {
+      "feature": "dias_mora",
+      "pct": 1.4
+    },
+    {
+      "feature": "tramo_mora",
+      "pct": 1.1
+    },
+    {
+      "feature": "days_since_due",
+      "pct": 0.7
+    },
+    {
+      "feature": "recency_score",
+      "pct": 0.2
+    },
+    {
+      "feature": "dias_ultimo_contacto",
+      "pct": 0.2
+    },
+    {
+      "feature": "respuesta_ultimo_contacto",
+      "pct": 0.2
+    }
+  ],
+  "tasa_pago_por_canal": {
+    "campo": 0.472,
+    "llamada": 0.473,
+    "sms": 0.451,
+    "whatsapp": 0.535
+  },
+  "descripcion": "Canal optimo: aprendido de contactos exitosos (pago=1 sobre 572k)"
+}

@@ -8,15 +8,16 @@ const soles = n => "S/ " + Math.round(n).toLocaleString("es-PE");
 const milesK = n => "S/" + (Math.abs(n) >= 1000 ? (n / 1000).toFixed(0) + "k" : Math.round(n));
 const CH = { whatsapp: "WhatsApp", sms: "SMS", llamada: "Llamada", campo: "Campo" };
 
-let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, FILTER = "demo", SELC = null;
+let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, MODEL = null, FILTER = "demo", SELC = null;
 
 async function boot() {
   const get = f => fetch("data/" + f).then(r => r.json()).catch(() => null);
-  [CLIENTES, BACKTEST, YK, CFG] = await Promise.all([
-    get("clientes.json"), get("backtest.json"), get("yatekobro.json"), get("config.json"),
+  [CLIENTES, BACKTEST, YK, CFG, MODEL] = await Promise.all([
+    get("clientes.json"), get("backtest.json"), get("yatekobro.json"), get("config.json"), get("model.json"),
   ]);
   setupTabs();
   renderBacktest();
+  renderModel();
   renderDecList(); const _first = CLIENTES.filter(passF)[0] || CLIENTES[0]; if (_first) selectCli(_first.cliente_id);
   renderPresets(); recomputeYK();
   renderFlow();
@@ -56,6 +57,32 @@ function renderBacktest() {
       (digital → WhatsApp, no-digital → llamada). El costo se recalcula con los costos reales por canal
       y el pago con las tasas por canal × perfil. Recuperación a nivel crédito (≥1 pago en ≤2 intentos):
       <b>${(p.recuperacion_x_credito*100).toFixed(1)}%</b>.</div>`;
+}
+
+/* ---------------- MODELO M1 (entrenado) ---------------- */
+function renderModel() {
+  const box = $("#m1-metrics");
+  if (!box) return;
+  if (!MODEL || !MODEL.auc) { box.innerHTML = ""; return; }
+  const top = (MODEL.top_features || []).slice(0, 6);
+  const max = top.length ? top[0].pct : 1;
+  const bars = top.map(t => `
+    <div class="mf-row">
+      <span class="mf-k">${t.feature}</span>
+      <span class="mf-bar"><span class="mf-fill" style="width:${Math.round(t.pct / max * 100)}%"></span></span>
+      <span class="mf-v">${t.pct}%</span>
+    </div>`).join("");
+  box.innerHTML = `
+    <div class="m1-stats">
+      <div class="m1-stat"><div class="m1-sv">${MODEL.auc}</div><div class="m1-sl">AUC (validación temporal)</div></div>
+      <div class="m1-stat"><div class="m1-sv">${Math.round(MODEL.accuracy * 100)}%</div><div class="m1-sl">acierto</div></div>
+      <div class="m1-stat"><div class="m1-sv">${(MODEL.n_train / 1000).toFixed(0)}k</div><div class="m1-sl">contactos de entrenamiento</div></div>
+    </div>
+    <div class="m1-imp-h">Qué variables pesan más (modelo entrenado, no supuesto)</div>
+    <div class="m1-imp">${bars}</div>
+    <div class="bt-note" style="margin-top:10px">Entrenado con XGBoost sobre ${(MODEL.n_train + MODEL.n_test).toLocaleString("es-PE")} contactos reales;
+      se entrena con los meses antiguos y se evalúa con los recientes (hasta ${MODEL.corte_fecha}), sin usar datos del resultado (sin fuga).
+      Confirma la tesis: <b>la fatiga y el sobre-contacto pesan más que el score del banco</b>.</div>`;
 }
 
 /* ---------------- DECISIÓN POR CLIENTE ---------------- */

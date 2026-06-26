@@ -1,0 +1,157 @@
+{
+  "features": [
+    "producto",
+    "dias_mora",
+    "tramo_mora",
+    "saldo_restante",
+    "cuota_mensual",
+    "num_contactos_ult7d",
+    "num_contactos_ult30d",
+    "dias_ultimo_contacto",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "canal_contacto",
+    "contacto_mes_num",
+    "num_contactos_mes_credito",
+    "intento_num",
+    "costo_contacto",
+    "intensidad_contacto",
+    "fatiga_contacto",
+    "recency_score",
+    "days_since_due",
+    "edad",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente",
+    "es_digital",
+    "uso_app",
+    "uso_whatsapp",
+    "interaccion_digital_score",
+    "canal_whatsapp",
+    "canal_sms",
+    "canal_llamada",
+    "canal_campo",
+    "score_riesgo",
+    "prob_default",
+    "num_atrasos_previos",
+    "dias_mora_promedio",
+    "ratio_pago",
+    "ultimo_pago_dias",
+    "hora",
+    "dia_semana"
+  ],
+  "categoricas": [
+    "producto",
+    "tramo_mora",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "canal_contacto",
+    "fatiga_contacto",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente"
+  ],
+  "label": "pago_7d_post_contacto",
+  "auc": 0.6724,
+  "accuracy": 0.6293,
+  "n_train": 486670,
+  "n_test": 85883,
+  "device": "cuda",
+  "best_iteration": 1999,
+  "top_features": [
+    {
+      "feature": "num_contactos_ult7d",
+      "pct": 17.0
+    },
+    {
+      "feature": "tramo_mora",
+      "pct": 14.2
+    },
+    {
+      "feature": "dias_mora",
+      "pct": 11.4
+    },
+    {
+      "feature": "fatiga_contacto",
+      "pct": 10.2
+    },
+    {
+      "feature": "contacto_mes_num",
+      "pct": 4.7
+    },
+    {
+      "feature": "canal_contacto",
+      "pct": 3.9
+    },
+    {
+      "feature": "es_digital",
+      "pct": 3.0
+    },
+    {
+      "feature": "costo_contacto",
+      "pct": 2.3
+    },
+    {
+      "feature": "ratio_pago",
+      "pct": 1.6
+    },
+    {
+      "feature": "score_riesgo",
+      "pct": 1.5
+    },
+    {
+      "feature": "days_since_due",
+      "pct": 1.4
+    },
+    {
+      "feature": "uso_whatsapp",
+      "pct": 1.2
+    }
+  ],
+  "franjas_candidatas": [
+    8,
+    10,
+    12,
+    14,
+    16,
+    18
+  ],
+  "dias": {
+    "0": "lunes",
+    "1": "martes",
+    "2": "miercoles",
+    "3": "jueves",
+    "4": "viernes",
+    "5": "sabado",
+    "6": "domingo"
+  },
+  "pago_por_hora": {
+    "8": 0.492,
+    "9": 0.49,
+    "10": 0.49,
+    "11": 0.484,
+    "12": 0.489,
+    "13": 0.489,
+    "14": 0.484,
+    "15": 0.487,
+    "16": 0.487,
+    "17": 0.49,
+    "18": 0.49,
+    "19": 0.495,
+    "20": 0.489
+  },
+  "pago_por_dia": {
+    "0": 0.491,
+    "1": 0.488,
+    "2": 0.489,
+    "3": 0.486,
+    "4": 0.489,
+    "5": 0.481,
+    "6": 0.498
+  },
+  "mejor_hora_global": 19,
+  "mejor_dia_global": 6,
+  "descripcion": "Timing optimo: M1 + hora + dia_semana. Inference prueba 6 franjas y devuelve la mejor."
+}

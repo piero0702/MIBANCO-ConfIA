@@ -1,0 +1,81 @@
+{
+  "auc": 0.6726,
+  "accuracy": 0.6301,
+  "brier": 0.2255,
+  "n_train": 486670,
+  "n_test": 85883,
+  "corte_fecha": "2026-03-18",
+  "top_features": [
+    {
+      "feature": "num_contactos_ult7d",
+      "pct": 17.3
+    },
+    {
+      "feature": "tramo_mora",
+      "pct": 15.4
+    },
+    {
+      "feature": "dias_mora",
+      "pct": 11.2
+    },
+    {
+      "feature": "fatiga_contacto",
+      "pct": 9.8
+    },
+    {
+      "feature": "contacto_mes_num",
+      "pct": 4.7
+    },
+    {
+      "feature": "canal_contacto",
+      "pct": 4.0
+    },
+    {
+      "feature": "es_digital",
+      "pct": 3.0
+    },
+    {
+      "feature": "costo_contacto",
+      "pct": 2.3
+    },
+    {
+      "feature": "ratio_pago",
+      "pct": 1.6
+    },
+    {
+      "feature": "score_riesgo",
+      "pct": 1.5
+    },
+    {
+      "feature": "days_since_due",
+      "pct": 1.4
+    },
+    {
+      "feature": "canal_sms",
+      "pct": 1.2
+    }
+  ],
+  "device": "cuda",
+  "label": "pago_7d_post_contacto",
+  "comparacion": [
+    {
+      "nombre": "Regresion Logistica",
+      "auc": 0.6266,
+      "accuracy": 0.5983,
+      "brier": 0.2354
+    },
+    {
+      "nombre": "HistGradientBoosting",
+      "auc": 0.6843,
+      "accuracy": 0.6355,
+      "brier": 0.2232
+    },
+    {
+      "nombre": "XGBoost (tuneado)",
+      "auc": 0.6726,
+      "accuracy": 0.6301,
+      "brier": 0.2255
+    }
+  ],
+  "ganador": "HistGradientBoosting"
+}

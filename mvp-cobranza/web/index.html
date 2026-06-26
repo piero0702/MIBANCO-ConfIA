@@ -482,11 +482,11 @@
       <div class="modelo">
         <div class="modelo-n">M1</div>
         <div class="modelo-b">
-          <b>¿Vale la pena contactar?</b>
-          <p>Predice <code>P(paga en 7d | sin contacto)</code>. Si es alta → <b>NO CONTACTAR</b> (al buen pagador no se le trata como moroso).</p>
+          <b>¿Vale la pena contactar? <span class="m1-badge">✓ entrenado</span></b>
+          <p>Predice <code>P(paga en 7d)</code>. Si es alta → <b>NO CONTACTAR</b> (al buen pagador no se le trata como moroso). <b>Este sí está entrenado de verdad</b> sobre los 572k contactos reales (los demás son la hoja de ruta).</p>
           <div class="io">
-            <span class="io-tag"><i>entra</i> ratio_pago · num_atrasos · dias_mora_promedio · prob_pago_7d_base · ultimo_pago_dias</span>
-            <span class="io-tag"><i>modelo</i> Gradient Boosting (LightGBM)</span>
+            <span class="io-tag"><i>entra</i> fatiga · tramo_mora · dias_mora · contactos_previos · perfil digital · score · ratio_pago</span>
+            <span class="io-tag"><i>modelo</i> XGBoost · validación temporal</span>
           </div>
         </div>
       </div>
@@ -524,6 +524,7 @@
         </div>
       </div>
     </div>
+    <div id="m1-metrics" class="m1-metrics"></div>
     <div class="bt-note" style="margin:0 22px 22px"><b>Etiqueta de entrenamiento:</b> <code>pago_7d_post_contacto</code> — para cada uno de los 572,553 contactos del dataset ya sabemos si el cliente pagó o no. Eso convierte el problema en aprendizaje supervisado puro.</div>
   </section>
 

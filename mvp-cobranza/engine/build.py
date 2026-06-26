@@ -18,6 +18,22 @@ import backtest
 import yatekobro
 from data_loader import cargar
 from synthetic import personajes_entrevistas
+try:
+    import model_infer
+except Exception:
+    model_infer = None
+try:
+    import model_m2_infer
+except Exception:
+    model_m2_infer = None
+try:
+    import model_m3_infer
+except Exception:
+    model_m3_infer = None
+try:
+    import model_m4 as _m4
+except Exception:
+    _m4 = None
 
 HERE = os.path.dirname(__file__)
 WEB_DATA = os.path.join(HERE, "..", "web", "data")
@@ -134,8 +150,13 @@ def construir_calendario(cli: dict, cfg: dict) -> dict:
         nota = "WhatsApp primero; si no responde, escala a llamada del asesor verificable y, en último recurso, visita. Nunca se elimina un canal."
     else:
         nota = "Todo por WhatsApp verificable. El nº de toques sube con la etapa de mora y baja con el buen comportamiento de pago."
+    m3 = cli.get("_m3_timing")
+    hora_rec = ({"hora": m3["hora"], "franja": m3["franja_nombre"], "dia": m3["dia_nombre"],
+                 "p_pago": m3["p_pago"], "fuente": "M3"}
+                if m3 else {"hora": 10, "franja": "mañana (10h)", "dia": "martes", "fuente": "regla"})
     return {"mes": "junio 2026", "total_contactos": len(contactos), "tope": tope, "etapa": cat,
-            "es_moroso": dias_mora > 0, "nota": nota, "contactos": contactos}
+            "es_moroso": dias_mora > 0, "nota": nota, "hora_recomendada": hora_rec,
+            "contactos": contactos}
 
 
 # --------------------------------------------------------------------------- #
@@ -158,7 +179,11 @@ def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
     tramo = rules.tramo_de_mora(dias, cfg)
     base7 = float(cli.get("prob_pago_7d_base", 0) or 0)
     base30 = float(cli.get("prob_pago_30d_base", 0) or 0)
-    prob7 = base7 if base7 > 0 else tramo["pago_7d"]   # real si existe, si no la tasa del tramo
+    prob_modelo = cli.get("_prob_modelo")
+    if prob_modelo is not None:                        # 1ro: prediccion del modelo M1 entrenado
+        prob7 = float(prob_modelo)
+    else:                                              # fallback: tasa real del Excel o del tramo
+        prob7 = base7 if base7 > 0 else tramo["pago_7d"]
     riesgo = d["segmento"]["riesgo"]
     prob_default = float(cli.get("prob_default", 0.2))
     ratio = float(cli.get("ratio_pago", 0))
@@ -187,6 +212,10 @@ def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
         "dias_mora": dias,
         "prob_repago_7d": round(prob7, 3),
         "prob_repago_30d": round(base30, 3) if base30 else None,
+        "m2_canal": cli.get("_m2_canal") or None,
+        "m2_proba": cli.get("_m2_proba") or None,
+        "m3_timing": cli.get("_m3_timing") or None,
+        "m4_perfil": cli.get("_m4") or None,
     }
 
     por_riesgo = (f"Riesgo {riesgo.upper()} — prob. de impago {prob_default:.0%}, "
@@ -194,7 +223,8 @@ def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
                   f"El score del banco ({ficha['score_riesgo'] or '—'}) se considera como una "
                   f"señal más (pesa ~20%): mandan las señales de comportamiento, que predicen "
                   f"mejor el pago real que el score estático.")
-    por_prob = (f"{prob7:.0%} de probabilidad de pagar en 7 días sin que lo contactemos"
+    fuente_prob = " (modelo M1 entrenado sobre 572k contactos reales)" if prob_modelo is not None else ""
+    por_prob = (f"{prob7:.0%} de probabilidad de pagar en 7 días{fuente_prob}"
                 + (f" ({base30:.0%} a 30 días)" if base30 else "")
                 + (". Conviene solo un recordatorio preventivo." if dias <= 0
                    else ". El contacto temprano rinde casi el doble que el tardío."))
@@ -204,8 +234,12 @@ def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
         por_tope = (f"{total_mes} contacto(s) este mes según su etapa ({_categoria_mora(dias)}). "
                     f"El nº sube con la mora (preventivo 1 → temprana 1-3 → media 3-4 → tardía 5-7) "
                     f"y baja con el buen pago. El sobre-contacto cansa y baja la recuperación.")
+    m2_canal = cli.get("_m2_canal")
+    m2_tag = f" · M2 confirma {m2_canal}" if m2_canal and m2_canal == d["decision"]["canal"]["canal"] \
+        else (f" · M2 sugiere {m2_canal}" if m2_canal else "")
     contactar = ("NO contactar — " + d["decision"]["frecuencia"]["nota"]) if d["accion"] == "NO CONTACTAR" \
-        else ("Contactar por " + d["decision"]["canal"]["canal_nombre"] + " — " + d["decision"]["canal"]["motivo"])
+        else ("Contactar por " + d["decision"]["canal"]["canal_nombre"]
+              + m2_tag + " — " + d["decision"]["canal"]["motivo"])
 
     porque = {
         "categoria_mora": _categoria_mora(dias),
@@ -447,6 +481,42 @@ def construir_clientes(muestra: int) -> tuple[list[dict], str]:
     # nombre y cita para que la lista tenga narrativa. En sintetico ya vienen incluidos.
     if fuente == "real":
         clientes = personajes_entrevistas() + clientes
+    # Prediccion del modelo M1 entrenado (P pago 7d) para cada cliente; si no hay modelo,
+    # se cae a la tasa por tramo dentro de construir_explicacion.
+    usa_modelo = False
+    if model_infer is not None and model_infer.disponible():
+        try:
+            for c, p in zip(clientes, model_infer.predict_prob(clientes)):
+                c["_prob_modelo"] = p
+            usa_modelo = True
+            print(f"    M1 P(pago): AUC {model_infer.meta().get('auc')}")
+        except Exception as e:
+            print(f"[build] M1 no usado ({e}); uso tasa por tramo.")
+
+    # M2: canal optimo por ML (entrenado sobre 280k contactos exitosos)
+    if model_m2_infer is not None and model_m2_infer.disponible():
+        try:
+            for c in clientes:
+                c["_m2_canal"] = model_m2_infer.predict_canal(c)
+                c["_m2_proba"] = model_m2_infer.predict_canal_proba(c)
+            acc2 = model_m2_infer.meta().get("accuracy", 0)
+            print(f"    M2 canal:  acc {acc2:.1%} sobre 280k contactos exitosos")
+        except Exception as e:
+            print(f"[build] M2 no usado ({e})")
+
+    # M3: timing optimo por ML
+    if model_m3_infer is not None and model_m3_infer.disponible():
+        try:
+            for c in clientes:
+                c["_m3_timing"] = model_m3_infer.best_timing(c)
+            print(f"    M3 timing: AUC {model_m3_infer.meta().get('auc')}")
+        except Exception as e:
+            print(f"[build] M3 no usado ({e})")
+
+    # M4: perfil de tono y mensaje (hardcodeado, interpretable)
+    if _m4 is not None:
+        for c in clientes:
+            c["_m4"] = _m4.asignar_perfil(c)
     decisiones = []
     for c in clientes:
         d = rules.decidir(c, cfg)
@@ -511,6 +581,12 @@ def main():
           f"confIA {bt['politica']['costo_x_credito']}/cred, fuente {bt['fuente']})")
     print(f"    YoSiLa: {len(yk['casos'])} casos simulados")
     print(f"    -> web/data/*.json")
+    # Copiar metas de M2 y M3 para que el dashboard los pueda leer
+    import shutil
+    for mf in ["model_m2_meta.json", "model_m3_meta.json"]:
+        src = os.path.join(HERE, mf)
+        if os.path.exists(src):
+            shutil.copy(src, os.path.join(WEB_DATA, mf))
 
 
 def _anclar_kpis_oficiales(bt: dict) -> None:
