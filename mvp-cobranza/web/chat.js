@@ -40,7 +40,7 @@ const CONV = {
 alessia: {
 preventivo: [
 { de: "banco", delay: 600,
-texto: "Hola Alessia 👋 Te escribe *Mibanco* ✅\nTu cuota de S/450 vence en 3 días (27 jun).\nPodés pagar fácil por Yape o la App Mibanco 📱\n¡Gracias por tu puntualidad! 🙌" },
+texto: "Hola Alessia 👋 Te escribe *Mibanco* ✅\nTu cuota de S/450 vence en 3 días (27 jun).\nPuedes pagar fácil por Yape o la App Mibanco 📱\n¡Gracias por tu puntualidad! 🙌" },
 { de: "cliente", delay: 1200,
 texto: "Hola! gracias por avisar 😊 ya lo tengo anotado" },
 { de: "banco", delay: 800,
@@ -48,17 +48,17 @@ texto: "¡Perfecto! Cualquier duda, aquí estamos Alessia 💙\nTe enviamos el l
 ],
 temprana: [
 { de: "banco", delay: 600,
-texto: "Hola Alessia 👋 *Mibanco* ✅\nVemos que tu cuota de S/450 venció hace 7 días.\nSabemos que el negocio tiene días flojos 🤝\n¿Cómo te ayudamos?\n• Pagar ahora\n• Pago parcial\n• Reprogramar\nEscribinos y lo resolvemos juntos." },
+texto: "Hola Alessia 👋 *Mibanco* ✅\nVemos que tu cuota de S/450 venció hace 7 días.\nSabemos que el negocio tiene días flojos 🤝\n¿Cómo te ayudamos?\n• Pagar ahora\n• Pago parcial\n• Reprogramar\nEscríbenos y lo resolvemos juntos." },
 { de: "cliente", delay: 2000,
 texto: "Uff sí, esta semana estuvo difícil... ¿puedo pagar la mitad ahora?" },
 { de: "banco", delay: 900,
-texto: "Claro Alessia 💙 Sin problema.\nAnotamos S/225 para hoy.\n¿Querés que activemos YoSiLa para cubrir el resto automáticamente?\nCada venta por Yape aporta un % chiquito a tu cuota — sin sentirla." },
+texto: "Claro Alessia 💙 Sin problema.\nAnotamos S/225 para hoy.\n¿Quieres que activemos YoSiLa para cubrir el resto automáticamente?\nCada venta por Yape aporta un % chiquito a tu cuota — sin sentirla." },
 { de: "cliente", delay: 1500,
 texto: "¿Cómo funciona eso?" },
 { de: "banco", delay: 1000,
-texto: "Muy simple Alessia 📊\n• Elegís el % (ej: 2%)\n• Cada Yape recibido → 2% va a tu cuota\n• Primero cubre el interés del mes ✅\n• Luego va al capital (lo que es tuyo)\n• Se para SOLO al completar la cuota\n¿Lo activamos al 2%?" },
+texto: "Muy simple Alessia 📊\n• Tú eliges el % (ej: 2%)\n• Cada Yape recibido → 2% va a tu cuota\n• Primero cubre el interés del mes ✅\n• Luego va al capital (lo que es tuyo)\n• Se detiene solo al completar la cuota\n¿Lo activamos al 2%?" },
 { de: "cliente", delay: 1800,
-texto: "dale, probamos! 💪" },
+texto: "dale, probemos 💪" },
 { de: "banco", delay: 1000,
 texto: "✅ YoSiLa activado al 2%, Alessia.\nTe aviso en 3 momentos:\n1️⃣ Interés al 50%\n2️⃣ Interés al 100% (el momento estrella 🎉)\n3️⃣ Cuota completa → se para solo\n¡Éxitos con las ventas!" },
 ],
@@ -89,7 +89,7 @@ texto: "✅ Agendado para las 15:00, Alessia.\nTu asesor Juan García (verificab
 ],
 yatekobro: [
 { de: "banco", delay: 500,
-texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
+texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibes en el negocio, un % pequeño va directo a tu cuota. Se detiene solo al completar.\n¿Quieres que te expliquemos cómo?" },
 { de: "banco", tipo: "img-yosila", delay: 1000, datos: {
   nombre: "Alessia Borrelli",
   credito: "S/ 3,200 · 24 meses",
@@ -99,7 +99,7 @@ texto: "*Mibanco* ✅ Hola Alessia 👋\nTenemos una forma de cubrir tu cuota si
 { de: "cliente", delay: 2000,
 texto: "esto está buenísimo 😮 ¿cómo lo activo?" },
 { de: "banco", delay: 800,
-texto: "Fácil — escríbeme el % que quieres:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%\n(El 2% es lo más popular — cubres la cuota sin sentirla.)" },
+texto: "Fácil — dime el % que quieres:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%\n(El 2% es lo más popular — cubres la cuota sin sentirla.)" },
 { de: "cliente", delay: 1200,
 texto: "2" },
 { de: "banco", delay: 800,
@@ -152,7 +152,7 @@ preventivo: [
 texto: "📞 Llamada entrante · *Mibanco* ✅ · 2 min · Juan García (asesor)",
 delay: 400 },
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTu asesor Juan acaba de llamarte.\nTe dejamos el recordatorio acá:\nTu cuota de S/260 vence el 27 de junio.\nPodés pagar en cualquier agente BCP 📍\nCualquier consulta, respondé este mensaje. 🤝" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTu asesor Juan acaba de llamarte.\nTe dejamos el recordatorio aquí:\nTu cuota de S/260 vence el 27 de junio.\nPuedes pagar en cualquier agente BCP 📍\nCualquier consulta, responde este mensaje. 🤝" },
 { de: "cliente", delay: 1600,
 texto: "ok gracias, voy a ir al agente esta semana" },
 { de: "banco", delay: 700,
@@ -163,22 +163,22 @@ temprana: [
 texto: "📞 Llamada entrante · *Mibanco* ✅ · 4 min · María García (asesora)",
 delay: 400 },
 { de: "banco", delay: 700,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTu asesora María acaba de llamarte.\nTu cuota de S/260 lleva 6 días vencida.\nTe propuso reprogramar para el 5 de julio.\nResponde SÍ o NO para confirmar 👇" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTu asesora María acaba de llamarte.\nTu cuota de S/260 lleva 6 días vencida.\nTe propuso reprogramar para el 5 de julio.\nEscríbenos SÍ o NO para confirmar 👇" },
 { de: "cliente", delay: 1800,
 texto: "sí, la reprogramación está bien" },
 { de: "banco", delay: 800,
-texto: "✅ Listo Powel.\n📅 Nueva fecha: 5 de julio.\nSin penalidad. Sin más llamadas hasta esa fecha.\nCualquier cambio, escribinos acá. 🤝" },
+texto: "✅ Listo Powel.\n📅 Nueva fecha: 5 de julio.\nSin penalidad. Sin más llamadas hasta esa fecha.\nCualquier cambio, escríbenos aquí. 🤝" },
 ],
 media: [
 { de: "sistema", tipo: "llamada",
 texto: "📞 Llamada entrante · *Mibanco* ✅ · 6 min · María García (asesora)",
 delay: 400 },
 { de: "banco", delay: 700,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTu cuota lleva 22 días vencida.\nTu asesora María conversó contigo hoy sobre opciones.\nTe resumimos lo acordado:\n• Pago parcial de S/130 esta semana ✅\n• Resto (S/130) el 15 de julio\nResponde SÍ para registrarlo. 👇" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTu cuota lleva 22 días vencida.\nTu asesora María conversó contigo hoy sobre opciones.\nTe resumimos lo acordado:\n• Pago parcial de S/130 esta semana ✅\n• Resto (S/130) el 15 de julio\nEscríbenos SÍ para registrarlo. 👇" },
 { de: "cliente", delay: 1600,
 texto: "sí confirmo" },
 { de: "banco", delay: 800,
-texto: "✅ Registrado, Powel.\n→ S/130 antes del viernes\n→ S/130 el 15 de julio\nSin intereses adicionales por el acuerdo.\nCualquier imprevisto, escribinos antes y lo ajustamos. 🤝" },
+texto: "✅ Registrado, Powel.\n→ S/130 antes del viernes\n→ S/130 el 15 de julio\nSin intereses adicionales por el acuerdo.\nCualquier imprevisto, escríbenos antes y lo ajustamos. 🤝" },
 ],
 tardia: [
 { de: "sistema", tipo: "campo",
@@ -197,7 +197,7 @@ texto: "Para eso estamos Powel. Juntos lo resolvemos. 💙" },
 ],
 yatekobro: [
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibís en el negocio, un % chico va directo a tu cuota. Se para solo al completar.\n¿Querés que te expliquemos cómo?" },
+texto: "*Mibanco* ✅ Hola Powel 👋\nTenemos una forma de cubrir tu cuota sin llamadas ni visitas — se llama *YoSiLa*.\nCada Yape que recibes en el negocio, un % pequeño va directo a tu cuota. Se detiene solo al completar.\n¿Quieres que te expliquemos cómo?" },
 { de: "banco", tipo: "img-yosila", delay: 1000, datos: {
   nombre: "Powel Aliaga",
   credito: "S/ 1,800 · 18 meses",
@@ -212,7 +212,7 @@ texto: "Primero necesitás tener Yape, Powel 📱\nEs gratis y demora 5 minutos 
 { de: "cliente", delay: 2200,
 texto: "listo, ya lo hice con María — ya tengo Yape 💪" },
 { de: "banco", delay: 1000,
-texto: "¡Perfecto Powel! 💙 Ahora activamos YoSiLa.\nCada cliente que te pague por Yape → un % va automático a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego el capital (lo que es tuyo)\n• Se para solo al completar\n\nElegí el %:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%" },
+texto: "¡Perfecto Powel! 💙 Ahora activamos YoSiLa.\nCada cliente que te pague por Yape → un % va automático a tu cuota:\n• Primero cubre el interés del mes ✅\n• Luego el capital (lo que es tuyo)\n• Se detiene solo al completar\n\nElige el %:\n1️⃣ = 1% · *2️⃣ = 2%* · 3️⃣ = 5%" },
 { de: "cliente", delay: 1400,
 texto: "2" },
 { de: "banco", delay: 800,
@@ -239,7 +239,7 @@ interes_pct: 58, capital_pct: 0,
 sub: "14 días · 31 transacciones Yape",
 delay: 900 },
 { de: "banco", delay: 600,
-texto: "*Mibanco* ✅ 📊 Powel, llevan 14 días.\nEl interés del mes va al 58% — cada Yape que recibís suma automático. 💪" },
+texto: "*Mibanco* ✅ 📊 Powel, llevan 14 días.\nEl interés del mes va al 58% — cada Yape que recibes suma automático. 💪" },
 { de: "sistema", tipo: "yape-push",
 remitente: "Luis Mamani", monto_bruto: 300, pct: 2, interes_pct: 72,
 delay: 1800 },
@@ -366,7 +366,7 @@ el.innerHTML = `
 
     <!-- HERO: por transacción -->
     <div class="yk-img-hero">
-      <div class="yk-img-hero-eyebrow">Por cada Yape que recibís:</div>
+      <div class="yk-img-hero-eyebrow">Por cada Yape que recibes:</div>
       <div class="yk-img-hero-ex">
         <div class="yk-img-hero-gross">
           <div class="yk-img-hero-amt">S/ ${Number(d.tx_promedio).toFixed(2)}</div>
