@@ -683,7 +683,7 @@ hdr.innerHTML = `
   </svg>
 </div>
 <div class="wa-avatar-wrap">
-  <img src="icons/mibanco-tigre.png" alt="Mibanco" class="wa-avatar-img" />
+  <img src="icons/client-avatar.png" alt="Mibanco" class="wa-avatar-img" />
 </div>
 <div class="wa-contact">
   <span class="wa-cname">Mibanco Cobranzas</span>
