@@ -427,7 +427,6 @@ scrollBottom();
 async function showYapeSenderDemo(msg) {
 const initials = n => n.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
 const sI = initials(msg.remitente);
-const dI = initials(msg.destinatario || "??");
 
 document.getElementById("senderBody").innerHTML = `
 <div class="sp-pay" id="spPay">
@@ -438,11 +437,14 @@ document.getElementById("senderBody").innerHTML = `
   </div>
   <div class="sp-pay-arrow">↓</div>
   <div class="sp-pay-to">
-    <div class="sp-avatar sp-avatar-dest">${dI}</div>
+    <div class="sp-avatar sp-avatar-dest">
+      <img src="icons/client-avatar.png" alt="${msg.destinatario}" class="sp-avatar-img" />
+    </div>
     <div class="sp-pay-to-name">${msg.destinatario}</div>
     <div class="sp-pay-to-sub">💜 usuario Yape verificado</div>
   </div>
   <div class="sp-pay-amount">S/ ${Number(msg.monto_bruto).toFixed(2)}</div>
+  <div class="sp-pay-amount-label">monto a enviar</div>
   <button class="sp-btn-confirm" id="spConfirmBtn">Confirmar yapeo →</button>
 </div>
 <div class="sp-success" id="spSuccess">
@@ -453,9 +455,8 @@ document.getElementById("senderBody").innerHTML = `
   <div class="sp-success-note">Llegó al instante · sin costo</div>
 </div>`;
 
-document.getElementById("phonesStage").classList.add("sp-active");
+/* Sender phone desliza como overlay interno — sin mover el frame externo */
 document.getElementById("senderPhone").classList.add("sp-visible");
-document.getElementById("phoneContainer").classList.add("sp-push-right");
 
 await later(1800);
 
@@ -468,9 +469,7 @@ if (succ) succ.classList.add("sp-success-show");
 await later(1800);
 
 document.getElementById("senderPhone").classList.remove("sp-visible");
-document.getElementById("phoneContainer").classList.remove("sp-push-right");
-await later(600);
-document.getElementById("phonesStage").classList.remove("sp-active");
+await later(500);
 
 await showYapePush(msg);
 }

@@ -483,7 +483,7 @@ body {
  overflow: hidden;
 }
 
-.phones-stage.sp-active { overflow: visible; }
+/* .phones-stage.sp-active — ya no necesario, sender-phone es overlay interno */
 
 /* Home indicator bar */
 .phone-home-bar {
@@ -533,7 +533,7 @@ body {
  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
 }
 
-.phone-container.sp-push-right { transform: translateX(22%); }
+/* .phone-container.sp-push-right — ya no necesario, sender-phone es overlay interno */
 
 /* ── PHONE WRAP ── */
 .phone-wrap {
@@ -1347,51 +1347,73 @@ body {
  letter-spacing: .01em;
 }
 
-/* ── SENDER PHONE ── */
-.phones-stage .sender-phone {
- position: absolute;
- inset: unset;
- right: 100%;
- margin-right: -18px;
- top: 5%;
- height: 90%;
- width: 66%;
- background: #f5f5f5;
- border-radius: 28px;
- border: 2px solid rgba(0,0,0,.07);
- box-shadow: -14px 24px 64px rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.2);
- transform: translateX(-115%);
- transition: transform .48s cubic-bezier(.16,1,.3,1);
- z-index: 5;
+/* ── SENDER PHONE — overlay dentro del phone-container, sin mover el frame ── */
+.sender-phone {
+ background: #f8f4ff;
+ transform: translateX(105%);
+ z-index: 3;
+ transition: transform .45s cubic-bezier(.16,1,.3,1);
 }
 
 .sender-phone.sp-visible { transform: translateX(0); }
 
 .sp-body { flex: 1; overflow: hidden; position: relative; }
 
-/* Pago screen */
+/* Pago screen — fondo blanco, aspecto Yape real */
 .sp-pay {
- padding: 20px 18px 16px;
- display: flex; flex-direction: column; align-items: center; gap: 10px;
+ padding: 24px 20px 20px;
+ display: flex; flex-direction: column; align-items: center; gap: 12px;
  min-height: 100%;
+ background: #fff;
+ box-sizing: border-box;
 }
 
 .sp-avatar {
- width: 52px; height: 52px; border-radius: 50%;
+ width: 56px; height: 56px; border-radius: 50%;
  display: grid; place-items: center;
- font-weight: 900; font-size: 17px; color: #fff; flex-shrink: 0;
+ font-weight: 900; font-size: 18px; color: #fff; flex-shrink: 0;
 }
 
 .sp-avatar-sender { background: #0f1b2d; }
-.sp-avatar-dest { background: var(--yape); }
+.sp-avatar-dest { background: var(--yape); overflow: hidden; padding: 0; }
 
-.sp-pay-from, .sp-pay-to { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.sp-pay-from-name { font-size: 13.5px; font-weight: 700; color: #222; }
+/* Avatar foto del cliente destinatario */
+.sp-avatar-img {
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ border-radius: 50%;
+ display: block;
+}
+
+.sp-pay-from, .sp-pay-to { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.sp-pay-from-name { font-size: 13px; font-weight: 700; color: #1a1a1a; }
 .sp-pay-from-sub { font-size: 10px; color: #999; }
 .sp-pay-to-name { font-size: 14px; font-weight: 800; color: var(--yape); }
 .sp-pay-to-sub { font-size: 10px; color: #888; }
-.sp-pay-arrow { font-size: 20px; color: var(--yape); opacity: .5; line-height: 1; }
-.sp-pay-amount { font-size: 40px; font-weight: 900; color: #111; letter-spacing: -.05em; line-height: 1; margin: 4px 0; }
+
+/* Flecha vertical entre sender y dest */
+.sp-pay-arrow {
+ width: 32px; height: 32px;
+ border-radius: 50%;
+ background: var(--yape-l);
+ color: var(--yape);
+ font-size: 16px;
+ display: grid; place-items: center;
+ font-weight: 900;
+ line-height: 1;
+}
+
+.sp-pay-amount {
+ font-size: 42px; font-weight: 900; color: #111;
+ letter-spacing: -.05em; line-height: 1;
+ margin: 2px 0 0;
+}
+
+.sp-pay-amount-label {
+ font-size: 10.5px; color: #aaa; margin-top: -4px;
+ text-transform: uppercase; letter-spacing: .07em;
+}
 
 .sp-btn-confirm {
  background: var(--yape); color: #fff;
@@ -1399,13 +1421,14 @@ body {
  padding: 15px 0; font-size: 15px; font-weight: 800;
  cursor: pointer; width: 100%;
  transition: background .25s, transform .25s;
- margin-top: 4px;
+ margin-top: 6px;
  font-family: var(--sans);
+ letter-spacing: -.01em;
 }
 
-.sp-btn-confirm.sp-pressing { background: #3d0fa0; transform: scale(.96); }
+.sp-btn-confirm.sp-pressing { background: #3d0fa0; transform: scale(.97); }
 
-/* Pantalla exito */
+/* Pantalla éxito — morado completo, sin afectar nada externo */
 .sp-success {
  position: absolute; inset: 0;
  background: linear-gradient(160deg, var(--yape) 0%, #7c3aed 100%);
@@ -1416,12 +1439,12 @@ body {
  z-index: 2;
 }
 
-.sp-success.sp-success-show { opacity: 1; }
-.sp-success-ic { font-size: 58px; margin-bottom: 6px; }
-.sp-success-title { font-size: 20px; font-weight: 900; color: #fff; }
-.sp-success-amt { font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -.05em; margin: 6px 0 2px; }
+.sp-success.sp-success-show { opacity: 1; pointer-events: auto; }
+.sp-success-ic { font-size: 62px; margin-bottom: 4px; }
+.sp-success-title { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -.02em; }
+.sp-success-amt { font-size: 40px; font-weight: 900; color: #fff; letter-spacing: -.05em; margin: 8px 0 2px; }
 .sp-success-to { font-size: 14px; color: rgba(255,255,255,.85); font-weight: 600; }
-.sp-success-note { font-size: 11px; color: rgba(255,255,255,.52); margin-top: 6px; }
+.sp-success-note { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 6px; }
 
 /* ── YAPE PUSH NOTIFICATION ── */
 .yape-push-notif {

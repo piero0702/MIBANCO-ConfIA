@@ -63,27 +63,10 @@
     <div class="phone-device-outer">
       <div class="phone-di" aria-hidden="true"></div>
 
-      <!-- Escenario de dos celulares — sender phone vive FUERA del container principal -->
+      <!-- Escenario de teléfonos — todo contenido dentro del frame -->
       <div class="phones-stage" id="phonesStage">
 
-      <!-- Sender phone: celular separado, entra desde la izquierda -->
-      <div class="phone-wrap sender-phone" id="senderPhone">
-        <div class="yp-status-bar">9:41 &nbsp;&nbsp; 5G &nbsp; ▲ 100%</div>
-        <div class="yp-head">
-          <span class="yp-back">&#x2039;</span>
-          <span class="yp-head-title">Confirmar yapeo</span>
-          <div class="yp-head-avatar">💜</div>
-        </div>
-        <div class="sp-body" id="senderBody"></div>
-        <div class="yp-nav">
-          <span class="yp-nav-ic">🏠</span>
-          <span class="yp-nav-ic active">💜</span>
-          <span class="yp-nav-ic">📋</span>
-          <span class="yp-nav-ic">👤</span>
-        </div>
-      </div>
-
-      <!-- Container principal: WhatsApp + Yape (se mueve como bloque) -->
+      <!-- Container principal: WhatsApp + Yape + Sender (sin movimiento externo) -->
       <div class="phone-container" id="phoneContainer">
 
         <!-- WhatsApp phone -->
@@ -121,6 +104,24 @@
           <div class="yp-nav">
             <span class="yp-nav-ic active">🏠</span>
             <span class="yp-nav-ic">💜</span>
+            <span class="yp-nav-ic">📋</span>
+            <span class="yp-nav-ic">👤</span>
+          </div>
+          <div class="phone-home-bar" aria-hidden="true"></div>
+        </div>
+
+        <!-- Sender phone: pantalla del pagador, overlay dentro del mismo frame -->
+        <div class="phone-wrap sender-phone" id="senderPhone">
+          <div class="yp-status-bar">9:41 &nbsp;&nbsp; 5G &nbsp; ▲ 100%</div>
+          <div class="yp-head">
+            <span class="yp-back">&#x2039;</span>
+            <span class="yp-head-title">Confirmar yapeo</span>
+            <div class="yp-head-avatar">💜</div>
+          </div>
+          <div class="sp-body" id="senderBody"></div>
+          <div class="yp-nav">
+            <span class="yp-nav-ic">🏠</span>
+            <span class="yp-nav-ic active">💜</span>
             <span class="yp-nav-ic">📋</span>
             <span class="yp-nav-ic">👤</span>
           </div>
