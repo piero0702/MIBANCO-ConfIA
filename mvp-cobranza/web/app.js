@@ -127,11 +127,12 @@ function qsHtml(d) {
   const cal = d.calendario, no = d.accion === "NO CONTACTAR";
   const prox = (cal.contactos && cal.contactos.length) ? cal.contactos[0].fecha : "—";
   const escala = !no && cal.contactos && cal.contactos.some(c => c.canal !== 'whatsapp');
-  const canalTxt = no ? "—" : (escala ? "💬 WhatsApp +esc." : "💬 WhatsApp");
+  const canalTxt = no ? "—" : (escala ? "💬 WhatsApp → escala" : "💬 WhatsApp");
+  const canalTip = escala ? "Empieza por WhatsApp; si no responde, escala a llamada y, en último recurso, visita." : "Solo WhatsApp oficial verificable.";
   return `<div class="dd-qs">
     <div class="qs-st"><div class="qs-v ${no?'muted':''}">${no ? 'No contactar' : cal.total_contactos + '/' + cal.tope}</div><div class="qs-l">contactos / mes</div></div>
     <div class="qs-st"><div class="qs-v">${cal.etapa || '—'}</div><div class="qs-l">etapa de mora</div></div>
-    <div class="qs-st"><div class="qs-v">${canalTxt}</div><div class="qs-l">canal</div></div>
+    <div class="qs-st" title="${canalTip}"><div class="qs-v">${canalTxt}</div><div class="qs-l">canal</div></div>
     <div class="qs-st"><div class="qs-v">${no ? '—' : prox}</div><div class="qs-l">próximo contacto</div></div>
   </div>`;
 }
@@ -159,7 +160,7 @@ function yapeHtml(y) {
       <div class="yp-msg-phone"><div class="sim-msg bank"><div class="sim-bubble">${fmtWA(y.mensaje_prepago)}</div></div></div>
     </div>` : "";
   return `<div class="dd-yape">
-    <div class="dd-cal-h">Conexión Yape · ventas últimos 7 días <span class="cal-badge gris">simulado · promedio S/${y.promedio}</span></div>
+    <div class="dd-cal-h">Conexión Yape · ventas últimos 7 días <span class="cal-badge gris">promedio S/${y.promedio}</span></div>
     <div class="yp-chart">${bars}</div>
     ${nudge}
     ${prepay}
@@ -307,7 +308,7 @@ function fichaHtml(f) {
       ${cell("Usa app", f.uso_app != null ? Math.round(f.uso_app * 100) + "%" : null)}
       ${cell("Usa WhatsApp", si(f.uso_whatsapp))}
       ${cell("Interacción digital", f.interaccion_digital ? f.interaccion_digital + "/100" : null)}
-      ${cell("Score banco (no se usa)", f.score_riesgo)}
+      ${cell("Score banco (apoyo)", f.score_riesgo)}
       ${cell("Prob. repago 30d", f.prob_repago_30d != null ? Math.round(f.prob_repago_30d * 100) + "%" : null)}
     </div>
   </div>`;

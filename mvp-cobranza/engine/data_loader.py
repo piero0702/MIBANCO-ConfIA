@@ -27,6 +27,27 @@ DATA_DIRS = [
 ]
 
 
+# 12 clientes reales CURADOS para el pitch: cubren todo el espectro (digital/no-digital,
+# al dia / mora temprana / media / alta, buen y mal pagador, uno que ya prometio -> no
+# contactar) y todos dan ahorro positivo. Elegidos corriendo el motor sobre la cartera real.
+CLIENTES_CURADOS = [13571, 38240, 24748, 9124, 15776, 29431, 4374, 10499, 15092, 3144, 35531, 30514]
+
+
+def _seleccion_curada(df, muestra: int):
+    """Devuelve los clientes curados presentes en df (en orden). Si se piden mas que los
+    curados, completa con una muestra aleatoria variada; si se piden menos, recorta."""
+    import pandas as pd
+    presentes = [i for i in CLIENTES_CURADOS if i in set(df["cliente_id"])]
+    base = df[df["cliente_id"].isin(presentes)].copy()
+    base["__ord"] = base["cliente_id"].map({cid: k for k, cid in enumerate(presentes)})
+    base = base.sort_values("__ord").drop(columns="__ord")
+    if muestra <= len(base):
+        return base.head(muestra)
+    resto = df[~df["cliente_id"].isin(presentes)].sample(
+        min(muestra - len(base), len(df) - len(base)), random_state=7)
+    return pd.concat([base, resto], ignore_index=True)
+
+
 def _find(patron: str) -> str | None:
     for d in DATA_DIRS:
         hits = glob.glob(os.path.join(d, patron))
@@ -103,8 +124,8 @@ def cargar_reales(muestra: int | None = 300) -> list[dict]:
         df = df.merge(ult[["cliente_id", "promesa_pago"]], on="cliente_id", how="left")
 
     if muestra:
-        # priorizar variedad: mezclar tramos de mora
-        df = df.sample(min(muestra, len(df)), random_state=7)
+        # seleccion curada (12 casos que cubren el espectro); completa con muestra si piden mas
+        df = _seleccion_curada(df, muestra)
 
     return [_normalizar(r) for r in df.to_dict(orient="records")]
 

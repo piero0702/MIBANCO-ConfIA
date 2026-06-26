@@ -194,6 +194,9 @@ strong { font-weight: 700; }
 .prose p:last-child { margin-bottom: 0; }
 .prose b { color: var(--ink); font-weight: 700; }
 .prose i { color: var(--ink-2); }
+.canales-list { margin: 0 0 11px; padding-left: 18px; }
+.canales-list li { margin: 0 0 6px; }
+.canales-list li:last-child { margin-bottom: 0; }
 
 /* ══════════════════ INICIO · LANDING (hero + pilares) ══════════════════ */
 .hero {

@@ -32,14 +32,36 @@ def load_config(path: str | None = None) -> dict:
 # ----------------------------------------------------------------------------- #
 # Helpers de segmentacion
 # ----------------------------------------------------------------------------- #
-def clasificar_riesgo(prob_default: float, cfg: dict) -> str:
-    """Bajo / Medio / Alto a partir de prob_default. (Apuntes: perfil de riesgo)."""
+def clasificar_riesgo(prob_default: float, cfg: dict, score_riesgo=None) -> str:
+    """Bajo / Medio / Alto. La probabilidad de impago manda; el score de riesgo del
+    banco (300-849, alto = mejor) entra como senal secundaria con 20% de peso —se
+    considera, pero pesan mas las senales de comportamiento (insight: el score solo
+    no predice bien el pago real)."""
     u = cfg["umbrales_riesgo"]
-    if prob_default <= u["bajo_max_prob_default"]:
+    p = prob_default
+    if score_riesgo:
+        score_norm = max(0.0, min(1.0, (float(score_riesgo) - 300) / 549))  # 0..1 (1 = mejor)
+        p = 0.8 * prob_default + 0.2 * (1 - score_norm)
+    if p <= u["bajo_max_prob_default"]:
         return "bajo"
-    if prob_default >= u["alto_min_prob_default"]:
+    if p >= u["alto_min_prob_default"]:
         return "alto"
     return "medio"
+
+
+def _digital_efectivo(cli: dict) -> tuple[bool, float]:
+    """Perfil digital fino del Excel: combina el flag es_digital con uso_app,
+    uso_whatsapp e interaccion_digital_score. Devuelve (efectivo, score 0..1).
+    Asi un 'no digital' que en realidad usa mucho la app/WhatsApp recibe WhatsApp, y
+    un 'digital' con interaccion casi nula puede escalar antes a llamada."""
+    es = bool(cli.get("es_digital", 0))
+    inter = float(cli.get("interaccion_digital_score", 0) or 0) / 100.0
+    app = float(cli.get("uso_app", 0) or 0)
+    wa = 1.0 if int(cli.get("uso_whatsapp", 0) or 0) else 0.0
+    if inter == 0 and app == 0 and wa == 0:        # sin senales finas: cae al flag
+        return es, (0.7 if es else 0.2)
+    score = 0.55 * inter + 0.30 * app + 0.15 * wa
+    return score >= 0.5, round(score, 3)
 
 
 def tramo_de_mora(dias_mora: int, cfg: dict) -> dict:
@@ -85,7 +107,8 @@ def decidir_canal(cli: dict, riesgo: str, saldo_restante: float,
     Valor neto = pago_estimado * cuota - costo_contacto. Asi el canal caro se reserva
     solo donde el dinero en juego justifica su costo.
     """
-    es_digital = bool(cli.get("es_digital", 0))
+    # Perfil digital fino (Excel): no solo el flag, tambien uso_app/uso_whatsapp/interaccion
+    es_digital, _dscore = _digital_efectivo(cli)
     canales = cfg["canales"]
     base = max(cuota, 1)  # si no hay cuota, usar 1 para que domine el costo/ROI
 
@@ -96,7 +119,7 @@ def decidir_canal(cli: dict, riesgo: str, saldo_restante: float,
         permitidos.append("llamada")
     if riesgo == "alto" and monto_alto:
         permitidos.append("campo")
-    # Si el cliente NO es digital, la llamada entra aunque sea medio riesgo (data#6)
+    # Si el cliente NO es digital (perfil fino), la llamada entra aunque sea medio riesgo (data#6)
     if not es_digital and "llamada" not in permitidos:
         permitidos.append("llamada")
 
@@ -241,6 +264,9 @@ def score_prioridad(cli, tramo, saldo_restante, riesgo) -> float:
     s += tramo["pago_7d"] * 40            # probabilidad de recuperar (mora temprana pesa)
     s += min(saldo_restante / 5000, 1) * 30  # monto en juego
     s += {"alto": 20, "medio": 12, "bajo": 6}[riesgo]
+    # senales de comportamiento del Excel:
+    s += min(float(cli.get("dias_mora_promedio", 0) or 0) / 60, 1) * 10   # mora cronica sube
+    s += min(int(cli.get("ultimo_pago_dias", 0) or 0) / 90, 1) * 6        # hace cuanto no paga
     if es_buen_pagador(cli):
         s *= 0.6                          # al buen pagador, menos presion (entrevistas#5)
     return round(min(s, 100), 1)
@@ -261,7 +287,7 @@ def decidir(cli: dict, cfg: dict | None = None) -> dict:
     saldo = float(cli.get("saldo_restante", 0))
     cuota = float(cli.get("cuota_mensual", 0))
 
-    riesgo = clasificar_riesgo(float(cli.get("prob_default", 0.2)), cfg)
+    riesgo = clasificar_riesgo(float(cli.get("prob_default", 0.2)), cfg, cli.get("score_riesgo"))
     tramo = tramo_de_mora(dias_mora, cfg)
     canal = decidir_canal(cli, riesgo, saldo, cuota, cfg)
     momento = decidir_momento(tramo, cfg)

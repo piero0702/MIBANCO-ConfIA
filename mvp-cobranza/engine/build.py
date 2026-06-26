@@ -191,8 +191,9 @@ def construir_explicacion(cli: dict, d: dict, cfg: dict) -> tuple[dict, dict]:
 
     por_riesgo = (f"Riesgo {riesgo.upper()} — prob. de impago {prob_default:.0%}, "
                   f"paga {ratio:.0%} de sus cuotas a tiempo, {atrasos} atraso(s) previos. "
-                  f"El score del banco ({ficha['score_riesgo'] or '—'}) NO se usa para decidir: "
-                  f"en la data tiene correlación ~0 con el pago real (ruido).")
+                  f"El score del banco ({ficha['score_riesgo'] or '—'}) se considera como una "
+                  f"señal más (pesa ~20%): mandan las señales de comportamiento, que predicen "
+                  f"mejor el pago real que el score estático.")
     por_prob = (f"{prob7:.0%} de probabilidad de pagar en 7 días sin que lo contactemos"
                 + (f" ({base30:.0%} a 30 días)" if base30 else "")
                 + (". Conviene solo un recordatorio preventivo." if dias <= 0

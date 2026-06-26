@@ -110,19 +110,32 @@
     <div class="prose">
       <p><b>Datos.</b> Trabajamos sobre las 3 tablas reales del reto: 50,000 clientes, 194,664
       créditos y 572,553 contactos de cobranza.</p>
-      <p><b>Costos por canal</b> (los que usa el motor): WhatsApp S/0.10, SMS S/0.20, llamada S/1.50
-      y visita de campo S/8.00. Por eso mover volumen a WhatsApp baja el costo aunque se mantengan
-      los toques.</p>
-      <p><b>Reglas del negocio que respetamos.</b> No se elimina ningún canal. El contacto va de
-      lunes a viernes de 7am a 7pm, los sábados solo por canal digital, y evitamos la mañana (el
-      negocio recién abre).</p>
+      <p><b>Los canales que tocamos.</b> El motor mueve el contacto entre estos canales según el
+      perfil del cliente:</p>
+      <ul class="canales-list">
+        <li><b>WhatsApp oficial</b> (S/0.10) — el canal por defecto: verificable, anti-extorsión y
+        15× más barato que llamar. La gran mayoría se resuelve aquí.</li>
+        <li><b>SMS</b> (S/0.20) — respaldo digital de bajo costo cuando no hay WhatsApp.</li>
+        <li><b>Llamada del asesor</b> (S/1.50) — asesor humano (no robot) para el cliente poco
+        digital o de mayor riesgo/monto, o si no responde por WhatsApp.</li>
+        <li><b>Visita de campo</b> (S/8.00) — último recurso, solo cuando se justifica por alto
+        riesgo y alto monto.</li>
+        <li><b>Yape (YoSiLa)</b> — canal de cobro automático: un % de cada venta por Yape va a la
+        cuota, sin una sola llamada. No es un canal de contacto, es de pago.</li>
+      </ul>
+      <p><b>Reglas del negocio que respetamos.</b> No se elimina ningún canal. Empezamos siempre por
+      WhatsApp y solo escalamos a llamada/visita si no hay respuesta. El contacto va de lunes a
+      viernes de 7am a 7pm, los sábados solo por canal digital, y evitamos la mañana (el negocio
+      recién abre).</p>
       <p><b>Sobre el tope de contactos.</b> El backtest mide un tope de 2 por <i>episodio</i> de
       cobranza (la ventana de ~7 días alrededor de un vencimiento). En el calendario del mes un
       cliente puede ver hasta 7 toques si va cruzando varias etapas de mora; un buen pagador, hasta
       3. Todo por WhatsApp. Así se sostiene el ahorro de <b>−79%</b> sin contradicción.</p>
-      <p><b>Una decisión clave.</b> Los scores de riesgo del dataset (prob_default, score_riesgo)
-      resultaron ruido — casi sin relación con el pago real. Por eso el motor decide con señales de
-      comportamiento: canal, días de mora, fatiga de contacto y respuesta del cliente.</p>
+      <p><b>Una decisión clave.</b> El motor considera todas las variables del Excel del cliente
+      (perfil digital, uso de app/WhatsApp, interacción digital, score del banco, último pago,
+      mora promedio…). El score estático del banco entra como una señal más, pero pesan más las
+      señales de comportamiento (canal, días de mora, último pago, fatiga y respuesta), que
+      predicen mejor el pago real.</p>
     </div>
   </section>
 
@@ -534,7 +547,7 @@
       <div class="fconn"></div>
       <div class="fstep"><div class="fnum">✓</div><div class="fbody"><b>Con tope y registro</b><small>Nunca pasa el tope de contactos; si activa YoSiLa, su "sí" por WhatsApp queda registrado como consentimiento (Res. SBS 02522-2025).</small></div></div>
     </div>
-    <div class="bt-note" style="margin:0 22px 22px">En esta demo las decisiones están <b>precalculadas</b> (motor en Python sobre la data real) para poder explorarlas cliente por cliente. En producción, los modelos se reentrenan con cada nuevo contacto y la IA generativa corre en vivo sobre WhatsApp Business.</div>
+    <div class="bt-note" style="margin:0 22px 22px">Las decisiones que ves se calculan con el motor en Python corriendo sobre los <b>datos reales del reto</b> (las 3 tablas: clientes, créditos y contactos) — el mismo motor que iría a producción. En producción, además, los modelos se reentrenan con cada nuevo contacto y la IA generativa redacta en vivo sobre WhatsApp Business.</div>
   </section>
 </main>
 

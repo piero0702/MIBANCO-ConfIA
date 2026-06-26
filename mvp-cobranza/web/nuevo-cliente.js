@@ -17,6 +17,11 @@
   const catMora = d => d <= 0 ? "Al día / preventivo" : d <= 30 ? "Mora temprana (1-30 días)" : d <= 60 ? "Mora media (31-60 días)" : "Mora alta (60+ días)";
   const riesgoDe = pd => { const u = (typeof CFG !== "undefined" && CFG.umbrales_riesgo) || { bajo_max_prob_default: .15, alto_min_prob_default: .40 }; return pd <= u.bajo_max_prob_default ? "bajo" : pd >= u.alto_min_prob_default ? "alto" : "medio"; };
   const buenDe = (r, a, pd) => r >= .85 && a <= 1 && pd <= .20;
+  // mismo criterio que el motor Python: riesgo combina prob_default (80%) + score banco (20%)
+  const riesgoComb = (pd, score) => { if (!score) return riesgoDe(pd); const sn = Math.max(0, Math.min(1, (score - 300) / 549)); return riesgoDe(0.8 * pd + 0.2 * (1 - sn)); };
+  // perfil digital fino: combina es_digital con uso_app / uso_whatsapp / interaccion_digital
+  const digitalEf = c => { const inter = (c.interaccion || 0) / 100, app = c.uso_app || 0, wa = c.uso_whatsapp ? 1 : 0; if (!inter && !app && !wa) return !!c.es_digital; return (0.55 * inter + 0.30 * app + 0.15 * wa) >= 0.5; };
+  const scoreDe = pd => Math.max(300, Math.min(849, Math.round(815 - pd * 520)));
   const nDe = (et, r, b) => et === "preventivo" ? 1 : et === "temprana" ? (b ? 1 : { bajo: 1, medio: 2, alto: 3 }[r]) : et === "media" ? (r === "alto" ? 4 : 3) : (r === "alto" ? 7 : 5);
   const tonoDe = (r, b) => b ? "agradecido" : r === "alto" ? "empatico-claro" : "cercano";
   function tramoP7(d) { const r = (typeof CFG !== "undefined" && CFG.tramos_mora && CFG.tramos_mora.rangos) || []; for (const x of r) { if (d <= x.max_dias) return x.pago_7d; } return r.length ? r[r.length - 1].pago_7d : .4; }
@@ -37,8 +42,9 @@
       const dd = new Date(2026, 5, Math.min(Math.max(DIAS_MES[idx], 1), 30));
       if (dd.getDay() === 0) dd.setDate(dd.getDate() + 1);
       let canal = "whatsapp", o = obj, m;
-      if (!c.es_digital && et === "tardia" && idx === n - 1) canal = "campo";
-      else if (!c.es_digital && (et === "media" || et === "tardia")) canal = "llamada";
+      const dig = digitalEf(c);
+      if (!dig && et === "tardia" && idx === n - 1) canal = "campo";
+      else if (!dig && (et === "media" || et === "tardia")) canal = "llamada";
       if (canal === "whatsapp") m = mensaje(c.nombre, et, tono, c.cuota);
       else if (canal === "llamada") { m = "📞 Llamada de tu asesor de Mibanco (verificable, no robot) para coordinar."; o = "Llamada del asesor"; }
       else { m = "🚶 Visita de tu asesor de Mibanco — último recurso si no responde por WhatsApp."; o = "Visita del asesor"; }
@@ -47,7 +53,7 @@
         objetivo: o, canal, mensaje: m, verificable: true };
     }).sort((a, b) => a.dia - b.dia);
     const nota = etapa === "preventivo" ? "Buen pagador / al día: basta 1 recordatorio preventivo. Decidir a quién NO molestar también es parte del motor."
-      : (!c.es_digital && (etapa === "media" || etapa === "tardia")) ? "WhatsApp primero; si no responde, escala a llamada del asesor y, en último recurso, visita. Nunca se elimina un canal."
+      : (!digitalEf(c) && (etapa === "media" || etapa === "tardia")) ? "WhatsApp primero; si no responde, escala a llamada del asesor y, en último recurso, visita. Nunca se elimina un canal."
       : "Todo por WhatsApp verificable. El nº de toques sube con la etapa de mora y baja con el buen comportamiento de pago.";
     return { mes: "junio 2026", total_contactos: cont.length, tope, etapa: catMora(c.dias_mora), es_moroso: c.dias_mora > 0, nota, contactos: cont };
   }
@@ -90,21 +96,35 @@
     _ncCount++;
     const c = { nombre: f.nombre, edad: f.edad, region: f.region, es_digital: f.es_digital, dias_mora: f.dias_mora,
       saldo: f.saldo, cuota: f.cuota, prob_default: f.prob_default, ratio: f.ratio, atrasos: f.atrasos };
-    c.riesgo = riesgoDe(c.prob_default); c.buen = buenDe(c.ratio, c.atrasos, c.prob_default);
+    // variables del Excel: las que el usuario ingresa + estimadas coherentes con el perfil
+    c.interaccion = (f.interaccion != null) ? f.interaccion : (f.es_digital ? 70 : 18);
+    c.uso_app = f.es_digital ? 0.6 : 0.12;
+    c.uso_whatsapp = 1;
+    c.score = scoreDe(c.prob_default);
+    c.ultimo_pago = (f.ultimo_pago != null) ? f.ultimo_pago : (c.dias_mora > 0 ? c.dias_mora + 6 : 15);
+    c.mora_prom = Math.max(Math.round(c.dias_mora / 2), c.atrasos * 4);
+    c.riesgo = riesgoComb(c.prob_default, c.score); c.buen = buenDe(c.ratio, c.atrasos, c.prob_default);
     const etapa = etapaDe(c.dias_mora), cat = catMora(c.dias_mora), tono = tonoDe(c.riesgo, c.buen);
     const cal = calendario(c), prob7 = tramoP7(c.dias_mora);
-    let s = prob7 * 40 + Math.min(c.saldo / 5000, 1) * 30 + { alto: 20, medio: 12, bajo: 6 }[c.riesgo]; if (c.buen) s *= 0.6;
+    let s = prob7 * 40 + Math.min(c.saldo / 5000, 1) * 30 + { alto: 20, medio: 12, bajo: 6 }[c.riesgo];
+    s += Math.min(c.mora_prom / 60, 1) * 10 + Math.min(c.ultimo_pago / 90, 1) * 6;
+    if (c.buen) s *= 0.6;
     const prioridad = Math.round(Math.min(s, 100));
+    const prob30 = Math.min(0.95, Math.round((prob7 + 0.12) * 100) / 100);
+    const dig = digitalEf(c);
     const ficha = { edad: c.edad, region: c.region, zona: "urbano", producto: "microcrédito", es_digital: c.es_digital,
-      uso_app: c.es_digital ? 0.5 : 0.08, uso_whatsapp: c.es_digital, interaccion_digital: c.es_digital ? 62 : 18, score_riesgo: null,
-      prob_default: c.prob_default, ratio_pago: c.ratio, num_atrasos_previos: c.atrasos, dias_mora_promedio: 0, ultimo_pago_dias: null,
-      saldo_restante: c.saldo, cuota_mensual: c.cuota, dias_mora: c.dias_mora, prob_repago_7d: prob7, prob_repago_30d: null };
+      uso_app: c.uso_app, uso_whatsapp: c.uso_whatsapp, interaccion_digital: c.interaccion, score_riesgo: c.score,
+      prob_default: c.prob_default, ratio_pago: c.ratio, num_atrasos_previos: c.atrasos, dias_mora_promedio: c.mora_prom, ultimo_pago_dias: c.ultimo_pago,
+      saldo_restante: c.saldo, cuota_mensual: c.cuota, dias_mora: c.dias_mora, prob_repago_7d: prob7, prob_repago_30d: prob30 };
     const porque = { categoria_mora: cat,
-      riesgo: `Riesgo ${c.riesgo.toUpperCase()} — prob. de impago ${Math.round(c.prob_default * 100)}%, paga ${Math.round(c.ratio * 100)}% de sus cuotas a tiempo, ${c.atrasos} atraso(s) previos. El score del banco no se usa para decidir: en la data tiene correlación ~0 con el pago real.`,
+      riesgo: `Riesgo ${c.riesgo.toUpperCase()} — prob. de impago ${Math.round(c.prob_default * 100)}%, paga ${Math.round(c.ratio * 100)}% de sus cuotas a tiempo, ${c.atrasos} atraso(s) previos. El score del banco (${c.score}) se considera como una señal más (~20%): pesan más las señales de comportamiento.`,
       prob_repago: `${Math.round(prob7 * 100)}% de probabilidad de pagar en 7 días sin que lo contactemos. ${c.dias_mora <= 0 ? "Conviene solo un recordatorio preventivo." : "El contacto temprano rinde casi el doble que el tardío."}`,
       tope: `${cal.total_contactos} contacto(s) este mes según su etapa (${cat}). El nº sube con la mora (preventivo 1 → temprana 1-3 → media 3-4 → tardía 5-7) y baja con el buen pago.`,
-      contactar: cal.total_contactos ? "Contactar por WhatsApp verificable. Llamada/visita solo como último recurso si no responde." : "NO contactar." };
-    const decision = { canal: { canal: "whatsapp", canal_nombre: "WhatsApp oficial Mibanco", verificable: true, motivo: "Oficial, anti-extorsión. Mayor conversión y 15× más barato que llamar." },
+      contactar: cal.total_contactos ? (dig ? "Contactar por WhatsApp verificable. Llamada/visita solo como último recurso si no responde." : "Poco digital (uso de app/WhatsApp bajo): WhatsApp primero y, si no responde, llamada del asesor.") : "NO contactar." };
+    const canalPrim = (!dig && (etapa === "media" || etapa === "tardia")) ? "llamada" : "whatsapp";
+    const decision = { canal: canalPrim === "llamada"
+        ? { canal: "llamada", canal_nombre: "Llamada del asesor", verificable: true, motivo: "Cliente poco digital en mora avanzada: responde mejor por voz (asesor verificable, no robot)." }
+        : { canal: "whatsapp", canal_nombre: "WhatsApp oficial Mibanco", verificable: true, motivo: "Oficial, anti-extorsión. Mayor conversión y 15× más barato que llamar." },
       momento: { cuando: c.dias_mora <= 0 ? "Recordatorio preventivo, 2-4 días antes" : "Pronto (la mora temprana paga casi el doble)", franja: "13:00-18:00", evitar: "07:00-10:00" },
       frecuencia: { tope_contactos: { bajo: 1, medio: 2, alto: 3 }[c.riesgo], nota: "Máximo según etapa y riesgo; el sobre-contacto baja el pago." }, tono, mensaje: cal.contactos[0] ? cal.contactos[0].mensaje : "" };
     return { cliente_id: "NEW-" + _ncCount, nombre: c.nombre, prioridad, accion: cal.total_contactos ? "CONTACTAR" : "NO CONTACTAR",
@@ -125,6 +145,8 @@
       <label>Prob. de impago (%)<input id="ncPd" type="number" value="18" min="0" max="100" /></label>
       <label>Paga a tiempo (%)<input id="ncRatio" type="number" value="82" min="0" max="100" /></label>
       <label>Atrasos previos<input id="ncAtr" type="number" value="1" /></label>
+      <label>Interacción digital (0-100)<input id="ncInter" type="number" value="62" min="0" max="100" /></label>
+      <label>Último pago (hace días)<input id="ncUlt" type="number" value="15" min="0" /></label>
       <label class="nc-toggle"><input id="ncDig" type="checkbox" checked /> Usa canales digitales (app / Yape / WhatsApp)</label>
     </div>
     <button class="nc-go" id="ncGo">⚙ Procesar con Mibanco-confIA</button>`;
@@ -142,6 +164,8 @@
       prob_default: Math.min(1, Math.max(0, (+Q("#ncPd").value || 0) / 100)),
       ratio: Math.min(1, Math.max(0, (+Q("#ncRatio").value || 0) / 100)),
       atrasos: Math.max(0, +Q("#ncAtr").value || 0), es_digital: Q("#ncDig").checked,
+      interaccion: Math.min(100, Math.max(0, +Q("#ncInter").value || 0)),
+      ultimo_pago: Math.max(0, +Q("#ncUlt").value || 0),
     };
   }
   function openModal() { Q("#ncBody").innerHTML = FORM; Q("#ncModal").hidden = false; Q("#ncGo").onclick = procesar; }

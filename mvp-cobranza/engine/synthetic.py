@@ -70,15 +70,31 @@ def personajes_entrevistas() -> list[dict]:
     out = []
     for k, p in enumerate(PERSONAJES):
         nombre, dig, pd, rp, atr, mora, saldo, cuota, nota = p
+        # Columnas del Excel derivadas del perfil de la entrevista, para que la ficha
+        # de cada entrevistado no salga vacia (los clientes reales si las traen).
+        uso_app = round(0.62 + 0.06 * (k % 3), 2) if dig else round(0.06 + 0.03 * (k % 3), 2)
+        interaccion = (70 + 7 * (k % 4)) if dig else (12 + 4 * (k % 4))
+        score = max(300, min(849, round(815 - pd * 520)))
+        prob7 = max(0.05, min(0.9, round(0.88 - pd * 0.9, 2)))
         out.append({
             "cliente_id": f"ENT-{k+1:02d}",
             "nombre": nombre,
-            "edad": 38, "genero": "F" if k % 2 == 0 else "M",
+            "edad": 52 + (k % 5) * 3, "genero": "F" if k % 2 == 0 else "M",
             "region": "Lima", "zona": "urbano", "tipo_cliente": "recurrente",
             "es_digital": dig, "prob_default": pd, "ratio_pago": rp,
             "num_atrasos_previos": atr, "dias_mora": mora,
             "saldo_restante": saldo, "cuota_mensual": cuota,
             "promesa_pago": 0, "nota": nota,
+            # --- columnas del Excel (para que la ficha no salga vacia) ---
+            "producto": "microcredito",
+            "score_riesgo": score,
+            "uso_app": uso_app,
+            "uso_whatsapp": 1,
+            "interaccion_digital_score": interaccion,
+            "dias_mora_promedio": max(mora // 2, atr * 4),
+            "ultimo_pago_dias": (mora + 6) if mora else (10 + (k % 3) * 5),
+            "prob_pago_7d_base": prob7,
+            "prob_pago_30d_base": max(0.1, min(0.95, round(prob7 + 0.12, 2))),
         })
     return out
 
