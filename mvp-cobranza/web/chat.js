@@ -682,12 +682,13 @@ hdr.innerHTML = `
     <polyline points="9 1 1 9 9 17"/>
   </svg>
 </div>
-<span class="sim-wa-avatar">m</span>
+<div class="wa-avatar-wrap">
+  <img src="icons/mibanco-tigre.png" alt="Mibanco" class="wa-avatar-img" />
+</div>
 <div class="wa-contact">
   <span class="wa-cname">Mibanco Cobranzas</span>
   <span class="wa-verif" title="Cuenta de empresa verificada">✓</span>
-</div>
-<div class="wa-actions">📞 ⋮</div>`;
+</div>`;
 }
 
 function resetAndPlay() {
