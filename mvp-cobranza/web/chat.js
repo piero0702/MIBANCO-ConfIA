@@ -376,7 +376,7 @@ el.innerHTML = `
         <div class="yk-img-hero-cols">
           <div class="yk-img-hero-row-net">
             <span class="yk-img-hero-net-val">S/ ${netoEj}</span>
-            <span class="yk-img-hero-net-lbl">para vos</span>
+            <span class="yk-img-hero-net-lbl">para ti</span>
           </div>
           <div class="yk-img-hero-row-ap">
             <span class="yk-img-hero-ap-val">S/ ${aporteEj}</span>
