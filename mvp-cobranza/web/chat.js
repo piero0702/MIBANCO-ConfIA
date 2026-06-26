@@ -419,7 +419,7 @@ el.innerHTML = `
     <div class="yk-img-foot">0 llamadas · 0 visitas · se para solo al completar</div>
   </div>
 </div>
-<div class="msg-meta">${h} <span class="ticks">✓✓</span></div>`;
+<div class="msg-time" style="margin-top:2px">${h} <span class="ticks">✓✓</span></div>`;
 chatBody().appendChild(el);
 scrollBottom();
 }
@@ -535,7 +535,7 @@ el.className = "sys-card sys-campo";
 el.className = "sys-card";
 }
 if (msg.tipo !== "progreso") {
-el.innerHTML = `<div class="msg-bubble" style="background:none;padding:0;box-shadow:none">${fmt(msg.texto)}</div>`;
+el.innerHTML = fmt(msg.texto);
 }
 chatBody().appendChild(el);
 scrollBottom();
@@ -583,8 +583,7 @@ el.className = "msg msg-" + (msg.de === "banco" ? "bank" : "client");
 const h = hora();
 const ticks = msg.de === "banco" ? `<span class="ticks">✓✓</span>` : "";
 el.innerHTML = `
-<div class="msg-bubble">${fmt(msg.texto)}</div>
-<div class="msg-meta">${h} ${ticks}</div>`;
+<div class="msg-bubble">${fmt(msg.texto)}<span class="msg-time">${h} ${ticks}</span></div>`;
 chatBody().appendChild(el);
 scrollBottom();
 }
@@ -677,10 +676,12 @@ function updateWAHeader() {
 const p = PERFILES[perfilActual];
 const hdr = document.getElementById("waHeader");
 hdr.innerHTML = `
-<div class="wa-avatar-wrap" style="background:${p.color}">${p.avatar}</div>
+<div class="wa-avatar-wrap">
+  <img src="icons/mibanco-tigre.png" alt="Mibanco" class="wa-avatar-img" />
+</div>
 <div class="wa-contact">
-<div class="wa-cname">Mibanco Cobranzas <span class="verified">✅ Verificado</span></div>
-<div class="wa-status">en línea · ${p.nombre}</div>
+  <div class="wa-cname">Mibanco Cobranzas <span class="verified">✅ Verificado</span></div>
+  <div class="wa-status">en línea · ${p.nombre}</div>
 </div>
 <div class="wa-actions">📞 ⋮</div>`;
 }
