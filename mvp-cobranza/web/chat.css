@@ -1305,12 +1305,14 @@ body {
  position: relative;
 }
 
-/* Celular del pagador — empieza completamente fuera por la izquierda */
+/* Celular del pagador — empieza completamente invisible y fuera por la izquierda */
 .sender-device-outer {
  position: absolute;
  right: 100%;
  top: 0;
  transform: translateX(-100%);
+ opacity: 0;
+ pointer-events: none;
  transition: transform .5s cubic-bezier(.16,1,.3,1);
  z-index: 2;
 }
@@ -1320,9 +1322,11 @@ body {
  transition: transform .5s cubic-bezier(.16,1,.3,1);
 }
 
-/* Activación: sender entra desde la izquierda, WA se desplaza a la derecha */
+/* Activación: sender aparece y entra desde la izquierda, WA se desplaza a la derecha */
 .phones-duo-wrap.sp-active .sender-device-outer {
  transform: translateX(72%);
+ opacity: 1;
+ pointer-events: auto;
 }
 .phones-duo-wrap.sp-active #mainDeviceOuter {
  transform: translateX(38%);
