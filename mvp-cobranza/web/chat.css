@@ -541,50 +541,33 @@ body {
  box-shadow: 0 1px 3px rgba(0,0,0,.15);
 }
 
-.wa-avatar-wrap {
- width: 40px;
- height: 40px;
- border-radius: 50%;
- overflow: hidden;
+/* Avatar sim-head style — círculo con letra "m" */
+.sim-wa-avatar {
+ display: inline-grid; place-items: center;
+ width: 34px; height: 34px; border-radius: 50%;
+ background: #fff; color: #075E54;
+ font-family: Georgia, serif; font-weight: 800; font-size: 16px;
  flex-shrink: 0;
- box-shadow: 0 0 0 2px rgba(255,255,255,.15);
- background: #00a884;
+ box-shadow: 0 0 0 2px rgba(255,255,255,.2);
 }
 
-.wa-avatar-img {
- width: 100%;
- height: 100%;
- object-fit: cover;
- border-radius: 50%;
- display: block;
+/* Badge verificado — círculo verde con ✓ */
+.wa-verif {
+ display: inline-grid; place-items: center;
+ width: 16px; height: 16px; border-radius: 50%;
+ background: #25D366; color: #fff;
+ font-size: 9px; font-weight: 900;
+ flex-shrink: 0; vertical-align: middle;
 }
 
-.wa-contact { flex: 1; }
+.wa-contact { flex: 1; display: flex; align-items: center; gap: 6px; }
 
 .wa-cname {
- font-weight: 600;
- font-size: 15px;
- display: flex;
- align-items: center;
- gap: 6px;
+ font-weight: 700;
+ font-size: 14px;
+ color: #fff;
  letter-spacing: -.01em;
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-/* Verified badge — estilo autético WA Business */
-.wa-cname .verified {
- font-size: 10px;
- background: rgba(255,255,255,.22);
- backdrop-filter: blur(4px);
- padding: 2px 7px;
- border-radius: 20px;
- font-weight: 700;
- color: #fff;
- border: 1px solid rgba(255,255,255,.3);
- letter-spacing: .01em;
- display: inline-flex;
- align-items: center;
- gap: 3px;
 }
 
 .wa-status {

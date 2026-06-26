@@ -682,12 +682,10 @@ hdr.innerHTML = `
     <polyline points="9 1 1 9 9 17"/>
   </svg>
 </div>
-<div class="wa-avatar-wrap">
-  <img src="icons/mibanco-tigre.png" alt="Mibanco" class="wa-avatar-img" />
-</div>
+<span class="sim-wa-avatar">m</span>
 <div class="wa-contact">
-  <div class="wa-cname">Mibanco Cobranzas <span class="verified">✅ Verificado</span></div>
-  <div class="wa-status">en línea · ${p.nombre}</div>
+  <span class="wa-cname">Mibanco Cobranzas</span>
+  <span class="wa-verif" title="Cuenta de empresa verificada">✓</span>
 </div>
 <div class="wa-actions">📞 ⋮</div>`;
 }
