@@ -57,92 +57,37 @@ body {
 /* ── PAGE SHELL ── */
 .page { display: flex; flex-direction: column; height: 100vh; }
 
-/* ── HEADER ── */
-.lab-bar {
- display: flex;
- align-items: center;
- justify-content: space-between;
- gap: 16px;
- background: linear-gradient(130deg, var(--mb-green-dark) 0%, var(--mb-green-mid) 45%, var(--mb-green) 100%);
- padding: 0 24px;
- height: 58px;
- flex-shrink: 0;
- flex-wrap: wrap;
+/* ── APP HEADER — mismo diseño que index.html ── */
+.app-header {
+ background: linear-gradient(120deg, #007A39 0%, #00A94F 58%, #18B962 100%);
  position: relative;
  overflow: hidden;
+ border-bottom: 3px solid #FFC400;
+ flex-shrink: 0;
 }
-
-/* Gold shimmer accent at bottom */
-.lab-bar::after {
- content: "";
+.app-header::after {
+ content: '';
  position: absolute;
- bottom: 0;
- left: 0;
- right: 0;
- height: 2px;
- background: linear-gradient(90deg, transparent 0%, var(--mb-gold) 35%, #fff8e1 50%, var(--mb-gold) 65%, transparent 100%);
- opacity: .55;
-}
-
-/* Subtle noise texture overlay */
-.lab-bar::before {
- content: "";
- position: absolute;
- inset: 0;
- background-image: radial-gradient(ellipse at 80% 50%, rgba(255,255,255,.07) 0%, transparent 60%);
+ top: -60px; right: -60px;
+ width: 280px; height: 280px;
+ background: radial-gradient(circle at center, rgba(255,196,0,.30) 0%, transparent 62%);
  pointer-events: none;
 }
-
-.lb-left {
- display: flex;
- align-items: center;
- gap: 13px;
- position: relative;
- z-index: 1;
+.header-inner {
+ position: relative; z-index: 1;
+ max-width: 1220px; margin: 0 auto;
+ padding: 15px 26px;
+ display: flex; align-items: center;
+ justify-content: space-between; gap: 20px; flex-wrap: wrap;
 }
-
-.lb-logo {
- width: 34px;
- height: 34px;
- border-radius: 9px;
- background: rgba(255,255,255,.18);
- color: #fff;
- display: grid;
- place-items: center;
- font-family: Georgia, serif;
- font-weight: 800;
- font-size: 20px;
- border: 1px solid rgba(255,255,255,.28);
- flex-shrink: 0;
- letter-spacing: -.04em;
- backdrop-filter: blur(4px);
- box-shadow: 0 2px 8px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.3);
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-logomark { flex: none; filter: drop-shadow(0 4px 12px rgba(0,169,79,.45)); }
+.brand-text { display: flex; flex-direction: column; gap: 3px; }
+.brand-name {
+ font-size: 17px; font-weight: 700;
+ color: #ffffff; letter-spacing: -0.02em; line-height: 1.15;
 }
-
-.lb-title {
- display: flex;
- flex-direction: column;
- line-height: 1.25;
- position: relative;
- z-index: 1;
-}
-
-.lb-title strong {
- font-size: 13px;
- font-weight: 700;
- color: #fff;
- letter-spacing: -.015em;
-}
-
-.lb-brand { color: rgba(255,255,255,.95); }
-.lb-yosila { color: #c4f5d6; font-weight: 800; }
-
-.lb-title span {
- font-size: 11px;
- color: rgba(255,255,255,.58);
- font-weight: 400;
- margin-top: 1px;
-}
+.brand-sub { font-size: 11.5px; color: rgba(255,255,255,.5); }
 
 .lb-back {
  background: rgba(0,0,0,.18);
@@ -578,8 +523,14 @@ body {
 }
 
 /* ── WHATSAPP HEADER — pixel-perfect WA Web style ── */
+.wa-back-btn {
+ display: flex; align-items: center; justify-content: center;
+ width: 28px; height: 28px; flex-shrink: 0;
+ opacity: .85; cursor: pointer;
+}
+
 .wa-head {
- background: var(--wa-header);
+ background: var(--wa-dark);
  color: #fff;
  display: flex;
  align-items: center;
