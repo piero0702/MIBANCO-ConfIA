@@ -60,7 +60,7 @@ texto: "Muy simple Alessia 📊\n• Tú eliges el % (ej: 2%)\n• Cada Yape rec
 { de: "cliente", delay: 1800,
 texto: "dale, probemos 💪" },
 { de: "banco", delay: 1000,
-texto: "✅ YoSiLa activado al 2%, Alessia.\nTe aviso en 3 momentos:\n1️⃣ Interés al 50%\n2️⃣ Interés al 100% (el momento estrella 🎉)\n3️⃣ Cuota completa → se para solo\n¡Éxitos con las ventas!" },
+texto: "✅ YoSiLa activado al 2%, Alessia.\nTe aviso en 3 momentos:\n1️⃣ Interés al 50%\n2️⃣ Interés al 100% (el momento estrella 🎉)\n3️⃣ Cuota completa → se detiene solo\n¡Éxitos con las ventas!" },
 ],
 media: [
 { de: "sistema", tipo: "progreso",
@@ -103,7 +103,7 @@ texto: "Fácil — dime el % que quieres:\n1️⃣ = 1% · *2️⃣ = 2%* · 3�
 { de: "cliente", delay: 1200,
 texto: "2" },
 { de: "banco", delay: 800,
-texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibas → 2% va a tu cuota.\nTe avisamos en 3 momentos: interés 50% · interés 100% 🎉 · cuota completa → se para solo.\n¡A vender! 💙" },
+texto: "✅ *YoSiLa activado al 2%*, Alessia.\nCada Yape que recibas → 2% va a tu cuota.\nTe avisamos en 3 momentos: interés 50% · interés 100% 🎉 · cuota completa → se detiene solo.\n¡A vender! 💙" },
 { de: "sistema", tipo: "yape-sender-demo",
 remitente: "Juan Quispe", destinatario: "Alessia Borrelli", monto_bruto: 150, pct: 2, interes_pct: 12,
 delay: 2200 },
@@ -416,7 +416,7 @@ el.innerHTML = `
       </div>
     </div>
 
-    <div class="yk-img-foot">0 llamadas · 0 visitas · se para solo al completar</div>
+    <div class="yk-img-foot">0 llamadas · 0 visitas · se detiene solo al completar</div>
   </div>
 </div>
 <div class="msg-time" style="margin-top:2px">${h} <span class="ticks">✓✓</span></div>`;
