@@ -220,12 +220,21 @@
     </div>`;
     Q("#ncSee").onclick = () => {
       closeModal();
+      // asegurar que el tab de decisión esté activo
+      if (typeof activateTab === "function") activateTab("asesoria");
       // mostrar en la lista (filtro Todos) y seleccionar
       FILTER = "todos";
       document.querySelectorAll("#decFilters .chip").forEach(c => c.classList.toggle("on", c.dataset.f === "todos"));
       if (typeof renderDecList === "function") renderDecList();
       if (typeof selectCli === "function") selectCli(d.cliente_id);
-      const det = Q("#decDetail"); if (det) det.scrollIntoView({ behavior: "smooth", block: "start" });
+      // scroll suave al encabezado de la sección, solo si queda fuera del viewport
+      const card = document.querySelector("#tab-asesoria .card");
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < 0 || rect.bottom > window.innerHeight) {
+          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     };
   }
 
