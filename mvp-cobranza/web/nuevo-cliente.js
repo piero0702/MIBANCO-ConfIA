@@ -34,6 +34,30 @@
     return `Hola ${n} 👋 Te escribe Mibanco. Tu cuota de S/${cuota} está pendiente. La pagas fácil por la app o Yape, sin apuro. Cualquier cosa, aquí estamos 💚`;
   }
 
+  // Hora óptima usando datos descriptivos de M3 + perfil del cliente
+  // Digital: prefiere tarde-noche (19h); no-digital: mañana (10h); mora alta: mañana temprano (9h)
+  function horaOptima(c, diaSemana) {
+    // Si tenemos pago_por_hora del meta de M3, elegir la mejor hora para este día
+    const byHour = (typeof M3META !== "undefined" && M3META && M3META.pago_por_hora) ? M3META.pago_por_hora : null;
+    if (byHour) {
+      // Ajuste por perfil: digital prefiere tarde, no-digital prefiere mañana
+      const dig = digitalEf(c);
+      const horasCandidatas = dig ? [19, 18, 17, 10, 8] : [10, 9, 8, 14, 16];
+      // Elegir la de mayor tasa de pago entre las candidatas
+      let bestH = horasCandidatas[0], bestP = 0;
+      for (const h of horasCandidatas) {
+        const p = byHour[String(h)] || byHour[h] || 0;
+        if (p > bestP) { bestP = p; bestH = h; }
+      }
+      const FRANJA = { 8: "mañana temprano (8h)", 9: "mañana (9h)", 10: "mañana (10h)", 14: "tarde (14h)", 16: "tarde-noche (16h)", 17: "tarde-noche (17h)", 18: "noche (18h)", 19: "noche (19h)" };
+      return { hora: bestH, franja: FRANJA[bestH] || bestH + "h", fuente: "m3" };
+    }
+    // Fallback sin meta: regla simple por perfil
+    const dig = digitalEf(c), etapa = etapaDe(c.dias_mora);
+    const hora = dig ? 19 : (etapa === "tardia" ? 9 : 10);
+    return { hora, franja: hora + "h", fuente: "regla" };
+  }
+
   function calendario(c) {
     const etapa = etapaDe(c.dias_mora), tope = { preventivo: 1, temprana: 3, media: 4, tardia: 7 }[etapa];
     const n = nDe(etapa, c.riesgo, c.buen), tono = tonoDe(c.riesgo, c.buen);
@@ -48,9 +72,10 @@
       if (canal === "whatsapp") m = mensaje(c.nombre, et, tono, c.cuota);
       else if (canal === "llamada") { m = "📞 Llamada de tu asesor de Mibanco (verificable, no robot) para coordinar."; o = "Llamada del asesor"; }
       else { m = "🚶 Visita de tu asesor de Mibanco — último recurso si no responde por WhatsApp."; o = "Visita del asesor"; }
+      const diaSemana = dd.getDay() === 0 ? 1 : dd.getDay() - 1; // 0=lun
       return { fecha: String(dd.getDate()).padStart(2, "0") + " jun", dia: dd.getDate(), etapa: catMora(Math.max(rel, 0)),
         dias_rel: rel, rel_label: rel < 0 ? `−${Math.abs(rel)} d` : `+${rel} d`, rel_nota: rel < 0 ? "antes de vencer" : "días de atraso",
-        objetivo: o, canal, mensaje: m, verificable: true };
+        objetivo: o, canal, mensaje: m, verificable: true, hora_optima: horaOptima(c, diaSemana) };
     }).sort((a, b) => a.dia - b.dia);
     const nota = etapa === "preventivo" ? "Buen pagador / al día: basta 1 recordatorio preventivo. Decidir a quién NO molestar también es parte del motor."
       : (!digitalEf(c) && (etapa === "media" || etapa === "tardia")) ? "WhatsApp primero; si no responde, escala a llamada del asesor y, en último recurso, visita. Nunca se elimina un canal."

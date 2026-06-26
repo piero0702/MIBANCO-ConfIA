@@ -483,49 +483,49 @@
         <div class="modelo-n">M1</div>
         <div class="modelo-b">
           <b>¿Vale la pena contactar? <span class="m1-badge">✓ entrenado</span></b>
-          <p>Predice <code>P(paga en 7d)</code>. Si es alta → <b>NO CONTACTAR</b> (al buen pagador no se le trata como moroso). <b>Este sí está entrenado de verdad</b> sobre los 572k contactos reales (los demás son la hoja de ruta).</p>
+          <p>Predice <code>P(paga en 7d)</code>. Ensemble HGB + XGBoost (pesos 0.95 / 0.05) entrenado sobre 486k contactos. Si la probabilidad es alta → <b>NO CONTACTAR</b>; ese cliente paga solo y el contacto solo genera costo y fatiga.</p>
           <div class="io">
-            <span class="io-tag"><i>entra</i> fatiga · tramo_mora · dias_mora · contactos_previos · perfil digital · score · ratio_pago</span>
-            <span class="io-tag"><i>modelo</i> XGBoost · validación temporal</span>
+            <span class="io-tag"><i>entra</i> dias_mora · fatiga_contacto · tramo_mora · ratio_pago · perfil digital · score_riesgo · num_atrasos_previos + 5 features ingenierizadas (mora×contactos, velocidad_contacto, digital_score_compuesto…)</span>
+            <span class="io-tag"><i>modelo</i> Ensemble HGB + XGBoost · split temporal 70/15/15 · <b>AUC 0.6858</b> · 85,884 contactos de test</span>
           </div>
         </div>
       </div>
       <div class="modelo">
         <div class="modelo-n">M2</div>
         <div class="modelo-b">
-          <b>¿Por qué canal?</b>
-          <p>Estima <code>P(paga | canal)</code> para cada canal y elige <code>argmax(P · cuota − costo)</code>. Por eso WhatsApp gana casi siempre; la llamada se reserva para el no-digital de alto monto.</p>
+          <b>¿Por qué canal? <span class="m1-badge">✓ entrenado</span></b>
+          <p>Multiclase entrenado sobre 279,915 contactos exitosos (solo los que resultaron en pago). Aprende <b>qué canal convirtió históricamente para cada perfil</b>. WhatsApp lidera por margen; llamada se activa para el no-digital de alto monto.</p>
           <div class="io">
-            <span class="io-tag"><i>entra</i> es_digital · interaccion_digital · uso_whatsapp · canal_* · fatiga · intento · respuesta</span>
-            <span class="io-tag"><i>modelo</i> 4 clasificadores (uno por canal)</span>
+            <span class="io-tag"><i>entra</i> es_digital · uso_whatsapp · interaccion_digital_score · uso_app · canal_whatsapp/sms/llamada/campo · fatiga · ratio_pago · score_riesgo</span>
+            <span class="io-tag"><i>modelo</i> XGBoost multiclase (4 canales) · CUDA · <b>accuracy 58.3%</b> · WA recall 83% · 41,988 contactos de test</span>
           </div>
         </div>
       </div>
       <div class="modelo">
         <div class="modelo-n">M3</div>
         <div class="modelo-b">
-          <b>¿En qué momento?</b>
-          <p>La mejor franja del día/semana, más la señal Yape "buen día" (si ayer vendió por encima de su promedio, hoy se le sugiere adelantar). Respeta Lun-Vie 7-19h, sábado solo digital.</p>
+          <b>¿En qué momento? <span class="m1-badge">✓ entrenado</span></b>
+          <p>Mismo objetivo que M1 pero con <code>hora_contacto</code> y <code>dia_semana</code> como features. En inferencia prueba 30 combinaciones (6 franjas × 5 días) y devuelve la de mayor P(pago) para ese cliente específico. Respeta Lun-Vie, sábado solo digital.</p>
           <div class="io">
-            <span class="io-tag"><i>entra</i> hora_contacto · día_semana · dias_mora · days_since_due · pulso Yape</span>
-            <span class="io-tag"><i>modelo</i> regresión / árbol + reglas de horario</span>
+            <span class="io-tag"><i>entra</i> hora · dia_semana · dias_mora · days_since_due · fatiga · perfil digital · ratio_pago + todas las variables de M1</span>
+            <span class="io-tag"><i>modelo</i> XGBoost · split temporal 70/15/15 · <b>AUC 0.6724</b> · mejor hora global: 19h · mejor día global: domingo · 85,883 contactos de test</span>
           </div>
         </div>
       </div>
       <div class="modelo">
         <div class="modelo-n">M4</div>
         <div class="modelo-b">
-          <b>¿Cómo le hablamos?</b>
-          <p>Clasifica al cliente en uno de 4 cuadrantes (digital/no digital × moroso/al día) y fija el tono: agradecido al que se adelanta, empático al que la pasa difícil, dignidad al que teme la extorsión.</p>
+          <b>¿Cómo le hablamos? <span class="m1-badge">✓ reglas interpretables</span></b>
+          <p>No requiere entrenamiento: clasifica en 4 cuadrantes (digital × moroso) y asigna tono + plantilla. Digital-sano: informal con emoji. Digital-moroso: empático, plan de pago. No-digital-sano: formal, agente BCP. No-digital-moroso: formal urgente, ejecutivo presencial.</p>
           <div class="io">
-            <span class="io-tag"><i>entra</i> es_digital · dias_mora · ratio_pago · num_atrasos</span>
-            <span class="io-tag"><i>sale</i> tono + plantilla → la redacta la IA generativa</span>
+            <span class="io-tag"><i>entra</i> es_digital · interaccion_digital_score · uso_app · uso_whatsapp · dias_mora (umbral 30d)</span>
+            <span class="io-tag"><i>sale</i> perfil_key · tono · saludo · emojis · plantilla WA/SMS/llamada/campo · CTA · nivel de urgencia</span>
           </div>
         </div>
       </div>
     </div>
     <div id="m1-metrics" class="m1-metrics"></div>
-    <div class="bt-note" style="margin:0 22px 22px"><b>Etiqueta de entrenamiento:</b> <code>pago_7d_post_contacto</code> — para cada uno de los 572,553 contactos del dataset ya sabemos si el cliente pagó o no. Eso convierte el problema en aprendizaje supervisado puro.</div>
+    <div class="bt-note" style="margin:0 22px 22px"><b>Etiqueta de entrenamiento:</b> <code>pago_7d_post_contacto</code> — para cada uno de los 572,553 contactos del dataset ya sabemos si el cliente pagó o no en los 7 días siguientes al contacto. Eso convierte el problema en aprendizaje supervisado puro. M1, M2 y M3 fueron entrenados con esta etiqueta.</div>
   </section>
 
   <section class="card">

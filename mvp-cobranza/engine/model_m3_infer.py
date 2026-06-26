@@ -144,6 +144,46 @@ def best_timing(cli: dict, solo_dias_lab: bool = True) -> dict:
     }
 
 
+def best_timing_para_dia(cli: dict, dia_semana_fijo: int) -> dict:
+    """
+    Igual que best_timing() pero fija el dia_semana y solo busca la mejor hora.
+    Útil para calcular la hora óptima de un contacto cuya fecha ya está definida.
+    """
+    import pandas as pd
+    import xgboost as xgb
+    m = meta()
+    if not m:
+        return {"hora": 10, "franja_nombre": "mañana (10h)", "p_pago": None, "fuente": "fallback"}
+
+    feats, cats = m["features"], set(m["categoricas"])
+    base = _base_row(cli)
+
+    rows, horas = [], []
+    for hora in FRANJAS_CANDIDATAS:
+        r = {**base, "hora": hora, "dia_semana": dia_semana_fijo}
+        for f in feats:
+            if f not in r:
+                r[f] = "desconocido" if f in cats else 0
+        rows.append(r)
+        horas.append(hora)
+
+    df = pd.DataFrame(rows)[feats]
+    for c in cats:
+        if c in df.columns:
+            df[c] = df[c].astype(str).astype("category")
+    dm    = xgb.DMatrix(df, enable_categorical=True)
+    proba = _load().predict(dm)
+
+    best_idx = int(proba.argmax())
+    best_hora = horas[best_idx]
+    return {
+        "hora":          best_hora,
+        "franja_nombre": FRANJA_LABEL.get(best_hora, f"{best_hora}h"),
+        "p_pago":        round(float(proba[best_idx]), 4),
+        "fuente":        "m3",
+    }
+
+
 def pago_por_hora_global() -> dict:
     """Tasas descriptivas de pago por hora guardadas en meta (para display en dashboard)."""
     m = meta()

@@ -8,12 +8,12 @@ const soles = n => "S/ " + Math.round(n).toLocaleString("es-PE");
 const milesK = n => "S/" + (Math.abs(n) >= 1000 ? (n / 1000).toFixed(0) + "k" : Math.round(n));
 const CH = { whatsapp: "WhatsApp", sms: "SMS", llamada: "Llamada", campo: "Campo" };
 
-let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, MODEL = null, FILTER = "demo", SELC = null;
+let CLIENTES = [], BACKTEST = {}, YK = {}, CFG = {}, MODEL = null, M3META = null, FILTER = "demo", SELC = null;
 
 async function boot() {
   const get = f => fetch("data/" + f).then(r => r.json()).catch(() => null);
-  [CLIENTES, BACKTEST, YK, CFG, MODEL] = await Promise.all([
-    get("clientes.json"), get("backtest.json"), get("yatekobro.json"), get("config.json"), get("model.json"),
+  [CLIENTES, BACKTEST, YK, CFG, MODEL, M3META] = await Promise.all([
+    get("clientes.json"), get("backtest.json"), get("yatekobro.json"), get("config.json"), get("model.json"), get("model_m3_meta.json"),
   ]);
   setupTabs();
   renderBacktest();
@@ -126,18 +126,22 @@ function renderDecDetail(d) {
 
   // detalle de la decisión (dentro del colapsable "Por qué")
   const r = (k, v, why) => `<div class="dd-r"><div class="dk">${k}</div><div class="dv">${v}${why?`<span class="why">${why}</span>`:""}</div></div>`;
+  const ai = `<span class="ai-badge" title="Calculado por el modelo confIA">🤖</span>`;
   const decideRows = no
     ? `<div class="dd-decide">${r("Acción", "⛔ NO CONTACTAR", "Ya prometió o pagó: no se insiste.")}</div>`
     : `<div class="dd-decide">
-        ${r("Canal", "💬 WhatsApp verificable", dec.canal.canal !== 'whatsapp' ? "Escala a llamada/visita solo si no responde (último recurso, no se elimina ningún canal)." : "Oficial, anti-extorsión. Mayor conversión y 15× más barato que llamar.")}
-        ${r("Momento", dec.momento.cuando, "Franja " + dec.momento.franja + " · Lun-Vie 7-19h, sábado solo digital")}
-        ${r("Tono", cap(dec.tono), "Cercano y verificablemente Mibanco")}
+        ${r("Canal " + ai, "💬 WhatsApp verificable", dec.canal.canal !== 'whatsapp' ? "Escala a llamada/visita solo si no responde (último recurso, no se elimina ningún canal)." : "Oficial, anti-extorsión. Mayor conversión y 15× más barato que llamar.")}
+        ${r("Momento " + ai, dec.momento.cuando, "Franja " + dec.momento.franja + " · Lun-Vie 7-19h, sábado solo digital")}
+        ${r("Tono " + ai, cap(dec.tono), "Cercano y verificablemente Mibanco")}
       </div>`;
 
   $("#decDetail").innerHTML = `
     <div class="dd-head">
       <div><div class="dd-name">${d.nombre}</div><div class="dd-tags">${tags}</div></div>
-      <span class="pr" style="background:var(--navy);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-weight:700;flex:none">${Math.round(d.prioridad)}</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+        <span class="pr" style="background:var(--navy);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-family:var(--mono);font-weight:700;flex:none">${Math.round(d.prioridad)}</span>
+        <span style="font-size:10px;color:var(--muted);line-height:1">🤖 M1</span>
+      </div>
     </div>${note}
     ${qsHtml(d)}
     ${yapeHtml(d.yape)}
@@ -161,7 +165,8 @@ function qsHtml(d) {
     <div class="qs-st"><div class="qs-v">${cal.etapa || '—'}</div><div class="qs-l">etapa de mora</div></div>
     <div class="qs-st" title="${canalTip}"><div class="qs-v">${canalTxt}</div><div class="qs-l">canal</div></div>
     <div class="qs-st"><div class="qs-v">${no ? '—' : prox}</div><div class="qs-l">próximo contacto</div></div>
-  </div>`;
+  </div>
+  <div style="font-size:11px;color:var(--muted);padding:2px 16px 10px;line-height:1.4">🤖 = valor calculado por los modelos ML de confIA (M1 prioridad · M2 canal · M3 momento · M4 tono)</div>`;
 }
 
 /* ---------------- CONEXIÓN YAPE (mini-gráfico) ---------------- */
@@ -272,9 +277,13 @@ function rankHtml(rank) {
 function calendarHtml(cal) {
   if (!cal) return "";
   const ch = c => c.canal === 'llamada' ? '📞 Llamada' : c.canal === 'campo' ? '🚶 Visita' : '💬 WhatsApp';
-  const items = (cal.contactos || []).map(c => `
+  const items = (cal.contactos || []).map(c => {
+    const horaTag = c.hora_optima
+      ? `<span class="cal-hora" title="Hora óptima calculada por M3 confIA">🤖 ${String(c.hora_optima.hora).padStart(2,'0')}:00</span>`
+      : '';
+    return `
     <div class="cal-item">
-      <span class="cal-date">${c.fecha}${c.rel_label ? `<small class="cal-rel ${c.dias_rel < 0 ? 'pre' : 'mora'}" title="${c.rel_nota || ''}">${c.rel_label}</small>` : ''}</span>
+      <span class="cal-date">${c.fecha}${c.rel_label ? `<small class="cal-rel ${c.dias_rel < 0 ? 'pre' : 'mora'}" title="${c.rel_nota || ''}">${c.rel_label}</small>` : ''}${horaTag}</span>
       <div class="cal-body">
         <div class="cal-top">
           <span class="cal-etapa">${c.etapa}</span>
@@ -283,7 +292,8 @@ function calendarHtml(cal) {
         </div>
         <div class="cal-msg">${c.mensaje}</div>
       </div>
-    </div>`).join("");
+    </div>`;
+  }).join("");
   const body = cal.total_contactos
     ? items
     : `<div class="cal-empty">Sin contactos programados este mes.<br>${cal.nota || ''}</div>`;
@@ -300,7 +310,7 @@ function porqueHtml(p, seg, f) {
   return `<div class="dd-porque">
     <div class="dd-cal-h">Por qué esta decisión <span class="cal-badge">riesgo ${seg.riesgo} · ${p.categoria_mora}</span></div>
     <div class="pq-prob">
-      <div class="pq-prob-h">Probabilidad de repago · 7 días, sin contactarlo</div>
+      <div class="pq-prob-h">🤖 Probabilidad de repago · 7 días, sin contactarlo</div>
       <div class="pq-bar"><div class="pq-bar-fill" style="width:${probPct}%"></div><span class="pq-bar-lbl">${probPct}%</span></div>
       <div class="pq-prob-note">${p.prob_repago}</div>
     </div>

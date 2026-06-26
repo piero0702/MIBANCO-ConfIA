@@ -199,6 +199,7 @@ strong { font-weight: 700; }
 .canales-list li:last-child { margin-bottom: 0; }
 /* Modelo M1 entrenado */
 .m1-badge { font-size: 10.5px; font-weight: 700; color: #0a7d33; background: #e4f7ea; padding: 2px 7px; border-radius: 20px; vertical-align: middle; margin-left: 4px; }
+.ai-badge { font-size: 13px; vertical-align: middle; margin-left: 3px; cursor: help; }
 .m1-metrics { padding: 0 22px 4px; }
 .m1-stats { display: flex; gap: 12px; margin: 6px 0 14px; flex-wrap: wrap; }
 .m1-stat { flex: 1; min-width: 120px; background: var(--bg-2, #f6f8fc); border: 1px solid var(--line, #e6ebf3); border-radius: 10px; padding: 12px 14px; }
@@ -715,6 +716,7 @@ strong { font-weight: 700; }
 .cal-rel { font-size: 9px; font-weight: 800; }
 .cal-rel.pre { color: var(--mb-green-d); }
 .cal-rel.mora { color: var(--warn); }
+.cal-hora { font-size: 9px; font-weight: 700; color: var(--navy); opacity: .75; letter-spacing: -.2px; }
 .cal-obj {
   font-size: 9.5px; font-weight: 700; color: var(--mb-green-d);
   background: var(--mb-green-050); border: 1px solid var(--mb-green-100);

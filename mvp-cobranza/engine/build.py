@@ -139,9 +139,20 @@ def construir_calendario(cli: dict, cfg: dict) -> dict:
             obj = "Visita del asesor"
         rel_label = f"−{abs(dias_rel)} d" if dias_rel < 0 else f"+{dias_rel} d"
         rel_nota = "antes de vencer" if dias_rel < 0 else "días de atraso"
+        # M3: hora optima para el dia especifico de este contacto
+        fecha_real = datetime.date(2026, 6, min(max(f["dia"], 1), 30))
+        dia_semana_real = fecha_real.weekday()  # 0=lun … 6=dom
+        hora_optima = None
+        if model_m3_infer and model_m3_infer.disponible():
+            try:
+                t = model_m3_infer.best_timing_para_dia(cli_v, dia_semana_real)
+                hora_optima = {"hora": t["hora"], "franja": t["franja_nombre"], "fuente": "m3"}
+            except Exception:
+                pass
         contactos.append({"fecha": f["fecha"], "dia": f["dia"], "etapa": _categoria_mora(dias_v),
                           "dias_rel": dias_rel, "rel_label": rel_label, "rel_nota": rel_nota,
-                          "objetivo": obj, "canal": canal, "mensaje": msg, "verificable": True})
+                          "objetivo": obj, "canal": canal, "mensaje": msg, "verificable": True,
+                          "hora_optima": hora_optima})
     contactos.sort(key=lambda c: c["dia"])
 
     if etapa == "preventivo":
