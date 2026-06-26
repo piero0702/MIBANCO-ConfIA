@@ -675,6 +675,13 @@ function updateWAHeader() {
 const p = PERFILES[perfilActual];
 const hdr = document.getElementById("waHeader");
 hdr.innerHTML = `
+<div class="wa-back-btn">
+  <svg width="11" height="18" viewBox="0 0 11 18" fill="none"
+       stroke="rgba(255,255,255,.9)" stroke-width="2.3"
+       stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="9 1 1 9 9 17"/>
+  </svg>
+</div>
 <div class="wa-avatar-wrap">
   <img src="icons/mibanco-tigre.png" alt="Mibanco" class="wa-avatar-img" />
 </div>
