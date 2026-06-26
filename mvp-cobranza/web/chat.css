@@ -1496,5 +1496,56 @@ body {
  }
  .left-section { border-top: none; border-right: 1px solid #e4e8ef; min-width: 200px; }
  .chat-panel { padding: 12px; }
- .phones-stage { height: 60vh; min-height: 400px; }
+ .phones-stage {
+  height: 60vh;
+  height: 60dvh; /* dvh evita saltos por la barra del navegador en iOS */
+  min-height: 400px;
+  max-height: none;
+ }
+ /* Demo de 2 teléfonos (Yape): escalar para que ambos quepan en pantallas medianas.
+    .62 garantiza que quepan incluso en el extremo estrecho del rango (~481px). */
+ .phones-duo-wrap.sp-active { transform: scale(.62); transform-origin: center center; }
+}
+
+/* ── TELÉFONOS (iPhone 13+, Android): mockup fluido que llena la pantalla ── */
+@media (max-width: 480px) {
+ .chat-panel { padding: 8px; }
+
+ /* El contenedor toma el ancho del viewport, no el del contenido */
+ .phone-ui-wrap { width: 100%; max-width: 100%; gap: 10px; }
+
+ /* Stage fluido: nunca excede el viewport (reserva el cromo del marco + paddings) */
+ .phones-stage {
+  width: min(390px, 100vw - 40px);
+  height: 62vh;
+  height: 62dvh;
+  min-height: 360px;
+  max-height: none;
+ }
+
+ /* Marco fino: menos padding, radio menor y sin botones laterales que sobresalen */
+ .phone-device-outer {
+  padding: 5px 4px 4px;
+  border-radius: 40px;
+  max-width: 100%;
+ }
+ .phone-device-outer::before,
+ .phone-device-outer::after { display: none; }
+
+ .phone-container,
+ .phone-wrap { border-radius: 32px; }
+
+ .phone-di { width: 78px; height: 22px; top: 7px; }
+
+ /* Panel izquierdo más compacto: devuelve alto vertical al chat */
+ .left-panel { max-height: 162px; }
+ .left-section { padding: 12px; min-width: 178px; }
+ .profile-card { padding: 9px 10px; margin-bottom: 6px; }
+ .stage-btn { padding: 8px 10px; }
+
+ /* Demo de 2 teléfonos: escala más fuerte para que ambos quepan en el celular */
+ .phones-duo-wrap.sp-active { transform: scale(.56); transform-origin: center center; }
+
+ /* Tarjeta visual YoSiLa: evitar que apriete en un stage angosto */
+ .msg-img-bubble { min-width: 208px; }
 }
