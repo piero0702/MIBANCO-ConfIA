@@ -455,8 +455,8 @@ document.getElementById("senderBody").innerHTML = `
   <div class="sp-success-note">Llegó al instante · sin costo</div>
 </div>`;
 
-/* Sender phone desliza como overlay interno — sin mover el frame externo */
-document.getElementById("senderPhone").classList.add("sp-visible");
+/* Celular de Juan Quispe entra por la izquierda; WA se corre a la derecha */
+document.getElementById("phonesDuoWrap").classList.add("sp-active");
 
 await later(1800);
 
@@ -468,7 +468,7 @@ const succ = document.getElementById("spSuccess");
 if (succ) succ.classList.add("sp-success-show");
 await later(1800);
 
-document.getElementById("senderPhone").classList.remove("sp-visible");
+document.getElementById("phonesDuoWrap").classList.remove("sp-active");
 await later(500);
 
 await showYapePush(msg);
@@ -695,7 +695,7 @@ function resetAndPlay() {
 clearTimers();
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
 document.getElementById("yapePhone")?.classList.remove("yp-visible");
-document.getElementById("senderPhone")?.classList.remove("sp-visible");
+document.getElementById("phonesDuoWrap")?.classList.remove("sp-active");
 document.getElementById("waPhone")?.classList.remove("yp-push");
 document.getElementById("phoneContainer")?.classList.remove("sp-push-right", "yp-shadow");
 document.getElementById("phonesStage")?.classList.remove("sp-active");
