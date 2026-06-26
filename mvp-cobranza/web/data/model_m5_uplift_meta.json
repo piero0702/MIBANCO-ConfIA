@@ -1,0 +1,123 @@
+{
+  "features": [
+    "producto",
+    "dias_mora",
+    "tramo_mora",
+    "saldo_restante",
+    "cuota_mensual",
+    "num_contactos_ult7d",
+    "num_contactos_ult30d",
+    "dias_ultimo_contacto",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "canal_contacto",
+    "contacto_mes_num",
+    "num_contactos_mes_credito",
+    "intento_num",
+    "costo_contacto",
+    "intensidad_contacto",
+    "fatiga_contacto",
+    "recency_score",
+    "days_since_due",
+    "edad",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente",
+    "es_digital",
+    "uso_app",
+    "uso_whatsapp",
+    "interaccion_digital_score",
+    "canal_whatsapp",
+    "canal_sms",
+    "canal_llamada",
+    "canal_campo",
+    "score_riesgo",
+    "prob_default",
+    "num_atrasos_previos",
+    "dias_mora_promedio",
+    "ratio_pago",
+    "ultimo_pago_dias"
+  ],
+  "categoricas": [
+    "producto",
+    "tramo_mora",
+    "ultimo_canal_contacto",
+    "respuesta_ultimo_contacto",
+    "canal_contacto",
+    "fatiga_contacto",
+    "genero",
+    "region",
+    "zona",
+    "tipo_cliente"
+  ],
+  "label": "pago_7d_post_contacto",
+  "auc": 0.6787,
+  "n_train": 486670,
+  "n_test": 85883,
+  "device": "cpu",
+  "best_iteration": 1499,
+  "top_features": [
+    {
+      "feature": "fatiga_contacto",
+      "pct": 15.5
+    },
+    {
+      "feature": "num_contactos_ult7d",
+      "pct": 13.1
+    },
+    {
+      "feature": "contacto_mes_num",
+      "pct": 9.9
+    },
+    {
+      "feature": "dias_mora",
+      "pct": 9.9
+    },
+    {
+      "feature": "costo_contacto",
+      "pct": 5.2
+    },
+    {
+      "feature": "tramo_mora",
+      "pct": 5.1
+    },
+    {
+      "feature": "days_since_due",
+      "pct": 4.9
+    },
+    {
+      "feature": "canal_contacto",
+      "pct": 3.3
+    },
+    {
+      "feature": "es_digital",
+      "pct": 3.0
+    },
+    {
+      "feature": "ratio_pago",
+      "pct": 1.5
+    },
+    {
+      "feature": "score_riesgo",
+      "pct": 1.4
+    },
+    {
+      "feature": "canal_sms",
+      "pct": 1.2
+    }
+  ],
+  "tratamiento_features": [
+    "num_contactos_ult7d",
+    "canal_contacto",
+    "costo_contacto",
+    "intento_num"
+  ],
+  "uplift_stats": {
+    "persuadables_pct": 0.004,
+    "neutros_pct": 0.359,
+    "do_not_disturb_pct": 0.636,
+    "uplift_medio": -0.0738
+  },
+  "descripcion": "S-learner uplift: P(pago|contactado) - P(pago|no contactado). Identifica persuadables."
+}

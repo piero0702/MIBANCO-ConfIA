@@ -1,0 +1,62 @@
+{
+  "auc": 0.6787,
+  "n_train": 486670,
+  "n_test": 85883,
+  "top_features": [
+    {
+      "feature": "fatiga_contacto",
+      "pct": 15.5
+    },
+    {
+      "feature": "num_contactos_ult7d",
+      "pct": 13.1
+    },
+    {
+      "feature": "contacto_mes_num",
+      "pct": 9.9
+    },
+    {
+      "feature": "dias_mora",
+      "pct": 9.9
+    },
+    {
+      "feature": "costo_contacto",
+      "pct": 5.2
+    },
+    {
+      "feature": "tramo_mora",
+      "pct": 5.1
+    },
+    {
+      "feature": "days_since_due",
+      "pct": 4.9
+    },
+    {
+      "feature": "canal_contacto",
+      "pct": 3.3
+    },
+    {
+      "feature": "es_digital",
+      "pct": 3.0
+    },
+    {
+      "feature": "ratio_pago",
+      "pct": 1.5
+    },
+    {
+      "feature": "score_riesgo",
+      "pct": 1.4
+    },
+    {
+      "feature": "canal_sms",
+      "pct": 1.2
+    }
+  ],
+  "uplift_stats": {
+    "persuadables_pct": 0.004,
+    "neutros_pct": 0.359,
+    "do_not_disturb_pct": 0.636,
+    "uplift_medio": -0.0738
+  },
+  "descripcion": "S-learner uplift: P(pago|contactado) - P(pago|no contactado). Identifica persuadables."
+}

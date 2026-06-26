@@ -1,0 +1,9 @@
+{
+  "xgb": 0.05,
+  "hgb": 0.95,
+  "auc_xgb_test": 0.6726,
+  "auc_hgb_test": 0.6858,
+  "auc_ensemble": 0.6858,
+  "auc_simple_avg": 0.6825,
+  "n_test": 85884
+}
