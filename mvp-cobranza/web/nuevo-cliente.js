@@ -227,13 +227,10 @@
       document.querySelectorAll("#decFilters .chip").forEach(c => c.classList.toggle("on", c.dataset.f === "todos"));
       if (typeof renderDecList === "function") renderDecList();
       if (typeof selectCli === "function") selectCli(d.cliente_id);
-      // scroll suave al encabezado de la sección, solo si queda fuera del viewport
+      // solo subir si el usuario bajó por debajo del panel de decisión (card encima del viewport)
       const card = document.querySelector("#tab-asesoria .card");
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        if (rect.top < 0 || rect.bottom > window.innerHeight) {
-          card.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+      if (card && card.getBoundingClientRect().bottom < 0) {
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     };
   }
